@@ -1,0 +1,15 @@
+## Interface: 11304
+## Title: Prio3
+## Notes: Loot notification for Priority Loot system. Can use export from Sahne-Team.de website
+## Author: dieck
+## Version: 0.1
+## SavedVariables: Prio3DB
+
+
+embeds.xml
+
+core.lua
+
+config.lua
+loot.lua
+
