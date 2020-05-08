@@ -10,6 +10,10 @@ You can import simple CSV strings on the Addon config page:
 
 where Prio1, 2, 3 can be numeric item Ids, or even strings with the IDs somewhere in (will take first number found), e.g. wowhead links.
 
+
+The great Prio3 website at sahne-team.de will provide an export shortly.
+
+
 /prio3 will open an overview on loot
 
 If a loot window is opened, it will announce priorities of items found to the raid.
@@ -24,3 +28,5 @@ Mid-term
 
 Long-term
 - Accept whispers to actually set Prio3 loot
+
+
