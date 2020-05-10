@@ -22,8 +22,15 @@ L["Debug"] = "Debug"
 L["Enters Debug mode. Addon will have advanced output, and work outside of Raid"] = "Enters Debug mode. Addon will have advanced output, and work outside of Raid"
 L["Please /roll now!"] = "Please /roll now!"
 L["itemlink dropped. You have this on priority x."] = function (itemLink, prio) return itemLink .. " dropped. You have this on priority " .. prio .. "." end
-L["Priorities were imported for you:"] = function(itemLinks) return "These priorities were imported for you: " .. itemLinks end
+L["Priorities of username: list"] = function(username,itemLinks) return "Priorities of " .. username .. ": " .. itemLinks end
 
+L["Query own priority"] = "Query own priority"
+L["Allows to query own priority. Whisper prio."] = "Allows to query own priority. Whisper prio."
+L["Query raid priorities"] = "Query raid priorities"
+L["Allows to query priorities of all raid members. Whisper prio CHARNAME."] = "Allows to query priorities of all raid members. Whisper prio CHARNAME."
+L["Query item priorities"] = "Query item priorities"
+L["Allows to query own priority. Whisper prio ITEMLINK."] = "Allows to query own priority. Whisper prio ITEMLINK."
+L["No priorities found for player"] = function(username) return "No priorities found for " .. username end
 
 -- used terms from core.lua
 L["No priorities defined."] = "No priorities defined." -- also in loot.lua
