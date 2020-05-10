@@ -444,7 +444,7 @@ function Prio3:QueryUser(username, whisperto)
 	local priotab = self.db.profile.priorities[username]
 
 	if not priotab then
-		SendChatMessage(L["No priorities found for player"](username), "WHISPER", nil, whisperto)
+		SendChatMessage(L["No priorities found for playerOrItem"](username), "WHISPER", nil, whisperto)
 		
 	else	
 		local linktab = {}
@@ -458,6 +458,30 @@ function Prio3:QueryUser(username, whisperto)
 	end
 end
 
+function Prio3:QueryItem(item, whisperto) 
+	local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, itemSellPrice = GetItemInfo(item)
+	local itemID = select(3, strfind(itemLink, "item:(%d+)"))
+	
+	local prios = {}
+	
+	for username,userprio in pairs(self.db.profile.priorities) do
+		for pr,item in pairs(userprio) do
+			if item == itemID then
+				table.insert(prios, username .. " (" .. pr .. ")")
+			end
+		end
+	end
+	
+	if table.getn(prios) > 0 then
+		SendChatMessage(L["itemLink on Prio at userpriolist"](itemLink, table.concat(prios, ", ")), "WHISPER", nil, whisperto)
+	else
+		SendChatMessage(L["No priorities found for playerOrItem"](itemLink), "WHISPER", nil, whisperto)
+	
+	end
+	
+end
+
+
 function Prio3:CHAT_MSG_WHISPER(event, text, playerName)
 	-- playerName may contain "-REALM"
 	playerName = strsplit("-", playerName)
@@ -466,7 +490,7 @@ function Prio3:CHAT_MSG_WHISPER(event, text, playerName)
 		return Prio3:QueryUser(playerName, playerName)
 	end
 	
-	local cmd, qry = strsplit(" ", text)
+	local cmd, qry = strsplit(" ", text, 2)
 	cmd = string.upper(cmd)
 		
 	if cmd == "PRIO" then
@@ -478,9 +502,9 @@ function Prio3:CHAT_MSG_WHISPER(event, text, playerName)
 		if qry and UnitInRaid(qry) and self.db.profile.queryraid then
 			return Prio3:QueryUser(strcamel(qry), playerName) 
 		end
-		
+				
 		if qry and GetItemInfo(qry) and self.db.profile.queryitems then
-			-- not implemented just yet 
+			return Prio3:QueryItem(qry, playerName) 
 		end
 	
 	end

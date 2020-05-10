@@ -72,6 +72,8 @@ Also accepted format: sahne-team.de TXT export (tab (\t) separated)
 
 If you need further formats, please let me know.
 
+Players can be informed by whispers about imported priorities (configurable in options).
+
 > **Plans (short-term)**:
 > Create easier access to import function :)
 
@@ -90,10 +92,23 @@ If you need further formats, please let me know.
 
 (Known issue: tooltip does not display properly, working on it.)
 
+### Querying
+
+There are three options for your raid participants to query for Prio3 entries (can be turned on and off in options)
+
+Whisper `prio` to get your own priorities.
+
+Whisper `prio USERNAME` to look up another raid member.
+
+Whisper `prio ITEMLINK` to look up priorities on an item.
+
+(If you don't get an answer at all, ask your Prio3 master if they turned on the options)
+
+
 > **Plans (short-term)**:
-> - Whisper to player when prio list is loaded into add
-> - Allow player to inquire about own list and about items
 > - Sync between multiple raid users having the addon installed
 
 > **Plans (mid-term)**:
 > - Note if someone got an item and remove user from list
+
+

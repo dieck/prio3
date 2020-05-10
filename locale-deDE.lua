@@ -29,7 +29,8 @@ L["Query raid priorities"] = "Suche Raid Prioritäten"
 L["Allows to query priorities of all raid members. Whisper prio CHARNAME."] = "Erlaubt die Abfrage der Prioritäten alle Raid-Mitglieder. Flüstere prio CHARNAME."
 L["Query item priorities"] = "Suche Item Prioritäten"
 L["Allows to query own priority. Whisper prio ITEMLINK."] = "Erlaubt die Abfrage nach Items. Flüstere prio ITEMLINK."
-L["No priorities found for player"] = function(username) return "Keine Prioritäten gefunden für " .. username end
+L["No priorities found for playerOrItem"] = function(username) return "Keine Prioritäten gefunden für " .. username end
+L["itemLink on Prio at userpriolist"] = function(itemlink, userpriolist) return itemlink .. " auf Prio bei " .. userpriolist end
 
 -- used terms from core.lua
 L["No priorities defined."] = "Keine Prioritäten eingestellt." -- also in loot.lua
