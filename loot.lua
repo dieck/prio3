@@ -1,3 +1,5 @@
+local L = LibStub("AceLocale-3.0"):GetLocale("Prio3", true)
+
 function Prio3:handleChatCommand()
 	Prio3:guiPriorityFrame()
 end
@@ -6,12 +8,12 @@ function Prio3:guiPriorityFrame()
 	local AceGUI = LibStub("AceGUI-3.0")
 
 	if self.db.profile.priorities == nil then 
-		Prio3:Print("No priorities set up")
+		Prio3:Print(L["No priorities defined."])
 		return;
 	end
 	
 	local f = AceGUI:Create("Frame")
-	f:SetTitle("Priority List")
+	f:SetTitle(L["Priority List"])
 	f:SetStatusText("")
 	f:SetLayout("Flow")
 	f:SetWidth(700)
