@@ -8,6 +8,7 @@ local defaults = {
 	raidannounce = true,
 	noprioannounce = false,
 	ignorereopen = 90,
+	charannounce = false,
   }
 }
 
@@ -61,6 +62,14 @@ prioOptionsTable = {
 		order = 30,
 		set = function(info,val) Prio3.db.profile.raidannounce = val end,
 		get = function(info) return Prio3.db.profile.raidannounce end
+	},
+	whisper = {
+		name = L["Whisper to Char"],
+		desc = L["Announces Loot Priority list to char by whisper"],
+		type = "toggle",
+		order = 35,
+		set = function(info,val) Prio3.db.profile.charannounce = val end,
+		get = function(info) return Prio3.db.profile.charannounce end
 	},
 	reopen = {
 		name = L["Mute (sec)"],
@@ -256,7 +265,9 @@ function Prio3:LOOT_OPENED()
 	
 end
 
-function Prio3:Announce(msg) 
+function Prio3:Announce(itemLink, prio, chars, hasPreviousPrio) 
+
+	msg = L["itemLink is at priority for users"](itemLink, prio, chars)
 
 	if Prio3.db.profile.raidannounce and UnitInRaid("player") then
 		SendChatMessage(msg, "RAID")
@@ -264,6 +275,20 @@ function Prio3:Announce(msg)
 		Prio3:Print(msg)
 	end
 
+	local whispermsg = L["itemlink dropped. You have this on priority x."](itemLink, prio)
+	-- add request to roll, if more than one user and no one has a higher priority 
+	if not hasPreviousPrio and table.getn(chars) >= 2 then whispermsg = whispermsg .. " " .. L["Please /roll now!"] end
+		
+	if Prio3.db.profile.charannounce then
+		for dummy, chr in pairs(chars) do
+			if (UnitInRaid(chr)) then
+				SendChatMessage(whispermsg, "WHISPER", nil, chr);
+			else
+				if Prio3.db.profile.debug then Prio3:Print("DEBUG: " .. chr .. " not in raid, will not send out whisper notification") end
+			end
+		end	
+	end
+	
 end
 
 function Prio3:HandleLoot(slotid) 
@@ -328,13 +353,13 @@ function Prio3:HandleLoot(slotid)
 			end
 		end
 		if table.getn(itemprios.p1) > 0 then
-			Prio3:Announce(L["itemLink is at priority for users"](itemLink, 1, itemprios.p1))	
+			Prio3:Announce(itemLink, 1, itemprios.p1)	
 		end
 		if table.getn(itemprios.p2) > 0 then
-			Prio3:Announce(L["itemLink is at priority for users"](itemLink, 2, itemprios.p2))	
+			Prio3:Announce(itemLink, 2, itemprios.p2, (table.getn(itemprios.p1) > 0))	
 		end
 		if table.getn(itemprios.p3) > 0 then
-			Prio3:Announce(L["itemLink is at priority for users"](itemLink, 3, itemprios.p3))	
+			Prio3:Announce(itemLink, 3, itemprios.p3, (table.getn(itemprios.p1)+table.getn(itemprios.p2) > 0))	
 		end
 
 	else
