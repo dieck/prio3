@@ -9,6 +9,7 @@ local defaults = {
 	noprioannounce = false,
 	ignorereopen = 90,
 	charannounce = false,
+	whisperimport = false
   }
 }
 
@@ -96,6 +97,14 @@ prioOptionsTable = {
 		end,
 		get = function(info) return L["Enter new exported string here to configure Prio3 loot list"] end,
 		cmdHidden = true,
+	},
+	newwhispers = {
+		name = L["Whisper imports"],
+		desc = L["Whisper imported items to player"],
+		type = "toggle",
+		order = 55,
+		set = function(info,val) Prio3.db.profile.whisperimport = val end,
+		get = function(info) return Prio3.db.profile.whisperimport end,
 	},
     debugging = {
       name = L["Debug"],
@@ -229,6 +238,17 @@ function Prio3:SetPriority(info, line, formatType)
 		end
 		
 		self.db.profile.priorities[user] = {p1, p2, p3}
+	
+		-- whisper if player is in RAID, oder in debug mode to player char
+		if Prio3.db.profile.whisperimport and ((Prio3.db.profile.debug and user == UnitName("player")) or UnitInRaid(user)) then
+			local itemName, itemLink = GetItemInfo(p1)
+			local whisperlinks = itemLink
+			local itemName, itemLink = GetItemInfo(p2)
+			if (itemLink) then whisperlinks = whisperlinks .. ", " .. itemLink end
+			local itemName, itemLink = GetItemInfo(p3)
+			if (itemLink) then whisperlinks = whisperlinks .. ", " .. itemLink end
+			SendChatMessage(L["Priorities were imported for you:"](whisperlinks), "WHISPER", nil, user)
+		end
 		
 	end
 		
@@ -281,7 +301,8 @@ function Prio3:Announce(itemLink, prio, chars, hasPreviousPrio)
 		
 	if Prio3.db.profile.charannounce then
 		for dummy, chr in pairs(chars) do
-			if (UnitInRaid(chr)) then
+			-- whisper if player is in RAID, oder in debug mode to player char
+			if (UnitInRaid(chr)) or (Prio3.db.profile.debug and chr == UnitName("player")) then
 				SendChatMessage(whispermsg, "WHISPER", nil, chr);
 			else
 				if Prio3.db.profile.debug then Prio3:Print("DEBUG: " .. chr .. " not in raid, will not send out whisper notification") end

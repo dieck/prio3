@@ -16,10 +16,14 @@ L["Ignores loot encountered a second time for this amount of seconds. 0 to turn 
 L["Loot prio list"] = "Loot prio list"
 L["Please note that current Prio settings WILL BE OVERWRITTEN"] = "Please note that current Prio settings WILL BE OVERWRITTEN"
 L["Enter new exported string here to configure Prio3 loot list"] = "Enter new exported string here to configure Prio3 loot list"
+L["Whisper imports"] = "Whisper imports"
+L["Whisper imported items to player"] = "Whisper imported items to player"
 L["Debug"] = "Debug"
 L["Enters Debug mode. Addon will have advanced output, and work outside of Raid"] = "Enters Debug mode. Addon will have advanced output, and work outside of Raid"
 L["Please /roll now!"] = "Please /roll now!"
 L["itemlink dropped. You have this on priority x."] = function (itemLink, prio) return itemLink .. " dropped. You have this on priority " .. prio .. "." end
+L["Priorities were imported for you:"] = function(itemLinks) return "These priorities were imported for you: " .. itemLinks end
+
 
 -- used terms from core.lua
 L["No priorities defined."] = "No priorities defined." -- also in loot.lua
