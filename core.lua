@@ -332,23 +332,30 @@ function Prio3:LOOT_OPENED()
 	
 end
 
-function Prio3:Announce(itemLink, prio, chars, hasPreviousPrio) 
-
-	msg = L["itemLink is at priority for users"](itemLink, prio, chars)
-
+function Prio3:Output(msg)
 	if Prio3.db.profile.raidannounce and UnitInRaid("player") then
 		SendChatMessage(msg, "RAID")
 	else
 		Prio3:Print(msg)
 	end
+end
 
+function Prio3:Announce(itemLink, prio, chars, hasPreviousPrio) 
+
+	-- output to raid or print to user
+	msg = L["itemLink is at priority for users"](itemLink, prio, chars)
+	Prio3:Output(msg)
+
+	-- whisper to characters
 	local whispermsg = L["itemlink dropped. You have this on priority x."](itemLink, prio)
-	-- add request to roll, if more than one user and no one has a higher priority 
+	
+	-- add request to roll, if more than one user and no one has a higher priority
+	-- yes, this will ignore the fact you might have to roll if higher priority users already got that item on another drop. But well, this doesn't happen very often.
 	if not hasPreviousPrio and table.getn(chars) >= 2 then whispermsg = whispermsg .. " " .. L["Please /roll now!"] end
 		
 	if Prio3.db.profile.charannounce then
 		for dummy, chr in pairs(chars) do
-			-- whisper if player is in RAID, oder in debug mode to player char
+			-- whisper if target char is in RAID. In debug mode whisper only to your own player char
 			if (UnitInRaid(chr)) or (Prio3.db.profile.debug and chr == UnitName("player")) then
 				SendChatMessage(whispermsg, "WHISPER", nil, chr);
 			else
@@ -417,7 +424,7 @@ function Prio3:HandleLoot(slotid)
 				
 		if table.getn(itemprios.p1) == 0 and table.getn(itemprios.p2) == 0 and table.getn(itemprios.p3) == 0 then
 			if Prio3.db.profile.noprioannounce then
-				Prio3:Announce(L["No priority on itemlink"](itemLink))	
+				Prio3:Output(L["No priorities found for playerOrItem"](itemLink))	
 			end
 		end
 		if table.getn(itemprios.p1) > 0 then
