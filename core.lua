@@ -13,6 +13,7 @@ local defaults = {
 	queryself = true,
 	queryraid = false,
 	queryitems = true,
+	opentable = false,
   }
 }
 
@@ -56,22 +57,24 @@ prioOptionsTable = {
 		type = "group",
 		name = "Output",
 		args = {
-			noprio = {
-			  name = L["Announce No Priority"],
-			  desc = L["Enables / disables the addon"],
-			  type = "toggle",
-			  order = 20,
-			  set = function(info,val) Prio3.db.profile.noprioannounce = val end,
-			  get = function(info) return Prio3.db.profile.noprioannounce end,
-			},
 			raid = {
 				name = L["Announce to Raid"],
 				desc = L["Announces Loot Priority list to raid chat"],
 				type = "toggle",
-				order = 30,
+				order = 20,
 				set = function(info,val) Prio3.db.profile.raidannounce = val end,
 				get = function(info) return Prio3.db.profile.raidannounce end
 			},
+			newline1 = { name="", type="description", order=21 },
+			noprio = {
+			  name = L["Announce No Priority"],
+			  desc = L["Announces if there is no priority on an item. Be careful: Will trigger on all mobs, not only bosses..."],
+			  type = "toggle",
+			  order = 30,
+			  set = function(info,val) Prio3.db.profile.noprioannounce = val end,
+			  get = function(info) return Prio3.db.profile.noprioannounce end,
+			},
+			newline2 = { name="", type="description", order=31 },
 			whisper = {
 				name = L["Whisper to Char"],
 				desc = L["Announces Loot Priority list to char by whisper"],
@@ -80,6 +83,7 @@ prioOptionsTable = {
 				set = function(info,val) Prio3.db.profile.charannounce = val end,
 				get = function(info) return Prio3.db.profile.charannounce end
 			},
+			newline3 = { name="", type="description", order=36 },
 			reopen = {
 				name = L["Mute (sec)"],
 				desc = L["Ignores loot encountered a second time for this amount of seconds. 0 to turn off."],
@@ -106,6 +110,7 @@ prioOptionsTable = {
 				set = function(info,val) Prio3.db.profile.queryself = val end,
 				get = function(info) return Prio3.db.profile.queryself end,
 			},
+			newline1 = { name="", type="description", order=61 },
 			queryraid = {
 				name = L["Query raid priorities"],
 				desc = L["Allows to query priorities of all raid members. Whisper prio CHARNAME."],
@@ -114,6 +119,7 @@ prioOptionsTable = {
 				set = function(info,val) Prio3.db.profile.queryraid = val end,
 				get = function(info) return Prio3.db.profile.queryraid end,
 			},
+			newline2 = { name="", type="description", order=64 },
 			queryitems = {
 				name = L["Query item priorities"],
 				desc = L["Allows to query own priority. Whisper prio ITEMLINK."],
@@ -122,6 +128,13 @@ prioOptionsTable = {
 				set = function(info,val) Prio3.db.profile.queryitems = val end,
 				get = function(info) return Prio3.db.profile.queryitems end,
 			},
+			newline3 = { name="", type="description", order=66 },
+			showtable = {
+				name = L["Show prio table"],
+				type = "execute",
+				order = 99,
+				func = function(info) Prio3:guiPriorityFrame() end,
+			},
 		}
 	},
 	grpimport = {
@@ -129,19 +142,20 @@ prioOptionsTable = {
 		name = "Import",
 		args = {
 			newprio = {
-				name = L["Loot prio list"],
+				name = L["Import String"],
 				desc = L["Please note that current Prio settings WILL BE OVERWRITTEN"],
 				type = "input",
 				order = 50,
 				confirm = true,
-				width = full,
+				width = 3.0,
 				multiline = true,
 				set = function(info, value) 
 					Prio3:SetPriorities(info, value) 
 				end,
-				get = function(info) return L["Enter new exported string here to configure Prio3 loot list"] end,
+				usage = L["Enter new exported string here to configure Prio3 loot list"],
 				cmdHidden = true,
 			},
+			newline1 = { name="", type="description", order=51 },
 			newwhispers = {
 				name = L["Whisper imports"],
 				desc = L["Whisper imported items to player"],
@@ -149,6 +163,21 @@ prioOptionsTable = {
 				order = 55,
 				set = function(info,val) Prio3.db.profile.whisperimport = val end,
 				get = function(info) return Prio3.db.profile.whisperimport end,
+			},
+			newline2 = { name="", type="description", order=56 },
+			opentable = {
+				name = L["Open prio table after import"],
+				type = "toggle",
+				order = 75,
+				set = function(info,val) Prio3.db.profile.opentable = val end,
+				get = function(info) return Prio3.db.profile.opentable end,
+			},
+			newline3 = { name="", type="description", order=76 },
+			showtable = {
+				name = L["Show prio table"],
+				type = "execute",
+				order = 99,
+				func = function(info) Prio3:guiPriorityFrame() end,
 			},
 		}
 	},
@@ -171,10 +200,6 @@ end
 function Prio3:SetPriorities(info, value)
 
 	self.db.profile.priorities = {}
-	
-	-- remove introduction text if it happens to be there (pasted afterwards)
-	local intro = prioOptionsTable.args.grpimport.args.newprio.get(nil)
-	value = string.gsub(value, intro, "")
 	
 	-- possible formats:
 	
@@ -227,8 +252,28 @@ function Prio3:SetPriorities(info, value)
 	end
 				
 	Prio3.priorities = value
+	
+	if Prio3.db.profile.opentable then
+		Prio3:guiPriorityFrame()
+	end
+	
 end
 
+function Prio3:GetItemlink(itemid) 
+	-- it seems the first time I call GetItemInfo after a relog (not reload, that works), I get a NIL value
+	-- maybe some weird interaction with another addon. (Auctioneer, TSM, Bagnon? Who knows)
+	-- so, I'll just wrap it three times.
+	
+	local itemName, itemLink = nil
+	local cnt = 0
+	
+	while itemLink == nil and cnt <= 3 do
+		itemName, itemLink = GetItemInfo(itemid)
+		cnt = cnt + 1
+	end
+
+	return itemLink
+end
 
 function Prio3:SetPriority(info, line, formatType)
 	local user, prio1, prio2, prio3, dummy
@@ -288,13 +333,14 @@ function Prio3:SetPriority(info, line, formatType)
 	
 		-- whisper if player is in RAID, oder in debug mode to player char
 		if Prio3.db.profile.whisperimport and ((Prio3.db.profile.debug and user == UnitName("player")) or UnitInRaid(user)) then
-			local itemName, itemLink = GetItemInfo(p1)
+			local itemLink = Prio3:GetItemlink(p1)
 			local whisperlinks = itemLink
-			local itemName, itemLink = GetItemInfo(p2)
+			local itemLink = Prio3:GetItemlink(p2)
 			if (itemLink) then whisperlinks = whisperlinks .. ", " .. itemLink end
-			local itemName, itemLink = GetItemInfo(p3)
+			local itemLink = Prio3:GetItemlink(p3)
 			if (itemLink) then whisperlinks = whisperlinks .. ", " .. itemLink end
-			SendChatMessage(L["Your priorities:"](whisperlinks), "WHISPER", nil, user)
+-- currently deactivated due to GetItemLink vs. GET_ITEM_INFO_RECEIVED event issues
+--			SendChatMessage(L["Priorities of username: list"](user,whisperlinks), "WHISPER", nil, user)
 		end
 		
 	end

@@ -1,5 +1,7 @@
 local L = LibStub("AceLocale-3.0"):GetLocale("Prio3", true)
 
+local lootframe = nil
+
 function Prio3:handleChatCommand()
 	Prio3:guiPriorityFrame()
 end
@@ -7,6 +9,12 @@ end
 function Prio3:guiPriorityFrame()
 	local AceGUI = LibStub("AceGUI-3.0")
 
+	if not lootframe == nil then
+	  lootframe:Hide()
+	  lootframe = nil
+	  return
+	end
+	
 	if self.db.profile.priorities == nil then 
 		Prio3:Print(L["No priorities defined."])
 		return;
@@ -20,6 +28,9 @@ function Prio3:guiPriorityFrame()
 	f:SetHeight(500)
 	f:SetCallback("OnClose",function(widget) AceGUI:Release(widget) end)
 	
+	-- close on escape
+	_G["Prio3Lootframe"] = f.frame
+	tinsert(UISpecialFrames, "Prio3Lootframe")
 	
 	scrollcontainer = AceGUI:Create("SimpleGroup") -- "InlineGroup" is also good
 	scrollcontainer:SetFullWidth(true)
@@ -125,4 +136,5 @@ function Prio3:guiPriorityFrame()
 	end
 
 	f:Show()
+	lootframe = f
 end
