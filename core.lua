@@ -54,6 +54,8 @@ function Prio3:OnInitialize()
     GetItemInfo(itemid)
   end
   
+   self.db.profile.lootlastopened = {}
+  
 end
 
 function Prio3:OnEnable()
@@ -432,7 +434,7 @@ function Prio3:Announce(itemLink, prio, chars, hasPreviousPrio)
 	
 	-- add request to roll, if more than one user and no one has a higher priority
 	-- yes, this will ignore the fact you might have to roll if higher priority users already got that item on another drop. But well, this doesn't happen very often.
-	if not hasPreviousPrio and table.getn(chars) >= 2 then whispermsg = whispermsg .. " " .. L["Please /roll now!"] end
+	if not hasPreviousPrio and table.getn(chars) >= 2 then whispermsg = whispermsg .. " " .. L["You will need to /roll when item is up."] end
 		
 	if Prio3.db.profile.charannounce then
 		for dummy, chr in pairs(chars) do

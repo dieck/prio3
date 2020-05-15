@@ -23,7 +23,7 @@ L["Open prio table after import"] = "Open prio table after import"
 L["Show prio table"] = "Show prio table"
 L["Debug"] = "Debug"
 L["Enters Debug mode. Addon will have advanced output, and work outside of Raid"] = "Enters Debug mode. Addon will have advanced output, and work outside of Raid"
-L["Please /roll now!"] = "Please /roll now!"
+L["You will need to /roll when item is up."] = "You will need to /roll when item is up."
 L["itemlink dropped. You have this on priority x."] = function (itemLink, prio) return itemLink .. " dropped. You have this on priority " .. prio .. "." end
 L["Priorities of username: list"] = function(username,itemLinks) return "Priorities of " .. username .. ": " .. itemLinks end
 
