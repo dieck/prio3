@@ -17,6 +17,9 @@ local defaults = {
   }
 }
 
+GET_ITEM_INFO_RECEIVED_TodoList = {}
+-- format: { { needed_itemids={}, vars={}, todo=function(itemids,vars) },  ... }
+
 function Prio3:OnInitialize()
   -- Code that you want to run when the addon is first loaded goes here.
   self.db = LibStub("AceDB-3.0"):New("Prio3DB", defaults)
@@ -25,10 +28,32 @@ function Prio3:OnInitialize()
   self.optionsFrame = LibStub("AceConfigDialog-3.0"):AddToBlizOptions("Prio3", "Prio3")
   self:RegisterChatCommand("prio", "ChatCommand")
    
+  -- main event: do something when the Loot Window is being shown
   Prio3:RegisterEvent("LOOT_OPENED")
+  
+  -- Blizzard... Why doesn't GetItemInfo return items infos... No, it only starts loading them...
+  Prio3:RegisterEvent("GET_ITEM_INFO_RECEIVED")
+  GET_ITEM_INFO_RECEIVED_TodoList = {}
+  
+  -- interaction from raid members
   Prio3:RegisterEvent("CHAT_MSG_WHISPER")
  
   Prio3:RegisterChatCommand('prio3', 'handleChatCommand');
+  
+  -- trigger GetItemInfo for all items in database
+  -- if you had disconnect / relog, cache needs to be rebuild to avoid having to handle GET_ITEM_INFO_RECEIVED stuff at Boss announcements
+  -- so better to load it here. But only once per itemid.
+	
+  local tblrequest = {}
+  for user, prios in pairs(self.db.profile.priorities) do
+	for prio, itemid in pairs(prios) do
+	  tblrequest[itemid] = itemid;
+	end
+  end
+  for itemid,id2 in pairs(tblrequest) do
+    GetItemInfo(itemid)
+  end
+  
 end
 
 function Prio3:OnEnable()
@@ -193,10 +218,7 @@ prioOptionsTable = {
   }
 }
 
-function Prio3:IsEmpty(s) 
-	return s == nil or strtrim(s) == ''
-end
-
+-- import priorities 
 function Prio3:SetPriorities(info, value)
 
 	self.db.profile.priorities = {}
@@ -216,7 +238,6 @@ function Prio3:SetPriorities(info, value)
 	-- Rhako\t\tDruide\t\tJin´dos Auge des Bösen-19885\tJin´dos Verhexer-19890\tUrzeitlicher Hakkarigötze-22637
 	
 	
-
 	-- determine format first. Parse first line
 	
 	local firstline = strsplit("\r\n", value)
@@ -227,7 +248,7 @@ function Prio3:SetPriorities(info, value)
 	else 		
 		-- at least three tab separated values: assume TXT. If there will be more supported formats with Tab, will need to reassess
 		-- I am not sure why, but "[^\t]\t+[^\t]+\t+[^\t]" did work in LUA interpreters but not in WoW. 
-		-- So, resorting to other methods, replaceing all tabs and all multi-spaces by & (I wanted to use ;, but then it identified CSV-SHORT as TXT here)
+		-- So, resorting to other methods, replaceing all tabs and all multi-spaces by & (I wanted to use ; but then it identified CSV-SHORT as TXT here)
 		fl = string.gsub(firstline, "[\t]+", "&")
 		fl = string.gsub(fl, "%s%s+", "&")
 		if string.match(fl, ".*&.*&.*") then 
@@ -237,7 +258,7 @@ function Prio3:SetPriorities(info, value)
 	
 	if Prio3.db.profile.debug then Prio3:Print("DEBUG: using Format Type " .. formatType) end
 		
-	-- parse lines
+	-- parse lines, and handle individually (SetPriority)
 	local lines = { strsplit("\r\n", value) }
 
 	for k,line in pairs(lines) do
@@ -250,31 +271,16 @@ function Prio3:SetPriorities(info, value)
 		end
 	
 	end
-				
-	Prio3.priorities = value
 	
+	-- open window after import, if configured in options
 	if Prio3.db.profile.opentable then
 		Prio3:guiPriorityFrame()
 	end
 	
 end
 
-function Prio3:GetItemlink(itemid) 
-	-- it seems the first time I call GetItemInfo after a relog (not reload, that works), I get a NIL value
-	-- maybe some weird interaction with another addon. (Auctioneer, TSM, Bagnon? Who knows)
-	-- so, I'll just wrap it three times.
-	
-	local itemName, itemLink = nil
-	local cnt = 0
-	
-	while itemLink == nil and cnt <= 3 do
-		itemName, itemLink = GetItemInfo(itemid)
-		cnt = cnt + 1
-	end
 
-	return itemLink
-end
-
+-- parse incoming priorities
 function Prio3:SetPriority(info, line, formatType)
 	local user, prio1, prio2, prio3, dummy
 
@@ -297,7 +303,10 @@ function Prio3:SetPriority(info, line, formatType)
 	end
 	
 	local function toId(s) 
-		for id in string.gmatch(s, "%d+") do return id end
+		for id in string.gmatch(s, "%d+") do 
+			GetItemInfo(id) -- firing here, so it can start getting loaded early
+			return id 
+		end
 	end
 
 	-- avoid Priorities being nil, if not all are used up
@@ -333,14 +342,40 @@ function Prio3:SetPriority(info, line, formatType)
 	
 		-- whisper if player is in RAID, oder in debug mode to player char
 		if Prio3.db.profile.whisperimport and ((Prio3.db.profile.debug and user == UnitName("player")) or UnitInRaid(user)) then
-			local itemLink = Prio3:GetItemlink(p1)
-			local whisperlinks = itemLink
-			local itemLink = Prio3:GetItemlink(p2)
-			if (itemLink) then whisperlinks = whisperlinks .. ", " .. itemLink end
-			local itemLink = Prio3:GetItemlink(p3)
-			if (itemLink) then whisperlinks = whisperlinks .. ", " .. itemLink end
--- currently deactivated due to GetItemLink vs. GET_ITEM_INFO_RECEIVED event issues
---			SendChatMessage(L["Priorities of username: list"](user,whisperlinks), "WHISPER", nil, user)
+			local itemLinks =  {}
+			local itemName1, itemLink1 = GetItemInfo(p1)
+			
+			table.insert(itemLinks, itemLink1)
+			
+			local itemName2, itemLink2 = ""
+			local itemName3, itemLink3 = ""
+			if p2 then
+				itemName2, itemLink2 = GetItemInfo(p2)
+				table.insert(itemLinks, itemLink2)
+			end
+			if p3 then
+				itemName3, itemLink3 = GetItemInfo(p3)
+				table.insert(itemLinks, itemLink3)
+			end
+
+			local existAll = itemLink1 and (itemLink2 or not p2) and (itemLink3 or not p3)
+			if existAll then
+				
+				SendChatMessage(L["Priorities of username: list"](user,table.concat(itemLinks,", ")), "WHISPER", nil, user)
+	
+			else
+
+				local t = {
+					needed_itemids = self.db.profile.priorities[user],
+					vars = { u = user },
+					todo = function(itemlinks,vars) 
+						SendChatMessage(L["Priorities of username: list"](vars["u"],table.concat(itemlinks,", ")), "WHISPER", nil, vars["u"])
+					end,
+				}
+				table.insert(GET_ITEM_INFO_RECEIVED_TodoList, t)
+			
+			end
+
 		end
 		
 	end
@@ -558,6 +593,73 @@ function Prio3:CHAT_MSG_WHISPER(event, text, playerName)
 				
 		if qry and GetItemInfo(qry) and self.db.profile.queryitems then
 			return Prio3:QueryItem(qry, playerName) 
+		end
+	
+	end
+	
+end
+
+-- for debug outputs
+function tprint (tbl, indent)
+  if not indent then indent = 0 end
+  local toprint = string.rep(" ", indent) .. "{\r\n"
+  indent = indent + 2 
+  for k, v in pairs(tbl) do
+    toprint = toprint .. string.rep(" ", indent)
+    if (type(k) == "number") then
+      toprint = toprint .. "[" .. k .. "] = "
+    elseif (type(k) == "string") then
+      toprint = toprint  .. k ..  "= "   
+    end
+    if (type(v) == "number") then
+      toprint = toprint .. v .. ",\r\n"
+    elseif (type(v) == "string") then
+      toprint = toprint .. "\"" .. v .. "\",\r\n"
+    elseif (type(v) == "table") then
+      toprint = toprint .. tprint(v, indent + 2) .. ",\r\n"
+    else
+      toprint = toprint .. "\"" .. tostring(v) .. "\",\r\n"
+    end
+  end
+  toprint = toprint .. string.rep(" ", indent-2) .. "}"
+  return toprint
+end
+
+
+function Prio3:GET_ITEM_INFO_RECEIVED(event, itemID, success)
+	-- sadly, GetItemInfo does not always work, especially when the item wasn't seen since last restart, it will turn up nil on many values, until... GET_ITEM_INFO_RECEIVED was fired.
+	-- But there is no blocking wait for an event. I would have to script a function to run when GET_ITEM_INFO_RECEIVED was received, and let that function handle what I wanted to do with the Item info
+	-- Waiting alone proved not to be a good choice. So meh, populating a to do list GET_ITEM_INFO_RECEIVED_TodoList for this event 
+
+	-- this event gets a lot of calls, so debug is very chatty here
+	-- only configurable in code therefore
+	local debug = false
+	
+	for todoid,todo in pairs(GET_ITEM_INFO_RECEIVED_TodoList) do
+
+		if debug then Prio3:Print("GET_ITEM_INFO_RECEIVED for " .. itemID); end
+		if debug then Prio3:Print("Looking into " .. tprint(todo)); end
+	
+		local foundAllIDs = true
+		local itemlinks = {}
+
+		-- search for all needed IDs
+		for dummy,looking_for_id in pairs(todo["needed_itemids"]) do
+			if debug then Prio3:Print("Tying to get ID " .. looking_for_id); end
+			local itemName, itemLink = GetItemInfo(looking_for_id) 
+			if itemLink then
+				if debug then Prio3:Print("Found " .. looking_for_id .. " as " .. itemLink); end
+				table.insert(itemlinks, itemLink)
+			else
+				if debug then Prio3:Print("Not yet ready: " .. looking_for_id); end
+			    foundAllIDs = false
+			end
+		end
+
+		if (foundAllIDs) then
+			if debug then Prio3:Print("Calling function with itemlinks " .. tprint(itemlinks) .. " and vars " .. tprint(todo["vars"])); end
+			todo["todo"](itemlinks,todo["vars"])
+			GET_ITEM_INFO_RECEIVED_TodoList[todoid] = nil -- remove from todo list
 		end
 	
 	end

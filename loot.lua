@@ -1,20 +1,58 @@
 local L = LibStub("AceLocale-3.0"):GetLocale("Prio3", true)
 
-local lootframe = nil
+lootframe = nil
 
 function Prio3:handleChatCommand()
 	Prio3:guiPriorityFrame()
 end
 
 function Prio3:guiPriorityFrame()
+
+--	if not lootframe == nil then
+--	  lootframe:Hide()
+--	  lootframe = nil
+--	  return
+--	end
+
+
+    -- see if we might already have all data
+	local haveAll = true
+  
+    -- look through all items ids (but only once)
+  
+	local tblrequest = {}
+	for user, prios in pairs(self.db.profile.priorities) do
+		for prio, itemid in pairs(prios) do
+			tblrequest[itemid] = itemid;
+		end
+	end
+	for itemid,id2 in pairs(tblrequest) do
+		local itemname, itemlink = GetItemInfo(itemid)
+		if itemlink == nil then haveAll = false end
+	end
+
+	if haveAll then
+		lootframe = Prio3:createPriorityFrame()
+		lootframe:Show()
+	else
+		if self.db.profile.debug then Prio3:Print("DEBUG: requested window to open after GET_ITEM_INFO_RECEIVED") end
+		-- queue for handling when GET_ITEM_INFO_RECEIVED event came through
+		local t = {
+			needed_itemids = tblrequest,
+			vars = {},
+			todo = function(itemlinks,vars) 
+				lootframe = Prio3:createPriorityFrame()
+				lootframe:Show()
+			end,
+		}
+		table.insert(GET_ITEM_INFO_RECEIVED_TodoList, t)
+	end
+  
+end
+
+function Prio3:createPriorityFrame()
 	local AceGUI = LibStub("AceGUI-3.0")
 
-	if not lootframe == nil then
-	  lootframe:Hide()
-	  lootframe = nil
-	  return
-	end
-	
 	if self.db.profile.priorities == nil then 
 		Prio3:Print(L["No priorities defined."])
 		return;
@@ -135,6 +173,5 @@ function Prio3:guiPriorityFrame()
 		
 	end
 
-	f:Show()
-	lootframe = f
+	return f
 end
