@@ -45,6 +45,8 @@ function Prio3:OnInitialize()
   -- so better to load it here. But only once per itemid.
 	
   local tblrequest = {}
+  if self.db.profile.priorities == nil then self.db.profile.priorities = {} end
+  
   for user, prios in pairs(self.db.profile.priorities) do
 	for prio, itemid in pairs(prios) do
 	  tblrequest[itemid] = itemid;
