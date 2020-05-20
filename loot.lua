@@ -14,7 +14,6 @@ function Prio3:guiPriorityFrame()
 --	  return
 --	end
 
-
     -- see if we might already have all data
 	local haveAll = true
   
@@ -27,8 +26,10 @@ function Prio3:guiPriorityFrame()
 		end
 	end
 	for itemid,id2 in pairs(tblrequest) do
-		local itemname, itemlink = GetItemInfo(itemid)
-		if itemlink == nil then haveAll = false end
+		if tonumber(itemid) > 0 then
+			local itemname, itemlink = GetItemInfo(itemid)
+			if itemlink == nil then haveAll = false end
+		end
 	end
 
 	if haveAll then
@@ -89,67 +90,109 @@ function Prio3:createPriorityFrame()
 		lbPlayerName:SetRelativeWidth(0.24)
 		s:AddChild(lbPlayerName)
 		
-		local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, itemSellPrice = GetItemInfo(prios[1])
+		if tonumber(prios[1]) > 0 then
+			local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, itemSellPrice = GetItemInfo(prios[1])
 
-		local lbIcon = AceGUI:Create("Icon")
-		lbIcon:SetRelativeWidth(0.04)
-		lbIcon:SetImage(itemTexture)
-		lbIcon:SetImageSize(15,15)
-		lbIcon:SetCallback("OnEnter", function(widget)
-			GameTooltip:SetHyperlink(itemLink)
-			GameTooltip:Show()
-		end)
-		lbIcon:SetCallback("OnLeave", function(widget)
-			GameTooltip:Hide()
-		end)
-		s:AddChild(lbIcon)
+			local lbIcon = AceGUI:Create("Icon")
+			lbIcon:SetRelativeWidth(0.04)
+			lbIcon:SetImage(itemTexture)
+			lbIcon:SetImageSize(15,15)
+			lbIcon:SetCallback("OnEnter", function(widget)
+				GameTooltip:SetHyperlink(itemLink)
+				GameTooltip:Show()
+			end)
+			lbIcon:SetCallback("OnLeave", function(widget)
+				GameTooltip:Hide()
+			end)
+			s:AddChild(lbIcon)
 
-		local lbPrio = AceGUI:Create("InteractiveLabel")
-		lbPrio:SetText(itemLink)
-		lbPrio:SetRelativeWidth(0.20)
-		s:AddChild(lbPrio)
+			local lbPrio = AceGUI:Create("InteractiveLabel")
+			lbPrio:SetText(itemLink)
+			lbPrio:SetRelativeWidth(0.20)
+			s:AddChild(lbPrio)
+		else
+			local lbIcon = AceGUI:Create("Icon")
+			lbIcon:SetRelativeWidth(0.04)
+			lbIcon:SetImage("Interface\\Icons\\ability_vanish")
+			lbIcon:SetImageSize(15,15)
+			s:AddChild(lbIcon)
+
+			local lbPrio = AceGUI:Create("InteractiveLabel")
+			lbPrio:SetText("-no prio 1 set-")
+			lbPrio:SetRelativeWidth(0.20)
+			s:AddChild(lbPrio)
+		end
 		
-		local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, itemSellPrice = GetItemInfo(prios[2])
+		if tonumber(prios[2]) > 0 then
+			local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, itemSellPrice = GetItemInfo(prios[2])
 
-		local lbIcon = AceGUI:Create("Icon")
-		lbIcon:SetRelativeWidth(0.04)
-		lbIcon:SetImage(itemTexture)
-		lbIcon:SetImageSize(15,15)
-		lbIcon:SetCallback("OnEnter", function(widget)
---			GameTooltip_SetDefaultAnchor( GameTooltip, UIParent )
-			GameTooltip:SetHyperlink(itemLink)
-			GameTooltip:Show()
-		end)
-		lbIcon:SetCallback("OnLeave", function(widget)
-			GameTooltip:Hide()
-		end)
-		s:AddChild(lbIcon)
+			local lbIcon = AceGUI:Create("Icon")
+			lbIcon:SetRelativeWidth(0.04)
+			lbIcon:SetImage(itemTexture)
+			lbIcon:SetImageSize(15,15)
+			lbIcon:SetCallback("OnEnter", function(widget)
+	--			GameTooltip_SetDefaultAnchor( GameTooltip, UIParent )
+				GameTooltip:SetHyperlink(itemLink)
+				GameTooltip:Show()
+			end)
+			lbIcon:SetCallback("OnLeave", function(widget)
+				GameTooltip:Hide()
+			end)
+			s:AddChild(lbIcon)
 
-		local lbPrio = AceGUI:Create("InteractiveLabel")
-		lbPrio:SetText(itemLink)
-		lbPrio:SetRelativeWidth(0.20)
-		s:AddChild(lbPrio)
+			local lbPrio = AceGUI:Create("InteractiveLabel")
+			lbPrio:SetText(itemLink)
+			lbPrio:SetRelativeWidth(0.20)
+			s:AddChild(lbPrio)
+		else
+			local lbIcon = AceGUI:Create("Icon")
+			lbIcon:SetRelativeWidth(0.04)
+			lbIcon:SetImage("Interface\\Icons\\ability_vanish")
+			lbIcon:SetImageSize(15,15)
+			s:AddChild(lbIcon)
+
+			local lbPrio = AceGUI:Create("InteractiveLabel")
+			lbPrio:SetText("-no prio 2 set-")
+			lbPrio:SetRelativeWidth(0.20)
+			s:AddChild(lbPrio)
+		end
+
+		if tonumber(prios[3]) > 0 then
 		
-		local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, itemSellPrice = GetItemInfo(prios[3])
+			local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, itemSellPrice = GetItemInfo(prios[3])
 
-		local lbIcon = AceGUI:Create("Icon")
-		lbIcon:SetRelativeWidth(0.04)
-		lbIcon:SetImage(itemTexture)
-		lbIcon:SetImageSize(15,15)
-		lbIcon:SetCallback("OnEnter", function(widget)
-			GameTooltip:SetHyperlink(itemLink)
-			GameTooltip:Show()
-		end)
-		lbIcon:SetCallback("OnLeave", function(widget)
-			GameTooltip:Hide()
-		end)
-		s:AddChild(lbIcon)
+			local lbIcon = AceGUI:Create("Icon")
+			lbIcon:SetRelativeWidth(0.04)
+			lbIcon:SetImage(itemTexture)
+			lbIcon:SetImageSize(15,15)
+			lbIcon:SetCallback("OnEnter", function(widget)
+				GameTooltip:SetHyperlink(itemLink)
+				GameTooltip:Show()
+			end)
+			lbIcon:SetCallback("OnLeave", function(widget)
+				GameTooltip:Hide()
+			end)
+			s:AddChild(lbIcon)
 
-		local lbPrio = AceGUI:Create("InteractiveLabel")
-		lbPrio:SetText(itemLink)
-		lbPrio:SetRelativeWidth(0.20)
-		s:AddChild(lbPrio)
+			local lbPrio = AceGUI:Create("InteractiveLabel")
+			lbPrio:SetText(itemLink)
+			lbPrio:SetRelativeWidth(0.20)
+			s:AddChild(lbPrio)
 
+		else
+			local lbIcon = AceGUI:Create("Icon")
+			lbIcon:SetRelativeWidth(0.04)
+			lbIcon:SetImage("Interface\\Icons\\ability_vanish")
+			lbIcon:SetImageSize(15,15)
+			s:AddChild(lbIcon)
+
+			local lbPrio = AceGUI:Create("InteractiveLabel")
+			lbPrio:SetText("-no prio 3 set-")
+			lbPrio:SetRelativeWidth(0.20)
+			s:AddChild(lbPrio)
+		end
+
+		
 		
 		local lbHR = AceGUI:Create("Label")
 		lbHR:SetText("-----------------------------")
