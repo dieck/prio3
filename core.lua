@@ -172,6 +172,15 @@ prioOptionsTable = {
 		type = "group",
 		name = "Import",
 		args = {
+			newline0 = { name="", type="description", order=30 },
+			cleartable = {
+				name = L["Clear prio table"],
+				desc = L["Please note that current Prio settings WILL BE OVERWRITTEN"],
+				type = "execute",
+				order = 31,
+				confirm = true,
+				func = function(info) Prio3.db.profile.priorities = {} end,
+			},
 			newprio = {
 				name = L["Import String"],
 				desc = L["Please note that current Prio settings WILL BE OVERWRITTEN"],
