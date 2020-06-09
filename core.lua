@@ -6,7 +6,8 @@ local defaults = {
     enabled = true,
     debug = false,
 	raidannounce = true,
-	noprioannounce = false,
+	noprioannounce = true,
+	noprioannounce_noepic = false,
 	ignorereopen = 90,
 	charannounce = false,
 	whisperimport = false,
@@ -99,13 +100,21 @@ prioOptionsTable = {
 			newline1 = { name="", type="description", order=21 },
 			noprio = {
 			  name = L["Announce No Priority"],
-			  desc = L["Announces if there is no priority on an item. Be careful: Will trigger on all mobs, not only bosses..."],
+			  desc = L["Announces if there is no priority on an item. Will only trigger if at least one Epic is found."],
 			  type = "toggle",
 			  order = 30,
 			  set = function(info,val) Prio3.db.profile.noprioannounce = val end,
 			  get = function(info) return Prio3.db.profile.noprioannounce end,
 			},
-			newline2 = { name="", type="description", order=31 },
+			noprionoepic = {
+			  name = L["also announce without Epic"],
+			  desc = L["Announces if there is no priority on an item. Be careful: Will trigger on all mobs, not only bosses..."],
+			  type = "toggle",
+			  order = 31,
+			  set = function(info,val) Prio3.db.profile.noprioannounce_noepic = val end,
+			  get = function(info) return Prio3.db.profile.noprioannounce_noepic end,
+			},
+			newline2 = { name="", type="description", order=32 },
 			whisper = {
 				name = L["Whisper to Char"],
 				desc = L["Announces Loot Priority list to char by whisper"],
@@ -422,8 +431,24 @@ function Prio3:LOOT_OPENED()
 	loot = GetLootInfo()
 	numLootItems = GetNumLootItems();
 
+	-- look if epics are found (for No prio announces)
+	local epicFound = false
+	
 	for i=1,numLootItems do 
-		Prio3:HandleLoot(i)
+		itemLink = GetLootSlotLink(i)
+		if itemLink then
+			-- if no itemLink, it's most likely money
+			local d, itemId, enchantId, jewelId1, jewelId2, jewelId3, jewelId4, suffixId, uniqueId, linkLevel, specializationID, reforgeId, unknown1, unknown2 = strsplit(":", itemLink)		
+			-- identifying Epics by color... (should I do Legendary as well? meh)
+			if d == "\124cffa335ee\124Hitem" then
+				epicFound = true
+			end
+		end
+	end
+	
+	-- handle loot
+	for i=1,numLootItems do 
+		Prio3:HandleLoot(i, epicFound)
 	end
 	
 end
@@ -462,7 +487,7 @@ function Prio3:Announce(itemLink, prio, chars, hasPreviousPrio)
 	
 end
 
-function Prio3:HandleLoot(slotid) 
+function Prio3:HandleLoot(slotid, epicFound) 
 
 	itemLink = GetLootSlotLink(slotid)
 
@@ -520,7 +545,9 @@ function Prio3:HandleLoot(slotid)
 				
 		if table.getn(itemprios.p1) == 0 and table.getn(itemprios.p2) == 0 and table.getn(itemprios.p3) == 0 then
 			if Prio3.db.profile.noprioannounce then
-				Prio3:Output(L["No priorities found for playerOrItem"](itemLink))	
+				if epicFound or Prio3.db.profile.noprioannounce_noepic then
+					Prio3:Output(L["No priorities found for playerOrItem"](itemLink))	
+				end
 			end
 		end
 		if table.getn(itemprios.p1) > 0 then
