@@ -49,6 +49,13 @@ L["itemLink is at priority for users"] = function(itemlink,prio,userlist)
 	end
 end
 
+-- communications handling
+L["sender handled notification for item"] = function(sender, item) return sender .. " hat Benachrichtungen für " .. item .. " bearbeitet" end
+L["sender received priorities and answered"] = function(sender, answered) return sender .. " hat neue Prioritäten erhalten und " .. L[answered] end
+L["accepted"] = "hat akzeptiert"
+L["discarded"] = "hat nicht angenommen"
+L["Accepted new priorities sent from sender"] = function(sender) return "Neue Prioritäten von " .. sender .." angenommen" end
+
 -- used terms from loot.lua
 L["Priority List"] = "Prioritäts-Liste"
 

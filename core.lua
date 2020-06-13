@@ -1,5 +1,6 @@
-Prio3 = LibStub("AceAddon-3.0"):NewAddon("Prio3", "AceConsole-3.0", "AceEvent-3.0", "AceTimer-3.0")
+Prio3 = LibStub("AceAddon-3.0"):NewAddon("Prio3", "AceConsole-3.0", "AceEvent-3.0", "AceTimer-3.0","AceComm-3.0", "AceSerializer-3.0")
 local L = LibStub("AceLocale-3.0"):GetLocale("Prio3", true)
+local commPrefix = "Prio3-1.0-"
 
 local defaults = {
   profile = {
@@ -15,6 +16,8 @@ local defaults = {
 	queryraid = false,
 	queryitems = true,
 	opentable = false,
+	comm_enable_prio = true,
+	comm_enable_item = true,
   }
 }
 
@@ -37,6 +40,9 @@ function Prio3:OnInitialize()
   -- Blizzard... Why doesn't GetItemInfo return items infos... No, it only starts loading them...
   Prio3:RegisterEvent("GET_ITEM_INFO_RECEIVED")
   GET_ITEM_INFO_RECEIVED_TodoList = {}
+
+  -- communicate between addons
+  self:RegisterComm(commPrefix, "OnCommReceived")
   
   -- interaction from raid members
   Prio3:RegisterEvent("CHAT_MSG_WHISPER")
@@ -228,6 +234,29 @@ prioOptionsTable = {
 				order = 99,
 				func = function(info) Prio3:guiPriorityFrame() end,
 			},
+		},
+	},
+	grpcomm = {
+		type = "group",
+		name = "Sync",
+		args = {
+			syncprio = {
+				name = "Sync priorities",
+				desc = "Allows to sync priorities between multiple users in the same raid running Prio3",
+				type = "toggle",
+				order = 60,
+				set = function(info,val) Prio3.db.profile.comm_enable_prio = val end,
+				get = function(info) return Prio3.db.profile.comm_enable_prio end,
+			},
+			newline2 = { name="", type="description", order=64 },
+			syncitems = {
+				name = "Sync item accouncements",
+				desc = "Prevents other users from posting the same item you already posted.",
+				type = "toggle",
+				order = 65,
+				set = function(info,val) Prio3.db.profile.comm_enable_item = val end,
+				get = function(info) return Prio3.db.profile.comm_enable_item end,
+			},
 		}
 	},
 	
@@ -294,6 +323,11 @@ function Prio3:SetPriorities(info, value)
 			if Prio3.db.profile.debug then Prio3:Print("DEBUG: line is empty: " .. line) end
 		end
 	
+	end
+	
+	if self.db.profile.comm_enable_prio then
+		local commmsg = { command = "SEND_PRIORITIES", prios = self.db.profile.priorities }	
+		Prio3:SendCommMessage(commPrefix, Prio3:Serialize(commmsg), "RAID", nil, "NORMAL")
 	end
 	
 	-- open window after import, if configured in options
@@ -563,7 +597,12 @@ function Prio3:HandleLoot(slotid, epicFound)
 	else
 		if self.db.profile.debug then Prio3:Print("DEBUG: Item " .. itemLink .. " ignored because of mute time setting") end
 	end
-	
+
+	if self.db.profile.comm_enable_item then
+		local commmsg = { command = "ITEM", item = itemId, itemlink = itemLink, ignore = Prio3.db.profile.ignorereopen }	
+		Prio3:SendCommMessage(commPrefix, Prio3:Serialize(commmsg), "RAID", nil, "ALERT")
+	end
+		
 	self.db.profile.lootlastopened[itemId] = time()
 	
 end
@@ -606,7 +645,6 @@ function Prio3:QueryItem(item, whisperto)
 		SendChatMessage(L["itemLink on Prio at userpriolist"](itemLink, table.concat(prios, ", ")), "WHISPER", nil, whisperto)
 	else
 		SendChatMessage(L["No priorities found for playerOrItem"](itemLink), "WHISPER", nil, whisperto)
-	
 	end
 	
 end
@@ -720,4 +758,43 @@ function Prio3:GET_ITEM_INFO_RECEIVED_DelayedHandler()
 	
 	end
 	
+end
+
+
+function Prio3:OnCommReceived(prefix, message, distribution, sender)
+    local success, deserialized = Prio3:Deserialize(message);
+    if success then
+	
+		if self.db.profile.debug then
+			Prio3:Print(distribution .. " message from " .. sender .. ": " .. deserialized["command"])
+		end
+		
+		-- another addon handled an Item
+		if (deserialized["command"] == "ITEM") and (self.db.profile.comm_enable_item) then
+			-- mark as handled just now and set ignore time to maximum of yours and remote time 
+			if self.db.profile.debug then
+				-- only announce in debug mode: You will have seen the raid notification anyway, most likely
+				Prio3:Print(L["sender handled notification for item"](sender, deserialized["itemlink"]))
+			end
+			self.db.profile.lootlastopened[deserialized["item"]] = time()
+			self.db.profile.ignorereopen = max(self.db.profile.ignorereopen, deserialized["ignore"])
+		end
+		
+		-- RECEIVED_PRIORITIES
+		if deserialized["command"] == "RECEIVED_PRIORITIES" then
+			Prio3:Print(L["sender received priorities and answered"](sender, deserialized["answer"]))
+		end
+			
+		-- SEND_PRIORITIES
+		if (deserialized["command"] == "SEND_PRIORITIES") and (self.db.profile.comm_enable_prio) then
+			self.db.profile.priorities = deserialized["prios"]
+			Prio3:Print(L["Accepted new priorities sent from sender"](sender))
+			local commmsg = { command = "RECEIVED_PRIORITIES", answer = "accepted" }
+			Prio3:SendCommMessage(commPrefix, Prio3:Serialize(commmsg), "RAID", nil, "NORMAL")
+		end
+	else
+		if self.db.profile.debug then
+			Prio3:Print("ERROR: " .. distribution .. " message from " .. sender .. ": cannot be deserialized")
+		end
+	end
 end

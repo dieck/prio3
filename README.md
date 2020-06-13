@@ -90,7 +90,6 @@ Players can be informed by whispers about imported priorities (configurable in o
 
 /prio3 will open an overview on loot
 
-(Known issue: tooltip does not display properly, working on it.)
 
 ### Querying
 
@@ -105,8 +104,13 @@ Whisper `prio ITEMLINK` to look up priorities on an item.
 (If you don't get an answer at all, ask your Prio3 master if they turned on the options)
 
 
-> **Plans (short-term)**:
-> - Sync between multiple raid users having the addon installed
+## Syncing
+
+The addon can now sync between multiple users in the raid.
+
+There are two configurable options, both enabled by default:
+- It will send and receive priorities when someone imports them.
+- It will sync if someone else already send raid notifications on loot, so it will be posted only once.
 
 > **Plans (mid-term)**:
 > - Note if someone got an item and remove user from list
