@@ -6,6 +6,7 @@ local defaults = {
   profile = {
     enabled = true,
     debug = false,
+	lootrolls = true,
 	raidannounce = true,
 	noprioannounce = true,
 	noprioannounce_noepic = false,
@@ -36,6 +37,7 @@ function Prio3:OnInitialize()
    
   -- main event: do something when the Loot Window is being shown
   Prio3:RegisterEvent("LOOT_OPENED")
+  Prio3:RegisterEvent("START_LOOT_ROLL")
   
   -- Blizzard... Why doesn't GetItemInfo return items infos... No, it only starts loading them...
   Prio3:RegisterEvent("GET_ITEM_INFO_RECEIVED")
@@ -119,6 +121,15 @@ prioOptionsTable = {
 			  order = 31,
 			  set = function(info,val) Prio3.db.profile.noprioannounce_noepic = val end,
 			  get = function(info) return Prio3.db.profile.noprioannounce_noepic end,
+			},
+			newline2 = { name="", type="description", order=32 },
+			lootroll = {
+			  name = L["Announce rolls"],
+			  desc = L["Announce when someone trigger a loot roll for an item. Will only work on Epics and BoP."],
+			  type = "toggle",
+			  order = 31,
+			  set = function(info,val) Prio3.db.profile.lootrolls = val end,
+			  get = function(info) return Prio3.db.profile.lootrolls end,
 			},
 			newline2 = { name="", type="description", order=32 },
 			whisper = {
@@ -482,7 +493,8 @@ function Prio3:LOOT_OPENED()
 	
 	-- handle loot
 	for i=1,numLootItems do 
-		Prio3:HandleLoot(i, epicFound)
+		itemLink = GetLootSlotLink(i)
+		Prio3:HandleLoot(itemLink, epicFound)
 	end
 	
 end
@@ -521,9 +533,37 @@ function Prio3:Announce(itemLink, prio, chars, hasPreviousPrio)
 	
 end
 
-function Prio3:HandleLoot(slotid, epicFound) 
+function Prio3:START_LOOT_ROLL(eventname, rollID, rollTime, lootHandle)
+	-- disabled?
+    if not self.db.profile.enabled then
+	  return
+	end
 
-	itemLink = GetLootSlotLink(slotid)
+	-- only works in raid, unless debugging
+	if not UnitInRaid("player") and not self.db.profile.debug then
+	  return
+	end
+
+	-- look if priorities are defined
+	if self.db.profile.priorities == nil then
+		Prio3:Print(L["No priorities defined."])	
+		return
+	end
+
+	-- will only react to epics
+
+	local texture, name, count, quality, bop = GetLootRollItemInfo(rollID)
+	local itemLink = GetLootRollItemLink(rollID)
+	
+	if quality >= 4 or bop then
+		Prio3:Print("Found loot roll for " .. itemLink)
+		-- state we found an epic. even if it's only BoP, so it will send the message out
+		Prio3:HandleLoot(itemLink, true)
+	end
+
+end
+
+function Prio3:HandleLoot(itemLink, epicFound) 
 
 	-- Loot found, but no itemLink: most likely money
 	if itemLink == nil then
@@ -532,7 +572,7 @@ function Prio3:HandleLoot(slotid, epicFound)
 	
 	local _, itemId, enchantId, jewelId1, jewelId2, jewelId3, jewelId4, suffixId, uniqueId, linkLevel, specializationID, reforgeId, unknown1, unknown2 = strsplit(":", itemLink)
 	-- bad argument, might be gold? (or copper, here)
-	
+
 
 	if Prio3.db.profile.debug then Prio3:Print("DEBUG: Found item " .. itemLink .. " => " .. itemId) end
 
@@ -782,7 +822,7 @@ function Prio3:OnCommReceived(prefix, message, distribution, sender)
 		
 		-- RECEIVED_PRIORITIES
 		if deserialized["command"] == "RECEIVED_PRIORITIES" then
-			Prio3:Print(L["sender received priorities and answered"](sender, deserialized["answer"]))
+			Prio3:Print(L["sender received priorities and answered"](sender, L[deserialized["answer"]]))
 		end
 			
 		-- SEND_PRIORITIES

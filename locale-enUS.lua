@@ -14,6 +14,8 @@ L["Whisper to Char"] = "Whisper to Char"
 L["Announces Loot Priority list to char by whisper"] = "Announces Loot Priority list to char by whisper"
 L["Announces if there is no priority on an item. Be careful: Will trigger on all mobs, not only bosses..."] = "Announces if there is no priority on an item. Be careful: Will trigger on all mobs, not only bosses..."
 L["Announces if there is no priority on an item. Will only trigger if at least one Epic is found."] = "Announces if there is no priority on an item. Will only trigger if at least one Epic is found."
+L["Announce rolls"] = "Announce rolls"
+L["Announce when someone trigger a loot roll for an item. Will only work on Epics and BoP."] = "Announce when someone trigger a loot roll for an item. Will only work on Epics and BoP. (Forgot PM?)"
 L["Mute (sec)"] = "Mute (sec)"
 L["Ignores loot encountered a second time for this amount of seconds. 0 to turn off."] = "Ignores loot encountered a second time for this amount of seconds. 0 to turn off."
 L["Import String"] = "Import String"
@@ -52,7 +54,7 @@ end
 
 -- communications handling
 L["sender handled notification for item"] = function(sender, item) return sender .. " handled notification for " .. item end
-L["sender received priorities and answered"] = function(sender, answered) return sender .. " received priorities and " .. L[answered] end
+L["sender received priorities and answered"] = function(sender, answered) return sender .. " received priorities and " .. answered end
 L["accepted"] = "accepted"
 L["discarded"] = "discarded"
 L["Accepted new priorities sent from sender"] = function(sender) return "Accepted new priorities sent from " .. sender end
