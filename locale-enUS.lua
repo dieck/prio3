@@ -16,6 +16,8 @@ L["Announces if there is no priority on an item. Be careful: Will trigger on all
 L["Announces if there is no priority on an item. Will only trigger if at least one Epic is found."] = "Announces if there is no priority on an item. Will only trigger if at least one Epic is found."
 L["Announce rolls"] = "Announce rolls"
 L["Announce when someone trigger a loot roll for an item. Will only work on Epics and BoP."] = "Announce when someone trigger a loot roll for an item. Will only work on Epics and BoP. (Forgot PM?)"
+L["Announce raid warnings"] = "Announce raid warnings"
+L["Announce when someone sends a raid warning with an item link."] = "Announce when someone sends a raid warning with an item link."
 L["Mute (sec)"] = "Mute (sec)"
 L["Ignores loot encountered a second time for this amount of seconds. 0 to turn off."] = "Ignores loot encountered a second time for this amount of seconds. 0 to turn off."
 L["Import String"] = "Import String"
@@ -40,6 +42,7 @@ L["Query item priorities"] = "Query item priorities"
 L["Allows to query own priority. Whisper prio ITEMLINK."] = "Allows to query own priority. Whisper prio ITEMLINK."
 L["No priorities found for playerOrItem"] = function(username) return "No priorities found for " .. username end
 L["itemLink on Prio at userpriolist"] = function(itemlink, userpriolist) return itemlink .. " on Prio at " .. userpriolist end
+L["Newer version found at user: version. Please update your addon."] = function(user,version) return "Newer version found at " .. user .. ": " .. version .. ". Please update your addon." end
 
 -- used terms from core.lua
 L["No priorities defined."] = "No priorities defined." -- also in loot.lua

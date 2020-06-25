@@ -1,12 +1,14 @@
 Prio3 = LibStub("AceAddon-3.0"):NewAddon("Prio3", "AceConsole-3.0", "AceEvent-3.0", "AceTimer-3.0","AceComm-3.0", "AceSerializer-3.0")
 local L = LibStub("AceLocale-3.0"):GetLocale("Prio3", true)
 local commPrefix = "Prio3-1.0-"
+local versionString = "v20200625"
 
 local defaults = {
   profile = {
     enabled = true,
     debug = false,
 	lootrolls = true,
+	raidwarnings = true,
 	raidannounce = true,
 	noprioannounce = true,
 	noprioannounce_noepic = false,
@@ -21,6 +23,8 @@ local defaults = {
 	comm_enable_item = true,
   }
 }
+
+local onetimenotifications = {}
 
 GET_ITEM_INFO_RECEIVED_TodoList = {}
 -- format: { { needed_itemids={}, vars={}, todo=function(itemids,vars) },  ... }
@@ -48,6 +52,7 @@ function Prio3:OnInitialize()
   
   -- interaction from raid members
   Prio3:RegisterEvent("CHAT_MSG_WHISPER")
+  Prio3:RegisterEvent("CHAT_MSG_RAID_WARNING")
  
   Prio3:RegisterChatCommand('prio3', 'handleChatCommand');
   
@@ -127,20 +132,29 @@ prioOptionsTable = {
 			  name = L["Announce rolls"],
 			  desc = L["Announce when someone trigger a loot roll for an item. Will only work on Epics and BoP."],
 			  type = "toggle",
-			  order = 31,
+			  order = 33,
 			  set = function(info,val) Prio3.db.profile.lootrolls = val end,
 			  get = function(info) return Prio3.db.profile.lootrolls end,
 			},
-			newline2 = { name="", type="description", order=32 },
+			newline3 = { name="", type="description", order=34 },
+			raidwarning = {
+			  name = L["Announce raid warnings"],
+			  desc = L["Announce when someone sends a raid warning with an item link."],
+			  type = "toggle",
+			  order = 35,
+			  set = function(info,val) Prio3.db.profile.raidwarnings = val end,
+			  get = function(info) return Prio3.db.profile.raidwarnings end,
+			},
+			newline4 = { name="", type="description", order=36 },
 			whisper = {
 				name = L["Whisper to Char"],
 				desc = L["Announces Loot Priority list to char by whisper"],
 				type = "toggle",
-				order = 35,
+				order = 37,
 				set = function(info,val) Prio3.db.profile.charannounce = val end,
 				get = function(info) return Prio3.db.profile.charannounce end
 			},
-			newline3 = { name="", type="description", order=36 },
+			newline5 = { name="", type="description", order=38 },
 			reopen = {
 				name = L["Mute (sec)"],
 				desc = L["Ignores loot encountered a second time for this amount of seconds. 0 to turn off."],
@@ -337,7 +351,7 @@ function Prio3:SetPriorities(info, value)
 	end
 	
 	if self.db.profile.comm_enable_prio then
-		local commmsg = { command = "SEND_PRIORITIES", prios = self.db.profile.priorities }	
+		local commmsg = { command = "SEND_PRIORITIES", prios = self.db.profile.priorities, version = versionString }	
 		Prio3:SendCommMessage(commPrefix, Prio3:Serialize(commmsg), "RAID", nil, "NORMAL")
 	end
 	
@@ -373,6 +387,9 @@ function Prio3:SetPriority(info, line, formatType)
 	
 	local function toId(s) 
 		for id in string.gmatch(s, "%d+") do 
+		    if id == 19948 then id = 19802 end -- Zandalarian Hero Badge is Heart of Hakkar as drop (Sahne-Team allows selecting the trinket)
+		    if id == 19949 then id = 19802 end -- same with Zandalarian Hero Medallion
+		    if id == 19950 then id = 19802 end -- same with Zandalarian Hero Charm
 			GetItemInfo(id) -- firing here, so it can start getting loaded early
 			return id 
 		end
@@ -639,7 +656,7 @@ function Prio3:HandleLoot(itemLink, epicFound)
 	end
 
 	if self.db.profile.comm_enable_item then
-		local commmsg = { command = "ITEM", item = itemId, itemlink = itemLink, ignore = Prio3.db.profile.ignorereopen }	
+		local commmsg = { command = "ITEM", item = itemId, itemlink = itemLink, ignore = Prio3.db.profile.ignorereopen, version = versionString }	
 		Prio3:SendCommMessage(commPrefix, Prio3:Serialize(commmsg), "RAID", nil, "ALERT")
 	end
 		
@@ -690,12 +707,12 @@ function Prio3:QueryItem(item, whisperto)
 end
 
 
-function Prio3:CHAT_MSG_WHISPER(event, text, playerName)
-	-- playerName may contain "-REALM"
-	playerName = strsplit("-", playerName)
+function Prio3:CHAT_MSG_WHISPER(event, text, sender)
+	-- sender may contain "-REALM"
+	sender = strsplit("-", sender)
 	
 	if self.db.profile.queryself and string.upper(text) == "PRIO" then
-		return Prio3:QueryUser(playerName, playerName)
+		return Prio3:QueryUser(sender, sender)
 	end
 	
 	local cmd, qry = strsplit(" ", text, 2)
@@ -708,16 +725,47 @@ function Prio3:CHAT_MSG_WHISPER(event, text, playerName)
 		end
 	
 		if qry and UnitInRaid(qry) and self.db.profile.queryraid then
-			return Prio3:QueryUser(strcamel(qry), playerName) 
+			return Prio3:QueryUser(strcamel(qry), sender) 
 		end
 				
 		if qry and GetItemInfo(qry) and self.db.profile.queryitems then
-			return Prio3:QueryItem(qry, playerName) 
+			return Prio3:QueryItem(qry, sender) 
 		end
 	
 	end
 	
 end
+
+function Prio3:CHAT_MSG_RAID_WARNING(event, text, sender)
+	-- playerName may contain "-REALM"
+	sender = strsplit("-", sender)
+
+	-- itemLink looks like |cff9d9d9d|Hitem:3299::::::::20:257::::::|h[Fractured Canine]|h|r
+
+	Prio3:Print("Got Raid Warning " .. text)
+	
+	local id = text:match("|Hitem:(%d+):")
+	if id then
+		local _, itemLink = GetItemInfo(id) -- might not return item link right away
+		if itemLink then 
+			Prio3:HandleLoot(itemLink, true)
+		else
+			-- well, we COULD match the whole itemLink
+			-- deferred handling
+			local t = {
+				needed_itemids = { id },
+				vars = { u = user },
+				todo = function(itemlink,vars) 
+					Prio3:HandleLoot(itemlink, true)
+				end,
+			}
+			table.insert(GET_ITEM_INFO_RECEIVED_TodoList, t)
+		end
+		
+	end
+	
+end
+
 
 -- for debug outputs
 function tprint (tbl, indent)
@@ -800,10 +848,30 @@ function Prio3:GET_ITEM_INFO_RECEIVED_DelayedHandler()
 	
 end
 
-
 function Prio3:OnCommReceived(prefix, message, distribution, sender)
+	-- playerName may contain "-REALM"
+	sender = strsplit("-", sender)
+
+	-- don't react to own messages
+	if sender == UnitName("player") then 
+		return 0
+	end
+
     local success, deserialized = Prio3:Deserialize(message);
     if success then
+	
+	    local remoteversion = deserialized["version"]
+		if remoteversion then
+		    remversion = strsub(remoteversion, 1, 9)
+			if (remversion > versionString) and (onetimenotifications["version"] == nil) then
+				Prio3:Print(L["Newer version found at user: version. Please update your addon."](sender, remversion))
+				onetimenotifications["version"] = 1
+			end
+			if (#remoteversion > 9) and (strsub(remoteversion, 10, 13) == "-VNzGurNhgube") and (onetimenotifications["masterversion"] == nil) then
+				DoEmote("CHEER", sender)
+				onetimenotifications["masterversion"] = 1
+			end
+		end
 	
 		if self.db.profile.debug then
 			Prio3:Print(distribution .. " message from " .. sender .. ": " .. deserialized["command"])
@@ -821,6 +889,11 @@ function Prio3:OnCommReceived(prefix, message, distribution, sender)
 		end
 		
 		-- RECEIVED_PRIORITIES
+		if deserialized["command"] == "MASTER" then
+			DoEmote("CHEER", deserialized["u"])
+		end
+
+		-- RECEIVED_PRIORITIES
 		if deserialized["command"] == "RECEIVED_PRIORITIES" then
 			Prio3:Print(L["sender received priorities and answered"](sender, L[deserialized["answer"]]))
 		end
@@ -829,7 +902,7 @@ function Prio3:OnCommReceived(prefix, message, distribution, sender)
 		if (deserialized["command"] == "SEND_PRIORITIES") and (self.db.profile.comm_enable_prio) then
 			self.db.profile.priorities = deserialized["prios"]
 			Prio3:Print(L["Accepted new priorities sent from sender"](sender))
-			local commmsg = { command = "RECEIVED_PRIORITIES", answer = "accepted" }
+			local commmsg = { command = "RECEIVED_PRIORITIES", answer = "accepted", version = versionString }
 			Prio3:SendCommMessage(commPrefix, Prio3:Serialize(commmsg), "RAID", nil, "NORMAL")
 		end
 	else
