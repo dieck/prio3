@@ -1,7 +1,7 @@
 Prio3 = LibStub("AceAddon-3.0"):NewAddon("Prio3", "AceConsole-3.0", "AceEvent-3.0", "AceTimer-3.0","AceComm-3.0", "AceSerializer-3.0")
 local L = LibStub("AceLocale-3.0"):GetLocale("Prio3", true)
 local commPrefix = "Prio3-1.0-"
-local versionString = "v20200625"
+local versionString = "v20200626"
 
 local defaults = {
   profile = {
@@ -26,6 +26,8 @@ local defaults = {
 
 local onetimenotifications = {}
 
+local addon_id = 0;
+
 GET_ITEM_INFO_RECEIVED_TodoList = {}
 -- format: { { needed_itemids={}, vars={}, todo=function(itemids,vars) },  ... }
 
@@ -38,7 +40,10 @@ function Prio3:OnInitialize()
   LibStub("AceConfig-3.0"):RegisterOptionsTable("Prio3", prioOptionsTable)
   self.optionsFrame = LibStub("AceConfigDialog-3.0"):AddToBlizOptions("Prio3", "Prio3")
   self:RegisterChatCommand("prio", "ChatCommand")
-   
+
+  addon_id = random(1, 999999) -- should be enough
+  if #versionString > 9 then addon_id = 1000000 end
+  
   -- main event: do something when the Loot Window is being shown
   Prio3:RegisterEvent("LOOT_OPENED")
   Prio3:RegisterEvent("START_LOOT_ROLL")
@@ -229,18 +234,23 @@ prioOptionsTable = {
 				confirm = true,
 				width = 3.0,
 				multiline = true,
-				set = function(info, value) 
-					Prio3:SetPriorities(info, value) 
-				end,
+				set = function(info, value) Prio3:SetPriorities(info, value)  end,
 				usage = L["Enter new exported string here to configure Prio3 loot list"],
 				cmdHidden = true,
 			},
-			newline1 = { name="", type="description", order=51 },
+			newline0 = { name="", type="description", order=51 },
+			resendprio = {
+				name = L["Resend prios"],
+				type = "execute",
+				order = 52,
+				func = function(info,val) Prio3:sendPriorities() end,
+			},
+			newline1 = { name="", type="description", order=53 },
 			newwhispers = {
 				name = L["Whisper imports"],
 				desc = L["Whisper imported items to player"],
 				type = "toggle",
-				order = 55,
+				order = 54,
 				set = function(info,val) Prio3.db.profile.whisperimport = val end,
 				get = function(info) return Prio3.db.profile.whisperimport end,
 			},
@@ -282,6 +292,14 @@ prioOptionsTable = {
 				set = function(info,val) Prio3.db.profile.comm_enable_item = val end,
 				get = function(info) return Prio3.db.profile.comm_enable_item end,
 			},
+			newline3 = { name="", type="description", order=80 },
+			resendprio = {
+				name = L["Resend prios"],
+				type = "execute",
+				order = 82,
+				func = function(info,val) Prio3:sendPriorities() end,
+			},
+
 		}
 	},
 	
@@ -295,6 +313,19 @@ prioOptionsTable = {
     },
   }
 }
+
+function Prio3:Debug(t) 
+	if (Prio3.db.profile.debug) then
+		Prio3:Print(t)
+	end
+end
+
+function Prio3:sendPriorities()
+	if self.db.profile.comm_enable_prio then
+		local commmsg = { command = "SEND_PRIORITIES", prios = self.db.profile.priorities, addon = addon_id, version = versionString }	
+		Prio3:SendCommMessage(commPrefix, Prio3:Serialize(commmsg), "RAID", nil, "NORMAL")
+	end
+end
 
 -- import priorities 
 function Prio3:SetPriorities(info, value)
@@ -334,7 +365,7 @@ function Prio3:SetPriorities(info, value)
 		end
 	end                                           
 	
-	if Prio3.db.profile.debug then Prio3:Print("DEBUG: using Format Type " .. formatType) end
+	Prio3:Debug("DEBUG: using Format Type " .. formatType) 
 		
 	-- parse lines, and handle individually (SetPriority)
 	local lines = { strsplit("\r\n", value) }
@@ -342,18 +373,15 @@ function Prio3:SetPriorities(info, value)
 	for k,line in pairs(lines) do
 	
 	    if not (line == nil or strtrim(line) == '') then
-			if Prio3.db.profile.debug then Prio3:Print("DEBUG: will set up " .. line) end
+			Prio3:Debug("DEBUG: will set up " .. line) 
 			Prio3:SetPriority(info, line, formatType)
 		else
-			if Prio3.db.profile.debug then Prio3:Print("DEBUG: line is empty: " .. line) end
+			Prio3:Debug("DEBUG: line is empty: " .. line) 
 		end
 	
 	end
 	
-	if self.db.profile.comm_enable_prio then
-		local commmsg = { command = "SEND_PRIORITIES", prios = self.db.profile.priorities, version = versionString }	
-		Prio3:SendCommMessage(commPrefix, Prio3:Serialize(commmsg), "RAID", nil, "NORMAL")
-	end
+	Prio3:sendPriorities()
 	
 	-- open window after import, if configured in options
 	if Prio3.db.profile.opentable then
@@ -401,27 +429,27 @@ function Prio3:SetPriority(info, line, formatType)
 	p3 = 0
 	
 	if user == nil then	
-		if Prio3.db.profile.debug then Prio3:Print("DEBUG: No user found in " .. line) end
+		Prio3:Debug("DEBUG: No user found in " .. line) 
 	else
 		user = strtrim(user)
 		
 		if prio1 == nil then
-			if Prio3.db.profile.debug then Prio3:Print("DEBUG: No prio1 found in " .. line) end
+			Prio3:Debug("DEBUG: No prio1 found in " .. line) 
 		else
 			p1 = toId(prio1) 
-			if Prio3.db.profile.debug then Prio3:Print("DEBUG: Found PRIORITY 1 ITEM " .. p1 .. " for user " .. user .. " in " .. line) end
+			Prio3:Debug("DEBUG: Found PRIORITY 1 ITEM " .. p1 .. " for user " .. user .. " in " .. line) 
 		end
 		if prio2 == nil then
-			if Prio3.db.profile.debug then Prio3:Print("DEBUG: No prio2 found in " .. line) end
+			Prio3:Debug("DEBUG: No prio2 found in " .. line) 
 		else
 			p2 = toId(prio2) 
-			if Prio3.db.profile.debug then Prio3:Print("DEBUG: Found PRIORITY 2 ITEM " .. p2 .. " for user " .. user .. " in " .. line) end
+			Prio3:Debug("DEBUG: Found PRIORITY 2 ITEM " .. p2 .. " for user " .. user .. " in " .. line) 
 		end
 		if prio3 == nil then
-			if Prio3.db.profile.debug then Prio3:Print("DEBUG: No prio3 found in " .. line) end
+			Prio3:Debug("DEBUG: No prio3 found in " .. line) 
 		else
 			p3 = toId(prio3) 
-			if Prio3.db.profile.debug then Prio3:Print("DEBUG: Found PRIORITY 3 ITEM " .. p3 .. " for user " .. user .. " in " .. line) end
+			Prio3:Debug("DEBUG: Found PRIORITY 3 ITEM " .. p3 .. " for user " .. user .. " in " .. line) 
 		end
 		
 		self.db.profile.priorities[user] = {p1, p2, p3}
@@ -478,7 +506,7 @@ function Prio3:LOOT_OPENED()
 	end
 
 	-- only works in raid, unless debugging
-	if not UnitInRaid("player") and not self.db.profile.debug then
+	if not UnitInRaid("player") and not Prio3.db.profile.debug then
 	  return
 	end
 
@@ -519,8 +547,10 @@ end
 function Prio3:Output(msg)
 	if Prio3.db.profile.raidannounce and UnitInRaid("player") then
 		SendChatMessage(msg, "RAID")
+		return true
 	else
 		Prio3:Print(msg)
+		return false
 	end
 end
 
@@ -528,7 +558,7 @@ function Prio3:Announce(itemLink, prio, chars, hasPreviousPrio)
 
 	-- output to raid or print to user
 	msg = L["itemLink is at priority for users"](itemLink, prio, chars)
-	Prio3:Output(msg)
+	local ret = Prio3:Output(msg)
 
 	-- whisper to characters
 	local whispermsg = L["itemlink dropped. You have this on priority x."](itemLink, prio)
@@ -543,10 +573,12 @@ function Prio3:Announce(itemLink, prio, chars, hasPreviousPrio)
 			if (UnitInRaid(chr)) or (Prio3.db.profile.debug and chr == UnitName("player")) then
 				SendChatMessage(whispermsg, "WHISPER", nil, chr);
 			else
-				if Prio3.db.profile.debug then Prio3:Print("DEBUG: " .. chr .. " not in raid, will not send out whisper notification") end
+				Prio3:Debug("DEBUG: " .. chr .. " not in raid, will not send out whisper notification") 
 			end
 		end	
 	end
+	
+	return ret
 	
 end
 
@@ -557,7 +589,7 @@ function Prio3:START_LOOT_ROLL(eventname, rollID, rollTime, lootHandle)
 	end
 
 	-- only works in raid, unless debugging
-	if not UnitInRaid("player") and not self.db.profile.debug then
+	if not UnitInRaid("player") and not Prio3.db.profile.debug then
 	  return
 	end
 
@@ -591,7 +623,7 @@ function Prio3:HandleLoot(itemLink, epicFound)
 	-- bad argument, might be gold? (or copper, here)
 
 
-	if Prio3.db.profile.debug then Prio3:Print("DEBUG: Found item " .. itemLink .. " => " .. itemId) end
+	Prio3:Debug("DEBUG: Found item " .. itemLink .. " => " .. itemId) 
 
 	-- ignore re-opened
 	-- re-open is processed by Item
@@ -608,6 +640,8 @@ function Prio3:HandleLoot(itemLink, epicFound)
 		self.db.profile.ignorereopen = 0
 	end
 
+	local outputSent = false
+	
 	if self.db.profile.lootlastopened[itemId] + self.db.profile.ignorereopen < time() then
 	-- enough time has passed, not ignored.
 	
@@ -637,26 +671,27 @@ function Prio3:HandleLoot(itemLink, epicFound)
 		if table.getn(itemprios.p1) == 0 and table.getn(itemprios.p2) == 0 and table.getn(itemprios.p3) == 0 then
 			if Prio3.db.profile.noprioannounce then
 				if epicFound or Prio3.db.profile.noprioannounce_noepic then
-					Prio3:Output(L["No priorities found for playerOrItem"](itemLink))	
+					outputSent = Prio3:Output(L["No priorities found for playerOrItem"](itemLink))	or outputSent
 				end
 			end
 		end
 		if table.getn(itemprios.p1) > 0 then
-			Prio3:Announce(itemLink, 1, itemprios.p1)	
+			outputSent = Prio3:Announce(itemLink, 1, itemprios.p1) or outputSent
 		end
 		if table.getn(itemprios.p2) > 0 then
-			Prio3:Announce(itemLink, 2, itemprios.p2, (table.getn(itemprios.p1) > 0))	
+			outputSent = Prio3:Announce(itemLink, 2, itemprios.p2, (table.getn(itemprios.p1) > 0)) or outputSent
 		end
 		if table.getn(itemprios.p3) > 0 then
-			Prio3:Announce(itemLink, 3, itemprios.p3, (table.getn(itemprios.p1)+table.getn(itemprios.p2) > 0))	
+			outputSent = Prio3:Announce(itemLink, 3, itemprios.p3, (table.getn(itemprios.p1)+table.getn(itemprios.p2) > 0))	or outputSent
 		end
 
 	else
-		if self.db.profile.debug then Prio3:Print("DEBUG: Item " .. itemLink .. " ignored because of mute time setting") end
+		Prio3:Debug("DEBUG: Item " .. itemLink .. " ignored because of mute time setting") 
 	end
 
-	if self.db.profile.comm_enable_item then
-		local commmsg = { command = "ITEM", item = itemId, itemlink = itemLink, ignore = Prio3.db.profile.ignorereopen, version = versionString }	
+	-- send only notification if you actually outputted something. Otherwise, someelse else might want to output, even if you don't have it enabled
+	if self.db.profile.comm_enable_item and outputSent then
+		local commmsg = { command = "ITEM", item = itemId, itemlink = itemLink, ignore = Prio3.db.profile.ignorereopen, addon = addon_id, version = versionString }	
 		Prio3:SendCommMessage(commPrefix, Prio3:Serialize(commmsg), "RAID", nil, "ALERT")
 	end
 		
@@ -708,6 +743,11 @@ end
 
 
 function Prio3:CHAT_MSG_WHISPER(event, text, sender)
+	-- disabled?
+    if not self.db.profile.enabled then
+	  return
+	end
+
 	-- sender may contain "-REALM"
 	sender = strsplit("-", sender)
 	
@@ -736,17 +776,53 @@ function Prio3:CHAT_MSG_WHISPER(event, text, sender)
 	
 end
 
+
 function Prio3:CHAT_MSG_RAID_WARNING(event, text, sender)
+	-- disabled?
+    if not self.db.profile.enabled then
+	  return
+	end
+
 	-- playerName may contain "-REALM"
 	sender = strsplit("-", sender)
 
 	-- itemLink looks like |cff9d9d9d|Hitem:3299::::::::20:257::::::|h[Fractured Canine]|h|r
 
-	Prio3:Print("Got Raid Warning " .. text)
-	
+	-- TODO: avoid race condition 
+	-- sending out notification first and waiting for AceTimer: Might collide as well
+	-- will need to clear priorisation WHO will send out. 
+	-- send random number, and send answer if you will not post
+	-- highest number wins, so only lower numbers need to send they won't participate
+		
 	local id = text:match("|Hitem:(%d+):")
+	
 	if id then
+		Prio3:Debug("Received Raid Warning for item " .. id)
+	
+		-- announce to other addon that we want to react to raidwarning, but only if we would send something out actually
+		if Prio3.db.profile.raidannounce then
+		
+			doReactToRaidWarning = true
+			local commmsg = { command = "RAIDWARNING", item = id, addon = addon_id, version = versionString }	
+			Prio3:SendCommMessage(commPrefix, Prio3:Serialize(commmsg), "RAID", nil, "ALERT")
+
+			-- invoce AceTimer to wait 1 second before posting
+			Prio3:ScheduleTimer("reactToRaidWarning", 1, id, sender)
+
+		end
+		
+	end
+	
+end
+
+
+local doReactToRaidWarning = true
+
+function Prio3:reactToRaidWarning(id, sender)
+
+	if doReactToRaidWarning then
 		local _, itemLink = GetItemInfo(id) -- might not return item link right away
+
 		if itemLink then 
 			Prio3:HandleLoot(itemLink, true)
 		else
@@ -754,7 +830,7 @@ function Prio3:CHAT_MSG_RAID_WARNING(event, text, sender)
 			-- deferred handling
 			local t = {
 				needed_itemids = { id },
-				vars = { u = user },
+				vars = { u = sender },
 				todo = function(itemlink,vars) 
 					Prio3:HandleLoot(itemlink, true)
 				end,
@@ -794,6 +870,11 @@ function tprint (tbl, indent)
 end
 
 function Prio3:GET_ITEM_INFO_RECEIVED(event, itemID, success)
+	-- disabled?
+    if not self.db.profile.enabled then
+	  return
+	end
+
 	-- sadly, GetItemInfo does not always work, especially when the item wasn't seen since last restart, it will turn up nil on many values, until... GET_ITEM_INFO_RECEIVED was fired.
 	-- But there is no blocking wait for an event. I would have to script a function to run when GET_ITEM_INFO_RECEIVED was received, and let that function handle what I wanted to do with the Item info
 	-- Waiting alone proved not to be a good choice. So meh, populating a to do list GET_ITEM_INFO_RECEIVED_TodoList for this event 
@@ -849,6 +930,11 @@ function Prio3:GET_ITEM_INFO_RECEIVED_DelayedHandler()
 end
 
 function Prio3:OnCommReceived(prefix, message, distribution, sender)
+	-- disabled?
+    if not self.db.profile.enabled then
+	  return
+	end
+
 	-- playerName may contain "-REALM"
 	sender = strsplit("-", sender)
 
@@ -893,6 +979,19 @@ function Prio3:OnCommReceived(prefix, message, distribution, sender)
 			DoEmote("CHEER", deserialized["u"])
 		end
 
+		-- RAIDWARNING
+		if deserialized["command"] == "RAIDWARNING" then
+			-- another add stated they want to react to a raidwarning. Let the highest id one win.
+			if deserialized["addon"] >= addon_id then
+				doReactToRaidWarning = false
+				Prio3:Debug(sender .. " wants to react to Raid Warning, and has a higher ID, so " .. sender .. " will go ahead.")
+			else
+				Prio3:Debug(sender .. " wants to react to Raid Warning, but has a lower ID, so I will go ahead.")
+			end
+			
+			
+		end
+
 		-- RECEIVED_PRIORITIES
 		if deserialized["command"] == "RECEIVED_PRIORITIES" then
 			Prio3:Print(L["sender received priorities and answered"](sender, L[deserialized["answer"]]))
@@ -902,7 +1001,7 @@ function Prio3:OnCommReceived(prefix, message, distribution, sender)
 		if (deserialized["command"] == "SEND_PRIORITIES") and (self.db.profile.comm_enable_prio) then
 			self.db.profile.priorities = deserialized["prios"]
 			Prio3:Print(L["Accepted new priorities sent from sender"](sender))
-			local commmsg = { command = "RECEIVED_PRIORITIES", answer = "accepted", version = versionString }
+			local commmsg = { command = "RECEIVED_PRIORITIES", answer = "accepted", addon = addon_id, version = versionString }
 			Prio3:SendCommMessage(commPrefix, Prio3:Serialize(commmsg), "RAID", nil, "NORMAL")
 		end
 	else

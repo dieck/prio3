@@ -21,6 +21,7 @@ L["Announce when someone sends a raid warning with an item link."] = "Announce w
 L["Mute (sec)"] = "Mute (sec)"
 L["Ignores loot encountered a second time for this amount of seconds. 0 to turn off."] = "Ignores loot encountered a second time for this amount of seconds. 0 to turn off."
 L["Import String"] = "Import String"
+L["Resend prios"] = "Resend prios"
 L["Please note that current Prio settings WILL BE OVERWRITTEN"] = "Please note that current Prio settings WILL BE OVERWRITTEN"
 L["Enter new exported string here to configure Prio3 loot list"] = "Enter new exported string here to configure Prio3 loot list"
 L["Whisper imports"] = "Whisper imports"
