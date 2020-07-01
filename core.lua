@@ -1,7 +1,7 @@
 Prio3 = LibStub("AceAddon-3.0"):NewAddon("Prio3", "AceConsole-3.0", "AceEvent-3.0", "AceTimer-3.0","AceComm-3.0", "AceSerializer-3.0")
 local L = LibStub("AceLocale-3.0"):GetLocale("Prio3", true)
 local commPrefix = "Prio3-1.0-"
-local versionString = "v20200626"
+local versionString = "v20200701"
 
 local defaults = {
   profile = {
@@ -29,6 +29,8 @@ local onetimenotifications = {}
 local addon_id = 0;
 
 GET_ITEM_INFO_RECEIVED_TodoList = {}
+GET_ITEM_INFO_RECEIVED_NotYetReady = {}
+GET_ITEM_INFO_RECEIVED_IgnoreIDs = {}
 -- format: { { needed_itemids={}, vars={}, todo=function(itemids,vars) },  ... }
 
 GET_ITEM_INFO_Timer = nil
@@ -881,21 +883,30 @@ function Prio3:GET_ITEM_INFO_RECEIVED(event, itemID, success)
 
 	-- don't fire on Every event. Give it 2 seconds to catch up
 	if GET_ITEM_INFO_Timer == nil then
-		GET_ITEM_INFO_Timer = self:ScheduleTimer("GET_ITEM_INFO_RECEIVED_DelayedHandler", 2)
+		GET_ITEM_INFO_Timer = self:ScheduleTimer("GET_ITEM_INFO_RECEIVED_DelayedHandler", 2, event, itemID, success)
 	end
 end
 
 
-function Prio3:GET_ITEM_INFO_RECEIVED_DelayedHandler()
+function Prio3:GET_ITEM_INFO_RECEIVED_DelayedHandler(event, itemID, success)
 	-- reset marker, so new GET_ITEM_INFO_RECEIVED will fire this up again (with 2 seconds delay)
 	GET_ITEM_INFO_Timer = nil
-	
-	-- don't fire on Every event. Give it 2 seconds to catch up
 
+	t = time()
+	
+	-- ignore items after a time of 10sec
+	for id,start in pairs(GET_ITEM_INFO_RECEIVED_NotYetReady) do
+		if t > start+10	then
+			Prio3:Print(L["Waited 10sec for itemID id to be resolved. Giving up on this item."](id))
+			GET_ITEM_INFO_RECEIVED_NotYetReady[id] = nil
+			GET_ITEM_INFO_RECEIVED_IgnoreIDs[id] = t
+		end
+	end
+	
 	-- this event gets a lot of calls, so debug is very chatty here
 	-- only configurable in code therefore
-	
 	local debug = false
+	
 	for todoid,todo in pairs(GET_ITEM_INFO_RECEIVED_TodoList) do
 
 		if debug then Prio3:Print("GET_ITEM_INFO_RECEIVED for " .. itemID); end
@@ -906,17 +917,22 @@ function Prio3:GET_ITEM_INFO_RECEIVED_DelayedHandler()
 
 		-- search for all needed IDs
 		for dummy,looking_for_id in pairs(todo["needed_itemids"]) do
-			if tonumber(looking_for_id) > 0 then
-				if debug then Prio3:Print("Tying to get ID " .. looking_for_id); end
-				local itemName, itemLink = GetItemInfo(looking_for_id) 
-				if itemLink then
-					if debug then Prio3:Print("Found " .. looking_for_id .. " as " .. itemLink); end
-					table.insert(itemlinks, itemLink)
-				else
-					if debug then Prio3:Print("Not yet ready: " .. looking_for_id); end
-					foundAllIDs = false
-				end
-			end
+			if GET_ITEM_INFO_RECEIVED_IgnoreIDs[looking_for_id] == nil then
+			
+				if tonumber(looking_for_id) > 0 then
+					if debug then Prio3:Print("Tying to get ID " .. looking_for_id); end
+					local itemName, itemLink = GetItemInfo(looking_for_id) 
+					if itemLink then
+						if debug then Prio3:Print("Found " .. looking_for_id .. " as " .. itemLink); end
+						table.insert(itemlinks, itemLink)
+					else
+						if debug then Prio3:Print("Not yet ready: " .. looking_for_id); end
+						if GET_ITEM_INFO_RECEIVED_NotYetReady[looking_for_id] == nil then GET_ITEM_INFO_RECEIVED_NotYetReady[looking_for_id] = t end
+						foundAllIDs = false
+					end
+				end -- tonumber
+				
+			end -- ignore
 		end
 
 		if (foundAllIDs) then

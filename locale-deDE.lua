@@ -33,6 +33,7 @@ L["Enters Debug mode. Addon will have advanced output, and work outside of Raid"
 L["You will need to /roll when item is up."] = "Du wirst darum /würfeln müssen wenn das Item verteilt wird."
 L["itemlink dropped. You have this on priority x."] = function (itemLink, prio) return itemLink .. " ist gedroppt. Du hast das auf Priorät " .. prio .. "." end
 L["Priorities of username: list"] = function(username,itemLinks) return "Prioritäten für " .. username .. ": " .. itemLinks end
+L["Waited 10sec for itemID id to be resolved. Giving up on this item."] = function(id) return "Habe 10sek gewartet auf itemID " .. id .. ". Gebe es jetzt auf." end
 
 L["Query own priority"] = "Suche eigene Priorität"
 L["Allows to query own priority. Whisper prio."] = "Erlaubt die Abfrage eigener Prioritäten. Flüstere prio."
