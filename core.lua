@@ -1,7 +1,7 @@
 Prio3 = LibStub("AceAddon-3.0"):NewAddon("Prio3", "AceConsole-3.0", "AceEvent-3.0", "AceTimer-3.0","AceComm-3.0", "AceSerializer-3.0")
 local L = LibStub("AceLocale-3.0"):GetLocale("Prio3", true)
 local commPrefix = "Prio3-1.0-"
-local versionString = "v20200701"
+local versionString = "v20200708"
 
 local defaults = {
   profile = {
