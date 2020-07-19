@@ -47,12 +47,12 @@ L["Newer version found at user: version. Please update your addon."] = function(
 
 -- used terms from core.lua
 L["No priorities defined."] = "Keine Prioritäten eingestellt." -- also in loot.lua
-L["No priority on itemLink"] = function(itemlink) return "Keine Priorität für " .. itemLink end
+L["No priority on itemLink"] = function(itemlink) return "Keine Priorität für " .. itemlink end
 L["itemLink is at priority for users"] = function(itemlink,prio,userlist)
 	if (prio == 1) then
-		return itemLink .. " ist gesetzt als PRIORITÄT " .. prio .. " für " .. table.concat(userlist, ', ' )
+		return itemlink .. " ist gesetzt als PRIORITÄT " .. prio .. " für " .. table.concat(userlist, ', ' )
 	else
-		return itemLink .. " ist gesetzt als Priorität " .. prio .. " für " .. table.concat(userlist, ', ' )
+		return itemlink .. " ist gesetzt als Priorität " .. prio .. " für " .. table.concat(userlist, ', ' )
 	end
 end
 

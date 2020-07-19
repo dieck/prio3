@@ -1,7 +1,7 @@
 Prio3 = LibStub("AceAddon-3.0"):NewAddon("Prio3", "AceConsole-3.0", "AceEvent-3.0", "AceTimer-3.0","AceComm-3.0", "AceSerializer-3.0")
 local L = LibStub("AceLocale-3.0"):GetLocale("Prio3", true)
 local commPrefix = "Prio3-1.0-"
-local versionString = "v20200708"
+local versionString = "v20200719"
 
 local defaults = {
   profile = {
@@ -969,7 +969,7 @@ function Prio3:OnCommReceived(prefix, message, distribution, sender)
 				Prio3:Print(L["Newer version found at user: version. Please update your addon."](sender, remversion))
 				onetimenotifications["version"] = 1
 			end
-			if (#remoteversion > 9) and (strsub(remoteversion, 10, 13) == "-VNzGurNhgube") and (onetimenotifications["masterversion"] == nil) then
+			if (#remoteversion > 9) and (strsub(remoteversion, 10, 22) == "-VNzGurNhgube") and (onetimenotifications["masterversion"] == nil) then
 				DoEmote("CHEER", sender)
 				onetimenotifications["masterversion"] = 1
 			end
