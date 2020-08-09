@@ -1,16 +1,23 @@
 local L = LibStub("AceLocale-3.0"):GetLocale("Prio3", true)
 
-lootframe = nil
+Prio3.lootframe = nil
 
-function Prio3:handleChatCommand()
-	Prio3:guiPriorityFrame()
+function Prio3:handleChatCommand(cmd)
+	if cmd == "config" then
+		if not Prio3.lootframe == nil then 
+			Prio3.lootframe:Hide() 
+		end
+		LibStub("AceConfigDialog-3.0"):Open("Prio3")
+	else
+		Prio3:guiPriorityFrame()
+	end
 end
 
 function Prio3:guiPriorityFrame()
 
---	if not lootframe == nil then
---	  lootframe:Hide()
---	  lootframe = nil
+--	if not Prio3.lootframe == nil then
+--	  Prio3.lootframe:Hide()
+--	  Prio3.lootframe = nil
 --	  return
 --	end
 
@@ -33,8 +40,8 @@ function Prio3:guiPriorityFrame()
 	end
 
 	if haveAll then
-		lootframe = Prio3:createPriorityFrame()
-		lootframe:Show()
+		Prio3.lootframe = Prio3:createPriorityFrame()
+		Prio3.lootframe:Show()
 	else
 		if self.db.profile.debug then Prio3:Print("DEBUG: requested window to open after GET_ITEM_INFO_RECEIVED") end
 		-- queue for handling when GET_ITEM_INFO_RECEIVED event came through
@@ -42,11 +49,11 @@ function Prio3:guiPriorityFrame()
 			needed_itemids = tblrequest,
 			vars = {},
 			todo = function(itemlinks,vars) 
-				lootframe = Prio3:createPriorityFrame()
-				lootframe:Show()
+				Prio3.lootframe = Prio3:createPriorityFrame()
+				Prio3.lootframe:Show()
 			end,
 		}
-		table.insert(GET_ITEM_INFO_RECEIVED_TodoList, t)
+		table.insert(Prio3.GET_ITEM_INFO_RECEIVED_TodoList, t)
 	end
   
 end
@@ -68,8 +75,8 @@ function Prio3:createPriorityFrame()
 	f:SetCallback("OnClose",function(widget) AceGUI:Release(widget) end)
 	
 	-- close on escape
-	_G["Prio3Lootframe"] = f.frame
-	tinsert(UISpecialFrames, "Prio3Lootframe")
+	_G["Prio3Prio3.lootframe"] = f.frame
+	tinsert(UISpecialFrames, "Prio3Prio3.lootframe")
 	
 	scrollcontainer = AceGUI:Create("SimpleGroup") -- "InlineGroup" is also good
 	scrollcontainer:SetFullWidth(true)
@@ -265,5 +272,13 @@ function Prio3:createPriorityFrame()
 		
 	end
 
+	local bt = AceGUI:Create("Button")
+	bt:SetText("Config / Import")
+	bt:SetCallback("OnClick", function()
+		Prio3.lootframe:Hide()
+		LibStub("AceConfigDialog-3.0"):Open("Prio3")
+	end)
+	s:AddChild(bt)
+	
 	return f
 end

@@ -31,8 +31,8 @@ L["Clear prio table"] = "Leere Prio Tabelle"
 L["Debug"] = "Debug"
 L["Enters Debug mode. Addon will have advanced output, and work outside of Raid"] = "Debug-Modus anschalten. Mehr Ausgaben, und es funktioniert außerhalb von Raids."
 L["You will need to /roll when item is up."] = "Du wirst darum /würfeln müssen wenn das Item verteilt wird."
-L["itemlink dropped. You have this on priority x."] = function (itemLink, prio) return itemLink .. " ist gedroppt. Du hast das auf Priorät " .. prio .. "." end
-L["Priorities of username: list"] = function(username,itemLinks) return "Prioritäten für " .. username .. ": " .. itemLinks end
+L["itemlink dropped. You have this on priority x."] = function (itemlink, prio) return itemlink .. " ist gedroppt. Du hast das auf Priorät " .. prio .. "." end
+L["Priorities of username: list"] = function(username,itemlinks) return "Prioritäten für " .. username .. ": " .. itemlinks end
 L["Waited 10sec for itemID id to be resolved. Giving up on this item."] = function(id) return "Habe 10sek gewartet auf itemID " .. id .. ". Gebe es jetzt auf." end
 
 L["Query own priority"] = "Suche eigene Priorität"
@@ -44,6 +44,8 @@ L["Allows to query own priority. Whisper prio ITEMLINK."] = "Erlaubt die Abfrage
 L["No priorities found for playerOrItem"] = function(username) return "Keine Prioritäten gefunden für " .. username end
 L["itemLink on Prio at userpriolist"] = function(itemlink, userpriolist) return itemlink .. " auf Prio bei " .. userpriolist end
 L["Newer version found at user: version. Please update your addon."] = function(user,version) return "Neuere Version bei " .. user .. " gefunden: " .. version .. ". Bitte das Addon updaten." end
+
+L["Requested priorities from other Prio3 addons after joining group and received nothing. Will DISABLE addon now. Please re-enable when importing data."] = "Nach Gruppenbeitritt wurden andere Prio3 Addons um ihre Prios gebeten, und es gab keine Antwort. Addon wird jetzt INAKTVIERT. Bitte reaktivieren beim Importieren neuer Prios"
 
 -- used terms from core.lua
 L["No priorities defined."] = "Keine Prioritäten eingestellt." -- also in loot.lua

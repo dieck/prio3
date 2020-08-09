@@ -2,17 +2,22 @@
 ## Title: Prio3
 ## Notes: Loot notification for Priority Loot system. Can use export from Sahne-Team.de website
 ## Author: dieck
-## Version: 20200719
+## Version: 20200809
 ## SavedVariables: Prio3DB
-
 
 embeds.xml
 
 locale-enUS.lua
 locale-deDE.lua
 
-core.lua
+prio3.lua
 
-config.lua
+iteminfo.lua
+priorities.lua
+loot.lua
 gui.lua
+comms.lua
+queries.lua
+
+core.lua
 

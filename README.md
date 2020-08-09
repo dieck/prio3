@@ -4,7 +4,7 @@ Prio3 - World of Warcraft Classic addon
 ## tl;dr
 
 Generate loot lists in format `Username;Prio1;Prio2;Prio3` per line. (e.g. CSV SHORT export from sahne-team.de)
-Go to Menu Interfaces, Tab Addon, Prio3 and import.
+Go to Menu Interfaces, Tab Addon, Prio3; or type /prio3 config, and import.
 Loot corpses and have chosen loot announced in raid chat.
 
 

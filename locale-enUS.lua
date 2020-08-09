@@ -33,7 +33,7 @@ L["Debug"] = "Debug"
 L["Enters Debug mode. Addon will have advanced output, and work outside of Raid"] = "Enters Debug mode. Addon will have advanced output, and work outside of Raid"
 L["You will need to /roll when item is up."] = "You will need to /roll when item is up."
 L["itemlink dropped. You have this on priority x."] = function (itemLink, prio) return itemLink .. " dropped. You have this on priority " .. prio .. "." end
-L["Priorities of username: list"] = function(username,itemLinks) return "Priorities of " .. username .. ": " .. itemLinks end
+L["Priorities of username: list"] = function(username,itemlinks) return "Priorities of " .. username .. ": " .. itemlinks end
 L["Waited 10sec for itemID id to be resolved. Giving up on this item."] = function(id) return "Waited 10sec for itemID " .. id .. " to be resolved. Giving up on this item." end
 
 L["Query own priority"] = "Query own priority"
@@ -45,6 +45,8 @@ L["Allows to query own priority. Whisper prio ITEMLINK."] = "Allows to query own
 L["No priorities found for playerOrItem"] = function(username) return "No priorities found for " .. username end
 L["itemLink on Prio at userpriolist"] = function(itemlink, userpriolist) return itemlink .. " on Prio at " .. userpriolist end
 L["Newer version found at user: version. Please update your addon."] = function(user,version) return "Newer version found at " .. user .. ": " .. version .. ". Please update your addon." end
+
+L["Requested priorities from other Prio3 addons after joining group and received nothing. Will DISABLE addon now. Please re-enable when importing data."] = "Requested priorities from other Prio3 addons after joining group and received nothing. Will DISABLE addon now. Please re-enable when importing data."
 
 -- used terms from core.lua
 L["No priorities defined."] = "No priorities defined." -- also in loot.lua

@@ -1,0 +1,294 @@
+local L = LibStub("AceLocale-3.0"):GetLocale("Prio3", true)
+
+-- Loot handling functions
+-- triggers
+
+-- if you loot yourself
+function Prio3:LOOT_OPENED()
+	-- disabled?
+    if not Prio3.db.profile.enabled then
+	  return
+	end
+
+	-- only works in raid, unless debugging
+	if not UnitInRaid("player") and not Prio3.db.profile.debug then
+	  return
+	end
+
+	-- look if priorities are defined
+	if Prio3.db.profile.priorities == nil then
+		Prio3:Print(L["No priorities defined."])	
+		return
+	end
+	
+	-- process the event
+	loot = GetLootInfo()
+	numLootItems = GetNumLootItems();
+
+	-- look if epics are found (for No prio announces)
+	local epicFound = false
+	
+	local reportLinks = {}
+
+	-- might not work out with "faster autoloot" addons like Leatrix
+	-- so get the itemlinks as fast as possible, then do other stuff
+	for i=1,numLootItems do 
+		itemLink = GetLootSlotLink(i)
+		if itemLink then
+			table.insert(reportLinks, itemLink)
+		end
+	end
+	
+    -- search for epics	(to determine if we print output)
+	for dummy,itemLink in pairs(reportLinks) do
+		if itemLink then
+			-- if no itemLink, it's most likely money
+			local d, itemId, enchantId, jewelId1, jewelId2, jewelId3, jewelId4, suffixId, uniqueId, linkLevel, specializationID, reforgeId, unknown1, unknown2 = strsplit(":", itemLink)		
+			-- identifying Epics by color... (should I do Legendary as well? meh)
+			if d == "\124cffa335ee\124Hitem" then
+				epicFound = true
+			end
+		end
+	end
+
+	-- handle loot
+	for dummy,itemLink in pairs(reportLinks) do
+		Prio3:HandleLoot(itemLink, epicFound)
+	end
+	
+end
+
+-- if someone loots without PM active
+function Prio3:START_LOOT_ROLL(eventname, rollID, rollTime, lootHandle)
+	-- disabled?
+    if not Prio3.db.profile.enabled then
+	  return
+	end
+
+	-- only works in raid, unless debugging
+	if not UnitInRaid("player") and not Prio3.db.profile.debug then
+	  return
+	end
+
+	-- look if priorities are defined
+	if Prio3.db.profile.priorities == nil then
+		Prio3:Print(L["No priorities defined."])	
+		return
+	end
+
+	-- will only react to epics
+
+	local texture, name, count, quality, bop = GetLootRollItemInfo(rollID)
+	local itemLink = GetLootRollItemLink(rollID)
+	
+	if quality >= 4 or bop then
+		Prio3:Print("Found loot roll for " .. itemLink)
+		-- state we found an epic. even if it's only BoP, so it will send the message out
+		Prio3:HandleLoot(itemLink, true)
+	end
+
+end
+
+-- if someone posts something on Raid Warning (commonly asking for rolls)
+function Prio3:CHAT_MSG_RAID_WARNING(event, text, sender)
+	-- disabled?
+    if not Prio3.db.profile.enabled then
+	  return
+	end
+
+	-- playerName may contain "-REALM"
+	sender = strsplit("-", sender)
+
+	-- itemLink looks like |cff9d9d9d|Hitem:3299::::::::20:257::::::|h[Fractured Canine]|h|r
+
+	-- TODO: avoid race condition 
+	-- sending out notification first and waiting for AceTimer: Might collide as well
+	-- will need to clear priorisation WHO will send out. 
+	-- send random number, and send answer if you will not post
+	-- highest number wins, so only lower numbers need to send they won't participate
+		
+	local id = text:match("|Hitem:(%d+):")
+	
+	if id then
+		Prio3:Debug("Received Raid Warning for item " .. id)
+	
+		-- announce to other addon that we want to react to raidwarning, but only if we would send something out actually
+		if Prio3.db.profile.raidannounce then
+		
+			Prio3.doReactToRaidWarning = true
+			local commmsg = { command = "RAIDWARNING", item = id, addon = Prio3.addon_id, version = Prio3.versionString }	
+			Prio3:SendCommMessage(Prio3.commPrefix, Prio3:Serialize(commmsg), "RAID", nil, "ALERT")
+
+			-- invoce AceTimer to wait 1 second before posting
+			Prio3:ScheduleTimer("reactToRaidWarning", 1, id, sender)
+
+		end
+		
+	end
+	
+end
+
+
+function Prio3:reactToRaidWarning(id, sender)
+
+	if Prio3.doReactToRaidWarning then
+		local _, itemLink = GetItemInfo(id) -- might not return item link right away
+
+		if itemLink then 
+			Prio3:HandleLoot(itemLink, true)
+		else
+			-- well, we COULD match the whole itemLink
+			-- deferred handling
+			local t = {
+				needed_itemids = { id },
+				vars = { u = sender },
+				todo = function(itemlink,vars) 
+					Prio3:HandleLoot(itemlink, true)
+				end,
+			}
+			table.insert(Prio3.GET_ITEM_INFO_RECEIVED_TodoList, t)
+		end
+		
+	end
+	
+end
+
+
+-- handling
+
+
+function Prio3:HandleLoot(itemLink, epicFound) 
+
+	-- Loot found, but no itemLink: most likely money
+	if itemLink == nil then
+		return
+	end
+
+	local _, itemId, enchantId, jewelId1, jewelId2, jewelId3, jewelId4, suffixId, uniqueId, linkLevel, specializationID, reforgeId, unknown1, unknown2 = strsplit(":", itemLink)
+	-- bad argument, might be gold? (or copper, here)
+
+	-- ignore re-opened
+	-- re-open is processed by Item
+	
+	-- initialization of tables
+	if Prio3.db.profile.lootlastopened == nil then
+		Prio3.db.profile.lootlastopened = {}
+	end
+	if Prio3.db.profile.lootlastopened[itemId] == nil then
+		Prio3.db.profile.lootlastopened[itemId] = 0
+	end
+	
+	if Prio3.db.profile.ignorereopen == nil then
+		Prio3.db.profile.ignorereopen = 0
+	end
+
+	local outputSent = false
+	
+	if Prio3.db.profile.lootlastopened[itemId] + Prio3.db.profile.ignorereopen < time() then
+	-- enough time has passed, not ignored.
+	
+		-- build local prio list
+		local itemprios = {
+			p1 = {},
+			p2 = {},
+			p3 = {}
+		}
+		
+		-- iterate over priority table
+		for user, prios in pairs(Prio3.db.profile.priorities) do
+		
+			-- table always has 3 elements
+			if (tonumber(prios[1]) == tonumber(itemId)) then
+				table.insert(itemprios.p1, user)
+			end
+
+			if (tonumber(prios[2]) == tonumber(itemId)) then
+				table.insert(itemprios.p2, user)
+			end
+
+			if (tonumber(prios[3]) == tonumber(itemId)) then
+				table.insert(itemprios.p3, user)
+			end
+			
+		end
+				
+		if table.getn(itemprios.p1) == 0 and table.getn(itemprios.p2) == 0 and table.getn(itemprios.p3) == 0 then
+			if Prio3.db.profile.noprioannounce then
+				if epicFound or Prio3.db.profile.noprioannounce_noepic then
+					if itemLink then
+						outputSent = Prio3:Output(L["No priorities found for playerOrItem"](itemLink))	or outputSent
+					end
+				end
+			end
+		end
+		if table.getn(itemprios.p1) > 0 then
+			outputSent = Prio3:Announce(itemLink, 1, itemprios.p1) or outputSent
+		end
+		if table.getn(itemprios.p2) > 0 then
+			outputSent = Prio3:Announce(itemLink, 2, itemprios.p2, (table.getn(itemprios.p1) > 0)) or outputSent
+		end
+		if table.getn(itemprios.p3) > 0 then
+			outputSent = Prio3:Announce(itemLink, 3, itemprios.p3, (table.getn(itemprios.p1)+table.getn(itemprios.p2) > 0))	or outputSent
+		end
+
+	else
+		Prio3:Debug("DEBUG: Item " .. itemLink .. " ignored because of mute time setting") 
+	end
+
+	-- send only notification if you actually outputted something. Otherwise, someelse else might want to output, even if you don't have it enabled
+	if Prio3.db.profile.comm_enable_item and outputSent then
+		local commmsg = { command = "ITEM", item = itemId, itemlink = itemLink, ignore = Prio3.db.profile.ignorereopen, addon = Prio3.addon_id, version = Prio3.versionString }	
+		Prio3:SendCommMessage(Prio3.commPrefix, Prio3:Serialize(commmsg), "RAID", nil, "ALERT")
+	end
+		
+	Prio3.db.profile.lootlastopened[itemId] = time()
+	
+end
+
+
+-- outputs
+
+function Prio3:Output(msg)
+	if Prio3.db.profile.raidannounce and UnitInRaid("player") then
+		SendChatMessage(msg, "RAID")
+		return true
+	else
+		Prio3:Print(msg)
+		return false
+	end
+end
+
+function Prio3:Announce(itemLink, prio, chars, hasPreviousPrio) 
+
+	-- output to raid or print to user
+	msg = L["itemLink is at priority for users"](itemLink, prio, chars)
+
+	local ret = Prio3:Output(msg)
+
+	-- whisper to characters
+	local whispermsg = L["itemlink dropped. You have this on priority x."](itemLink, prio)
+	
+	-- add request to roll, if more than one user and no one has a higher priority
+	-- yes, this will ignore the fact you might have to roll if higher priority users already got that item on another drop. But well, this doesn't happen very often.
+	if not hasPreviousPrio and table.getn(chars) >= 2 then whispermsg = whispermsg .. " " .. L["You will need to /roll when item is up."] end
+		
+	if Prio3.db.profile.charannounce then
+		for dummy, chr in pairs(chars) do
+			-- whisper if target char is in RAID. In debug mode whisper only to your own player char
+			if (UnitInRaid(chr)) or (Prio3.db.profile.debug and chr == UnitName("player")) then
+				SendChatMessage(whispermsg, "WHISPER", nil, chr);
+			else
+				Prio3:Debug("DEBUG: " .. chr .. " not in raid, will not send out whisper notification") 
+			end
+		end	
+	end
+	
+	return ret
+	
+end
+
+
+
+
+
+
