@@ -14,14 +14,17 @@ function Prio3:GROUP_ROSTER_UPDATE()
 	
 	if UnitInParty("player") and not Prio3.previousGroupState then
 		-- joined group: request Prio data
-		if Prio3.db.profile.comm_enable_prio then
+		if Prio3.db.profile.enabled then
 			local commmsg = { command = "REQUEST_PRIORITIES", addon = Prio3.addon_id, version = Prio3.versionString }	
 			Prio3:SendCommMessage(Prio3.commPrefix, Prio3:Serialize(commmsg), "RAID", nil, "NORMAL")
 
-			-- if no prio data received after 30sec, disable Addon	
+			-- if no prio data received after 10sec, ask to disable Addon	
 			current = time()
 			Prio3:ScheduleTimer("reactToRequestPriorities", 10, current)
+		else 
+			Prio3:Print(L["Prio3 addon is currently disabled."])
 		end
+		
 	end
 	
 	Prio3.previousGroupState = UnitInParty("player")
@@ -30,8 +33,7 @@ end
 function Prio3:reactToRequestPriorities(requested) 
 	if Prio3.db.profile.receivedPriorities < requested then
 		-- didn't receive priorities after requesting them
-		Prio3:Print(L["Requested priorities from other Prio3 addons after joining group and received nothing. Will DISABLE addon now. Please re-enable when importing data."])
-		Prio3.db.profile.enabled = false
+		Prio3:askToDisable(L["Requested priorities from other Prio3 addons after joining group and received nothing. Would you like to Disable the addon now? You can re-enable when importing data."])
 	end
 end
 

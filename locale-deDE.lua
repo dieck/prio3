@@ -45,8 +45,13 @@ L["No priorities found for playerOrItem"] = function(username) return "Keine Pri
 L["itemLink on Prio at userpriolist"] = function(itemlink, userpriolist) return itemlink .. " auf Prio bei " .. userpriolist end
 L["Newer version found at user: version. Please update your addon."] = function(user,version) return "Neuere Version bei " .. user .. " gefunden: " .. version .. ". Bitte das Addon updaten." end
 
-L["Requested priorities from other Prio3 addons after joining group and received nothing. Will DISABLE addon now. Please re-enable when importing data."] = "Nach Gruppenbeitritt wurden andere Prio3 Addons um ihre Prios gebeten, und es gab keine Antwort. Addon wird jetzt INAKTVIERT. Bitte reaktivieren beim Importieren neuer Prios"
+L["Requested priorities from other Prio3 addons after joining group and received nothing. Would you like to Disable the addon now? You can re-enable when importing data."] = "Nach Gruppenbeitritt wurden andere Prio3 Addons um ihre Prios gebeten, und es gab keine Antwort. Soll das Addon deaktiviert werden? Reaktivieren kann beim Importieren neuer Prios erfolgen."
+L["Disable"] = "Deaktivieren"
+L["Keep on"] = "Aktiv lassen"
+ 
+L["Prio3 addon is currently disabled."] = "Prio3-Addon ist zur Zeit deaktiviert."
 
+ 
 -- used terms from core.lua
 L["No priorities defined."] = "Keine Prioritäten eingestellt." -- also in loot.lua
 L["No priority on itemLink"] = function(itemlink) return "Keine Priorität für " .. itemlink end
