@@ -46,9 +46,10 @@ L["No priorities found for playerOrItem"] = function(username) return "No priori
 L["itemLink on Prio at userpriolist"] = function(itemlink, userpriolist) return itemlink .. " on Prio at " .. userpriolist end
 L["Newer version found at user: version. Please update your addon."] = function(user,version) return "Newer version found at " .. user .. ": " .. version .. ". Please update your addon." end
 
-L["Requested priorities from other Prio3 addons after joining group and received nothing. Would you like to Disable the addon now? You can re-enable when importing data."] = "Requested priorities from other Prio3 addons after joining group and received nothing. Would you like to Disable the addon now? You can re-enable when importing data."
+L["You joined a new group. I looked for other Prio3 addons, but found none. If this is not a Prio3 group, do you want to disable your addon or at least clear old priorities?"] = "You joined a new group. I looked for other Prio3 addons, but found none. If this is not a Prio3 group, do you want to disable your addon or at least clear old priorities?"
 L["Disable"] = "Disable"
 L["Keep on"] = "Keep on"
+L["Clear priorities"] = "Clear priorities"
 
 L["Prio3 addon is currently disabled."] = "Prio3 addon is currently disabled."
 
@@ -74,8 +75,5 @@ L["Accepted new priorities sent from sender"] = function(sender) return "Accepte
 
 -- used terms from loot.lua
 L["Priority List"] = "Priority List"
-
-
-
 
 end

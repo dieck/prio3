@@ -32,7 +32,7 @@ end
 function Prio3:reactToRequestPriorities(requested) 
 	if Prio3.db.profile.receivedPriorities < requested then
 		-- didn't receive priorities after requesting them
-		Prio3:askToDisable(L["Requested priorities from other Prio3 addons after joining group and received nothing. Would you like to Disable the addon now? You can re-enable when importing data."])
+		Prio3:askToDisable(L["You joined a new group. I looked for other Prio3 addons, but found none. If this is not a Prio3 group, do you want to disable your addon or at least clear old priorities?"])
 	end
 end
 

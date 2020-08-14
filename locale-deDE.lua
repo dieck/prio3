@@ -45,10 +45,11 @@ L["No priorities found for playerOrItem"] = function(username) return "Keine Pri
 L["itemLink on Prio at userpriolist"] = function(itemlink, userpriolist) return itemlink .. " auf Prio bei " .. userpriolist end
 L["Newer version found at user: version. Please update your addon."] = function(user,version) return "Neuere Version bei " .. user .. " gefunden: " .. version .. ". Bitte das Addon updaten." end
 
-L["Requested priorities from other Prio3 addons after joining group and received nothing. Would you like to Disable the addon now? You can re-enable when importing data."] = "Nach Gruppenbeitritt wurden andere Prio3 Addons um ihre Prios gebeten, und es gab keine Antwort. Soll das Addon deaktiviert werden? Reaktivieren kann beim Importieren neuer Prios erfolgen."
+L["You joined a new group. I looked for other Prio3 addons, but found none. If this is not a Prio3 group, do you want to disable your addon or at least clear old priorities?"] = "Du hast eine neue Gruppe betreten. Ich habe nach anderen Prio3 Addons gesucht, aber keine gefunden. Falls dies keine Prio3 Gruppe ist, möchtest du das Addon deaktivieren oder zumindest die Prioritäten löschen?" 
 L["Disable"] = "Deaktivieren"
 L["Keep on"] = "Aktiv lassen"
- 
+L["Clear priorities"] = "Prios löschen"
+
 L["Prio3 addon is currently disabled."] = "Prio3-Addon ist zur Zeit deaktiviert."
 
 L["Congratulations on finishing the Raid! Thank you for using Prio3. If you like it, Alleister on EU-Transcendence (Alliance) is gladly taking donations."] = "Herzlichen Glückwunsch zum Abschluss des Raids! Danke dass ihr Prio3 nutze. Wenn es euch gefällt, Alleister auf EU-Transcendence (Allianz) nimmt gerne Spenden an :)"
