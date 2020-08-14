@@ -52,6 +52,8 @@ L["Keep on"] = "Keep on"
 
 L["Prio3 addon is currently disabled."] = "Prio3 addon is currently disabled."
 
+L["Congratulations on finishing the Raid! Thank you for using Prio3. If you like it, Alleister on EU-Transcendence (Alliance) is gladly taking donations."] = "Congratulations on finishing the Raid! Thank you for using Prio3. If you like it, Alleister on EU-Transcendence (Alliance) is gladly taking donations :)"
+
 -- used terms from core.lua
 L["No priorities defined."] = "No priorities defined." -- also in loot.lua
 L["No priority on itemLink"] = function(itemlink) return "No priority on " .. itemlink end

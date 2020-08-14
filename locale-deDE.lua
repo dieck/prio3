@@ -51,6 +51,8 @@ L["Keep on"] = "Aktiv lassen"
  
 L["Prio3 addon is currently disabled."] = "Prio3-Addon ist zur Zeit deaktiviert."
 
+L["Congratulations on finishing the Raid! Thank you for using Prio3. If you like it, Alleister on EU-Transcendence (Alliance) is gladly taking donations."] = "Herzlichen Glückwunsch zum Abschluss des Raids! Danke dass ihr Prio3 nutze. Wenn es euch gefällt, Alleister auf EU-Transcendence (Allianz) nimmt gerne Spenden an :)"
+
  
 -- used terms from core.lua
 L["No priorities defined."] = "Keine Prioritäten eingestellt." -- also in loot.lua

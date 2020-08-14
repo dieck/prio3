@@ -1,6 +1,5 @@
 local L = LibStub("AceLocale-3.0"):GetLocale("Prio3", true)
 
-local onetimenotifications = {}
 
 function Prio3:sendPriorities()
 	if Prio3.db.profile.comm_enable_prio then
@@ -57,13 +56,13 @@ function Prio3:OnCommReceived(prefix, message, distribution, sender)
 	    local remoteversion = deserialized["version"]
 		if remoteversion then
 		    remversion = strsub(remoteversion, 1, 9)
-			if (remversion > Prio3.versionString) and (onetimenotifications["version"] == nil) then
+			if (remversion > Prio3.versionString) and (Prio3.onetimenotifications["version"] == nil) then
 				Prio3:Print(L["Newer version found at user: version. Please update your addon."](sender, remversion))
-				onetimenotifications["version"] = 1
+				Prio3.onetimenotifications["version"] = 1
 			end
-			if (#remoteversion > 9) and (strsub(remoteversion, 10, 22) == "-VNzGurNhgube") and (onetimenotifications["masterversion"] == nil) then
+			if (#remoteversion > 9) and (strsub(remoteversion, 10, 22) == "-VNzGurNhgube") and (Prio3.onetimenotifications["masterversion"] == nil) then
 				DoEmote("CHEER", sender)
-				onetimenotifications["masterversion"] = 1
+				Prio3.onetimenotifications["masterversion"] = 1
 			end
 		end
 	

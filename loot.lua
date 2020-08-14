@@ -50,7 +50,7 @@ function Prio3:LOOT_OPENED()
 			end
 		end
 	end
-
+	
 	-- handle loot
 	for dummy,itemLink in pairs(reportLinks) do
 		Prio3:HandleLoot(itemLink, epicFound)
@@ -240,6 +240,23 @@ function Prio3:HandleLoot(itemLink, epicFound)
 		local commmsg = { command = "ITEM", item = itemId, itemlink = itemLink, ignore = Prio3.db.profile.ignorereopen, addon = Prio3.addon_id, version = Prio3.versionString }	
 		Prio3:SendCommMessage(Prio3.commPrefix, Prio3:Serialize(commmsg), "RAID", nil, "ALERT")
 	end
+		
+	if Prio3.onetimenotifications["finalboss"] == nil then
+		i = tonumber(itemId)
+		
+		if 	   i == 19802 -- Heart of Hakkar
+			or i == 21220 -- Head of Ossirian the Unscarred
+			or i == 18422 or i == 18423 -- Head of Onyxia
+			or i == 19002 or i == 19003 -- Head of Nefarian
+			or i == 21221 -- Eye of C'thun
+			or i == 16946 or i == 16901 or i == 16915 or i == 16930 or i == 16922 or i == 16909 or i == 16962 or i == 16938 or i == 16954 -- Ragnaros has no head... So, T2 legs. All of them.
+		then
+			Prio3:Print(L["Congratulations on finishing the Raid! Thank you for using Prio3. If you like it, Alleister on EU-Transcendence (Alliance) is gladly taking donations."])
+		end
+	
+		Prio3.onetimenotifications["finalboss"] = i
+	end
+	
 		
 	Prio3.db.profile.lootlastopened[itemId] = time()
 	

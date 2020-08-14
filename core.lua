@@ -65,6 +65,9 @@ function Prio3:OnInitialize()
   self.db.profile.lootlastopened = {}
   self.doReactToRaidWarning = true
   
+  self.onetimenotifications = {}
+
+  
   -- /prio3 handler
   self:RegisterChatCommand('prio3', 'handleChatCommand');
 
