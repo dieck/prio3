@@ -34,7 +34,7 @@ function Prio3:OnInitialize()
   self.addon_id = random(1, 999999) -- should be enough
   if #self.versionString > 9 then self.addon_id = 1000000 end
   
-  LibStub("AceConfig-3.0"):RegisterOptionsTable("Prio3", prioOptionsTable)
+  LibStub("AceConfig-3.0"):RegisterOptionsTable("Prio3", self.prioOptionsTable)
   self.optionsFrame = LibStub("AceConfigDialog-3.0"):AddToBlizOptions("Prio3", "Prio3")
   self:RegisterChatCommand("prio", "ChatCommand")
  
@@ -103,7 +103,7 @@ end
 
 -- config items
 
-prioOptionsTable = {
+Prio3.prioOptionsTable = {
   type = "group",
   args = {
     enable = {
