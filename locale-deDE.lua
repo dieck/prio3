@@ -3,6 +3,11 @@ local L = LibStub("AceLocale-3.0"):NewLocale("Prio3", "deDE", false)
 if L then
 
 -- prioOptionsTable
+L["Output"] = "Ausgaben"
+L["Queries"] = "Abfragen"
+L["Import"] = "Import"
+L["Sync & Handler"] = "Sync & Handler"
+
 L["Enabled"] = "Aktiv"
 L["Enables / disables the addon"] = "Aktiviert / deaktivert das Addon"
 L["Announce No Priority"] = "Keine Priorität auch bekanntgeben"
@@ -44,6 +49,13 @@ L["Allows to query own priority. Whisper prio ITEMLINK."] = "Erlaubt die Abfrage
 L["No priorities found for playerOrItem"] = function(username) return "Keine Prioritäten gefunden für " .. username end
 L["itemLink on Prio at userpriolist"] = function(itemlink, userpriolist) return itemlink .. " auf Prio bei " .. userpriolist end
 L["Newer version found at user: version. Please update your addon."] = function(user,version) return "Neuere Version bei " .. user .. " gefunden: " .. version .. ". Bitte das Addon updaten." end
+
+L["Sync priorities"] = "Prioritäten synchronisieren"
+L["Allows to sync priorities between multiple users in the same raid running Prio3"] = "Erlaubt der syncen von Prioritäten mit anderen Prio3-Addons im Raid"
+L["Sync item accouncements"] = "Ausgaben synchronisieren"
+L["Prevents other users from posting the same item you already posted."] = "Synct Ausgaben, so dass andere Raidteilnehmer den gleichen Loot nicht erneut posten."
+L["/prio handler"] = "/prio benutzen"
+L["/p3 handler"] = "/p3 benutzen"
 
 L["You joined a new group. I looked for other Prio3 addons, but found none. If this is not a Prio3 group, do you want to disable your addon or at least clear old priorities?"] = "Du hast eine neue Gruppe betreten. Ich habe nach anderen Prio3 Addons gesucht, aber keine gefunden. Falls dies keine Prio3 Gruppe ist, möchtest du das Addon deaktivieren oder zumindest die Prioritäten löschen?" 
 L["Disable"] = "Deaktivieren"

@@ -1,7 +1,7 @@
 local L = LibStub("AceLocale-3.0"):GetLocale("Prio3", true)
 
 local Prio3commPrefix = "Prio3-1.0-"
-local Prio3versionString = "v20200819"
+local Prio3versionString = "v20200824"
 
 local defaults = {
   profile = {
@@ -21,6 +21,8 @@ local defaults = {
 	opentable = false,
 	comm_enable_prio = true,
 	comm_enable_item = true,
+	handle_enable_prio = false,
+	handle_enable_p3 = false,
   }
 }
 
@@ -36,8 +38,7 @@ function Prio3:OnInitialize()
   
   LibStub("AceConfig-3.0"):RegisterOptionsTable("Prio3", self.prioOptionsTable)
   self.optionsFrame = LibStub("AceConfigDialog-3.0"):AddToBlizOptions("Prio3", "Prio3")
-  self:RegisterChatCommand("prio", "ChatCommand")
- 
+  
   -- Blizzard... Why doesn't GetItemInfo return items infos... No, it only starts loading them...
   self.GET_ITEM_INFO_RECEIVED_TodoList = {}
   -- format: { { needed_itemids={}, vars={}, todo=function(itemids,vars) },  ... }
@@ -66,10 +67,16 @@ function Prio3:OnInitialize()
   self.doReactToRaidWarning = true
   
   self.onetimenotifications = {}
-
   
   -- /prio3 handler
   self:RegisterChatCommand('prio3', 'handleChatCommand');
+  
+  if self.db.profile.handle_enable_prio then
+	self:RegisterChatCommand('prio', 'handleChatCommand');
+  end
+  if self.db.profile.handle_enable_p3 then
+	self:RegisterChatCommand('p3', 'handleChatCommand');
+  end
 
   -- communicate between addons
   self:RegisterComm(self.commPrefix, "OnCommReceived")
@@ -116,7 +123,7 @@ Prio3.prioOptionsTable = {
     },
 	grpoutput = {    
 		type = "group",
-		name = "Output",
+		name = L["Output"],
 		args = {
 			raid = {
 				name = L["Announce to Raid"],
@@ -187,7 +194,7 @@ Prio3.prioOptionsTable = {
 	},
 	grpquery = {
 		type = "group",
-		name = "Queries",
+		name = L["Queries"],
 		args = {
 			queryself = {
 				name = L["Query own priority"],
@@ -226,7 +233,7 @@ Prio3.prioOptionsTable = {
 	},
 	grpimport = {
 		type = "group",
-		name = "Import",
+		name = L["Import"],
 		args = {
 			newline0 = { name="", type="description", order=30 },
 			cleartable = {
@@ -284,31 +291,61 @@ Prio3.prioOptionsTable = {
 	},
 	grpcomm = {
 		type = "group",
-		name = "Sync",
+		name = L["Sync & Handler"],
 		args = {
 			syncprio = {
 				name = "Sync priorities",
 				desc = "Allows to sync priorities between multiple users in the same raid running Prio3",
 				type = "toggle",
-				order = 60,
+				order = 10,
 				set = function(info,val) Prio3.db.profile.comm_enable_prio = val end,
 				get = function(info) return Prio3.db.profile.comm_enable_prio end,
 			},
-			newline2 = { name="", type="description", order=64 },
+			newline2 = { name="", type="description", order=19 },
 			syncitems = {
 				name = "Sync item accouncements",
 				desc = "Prevents other users from posting the same item you already posted.",
 				type = "toggle",
-				order = 65,
+				order = 20,
 				set = function(info,val) Prio3.db.profile.comm_enable_item = val end,
 				get = function(info) return Prio3.db.profile.comm_enable_item end,
 			},
-			newline3 = { name="", type="description", order=80 },
+			newline3 = { name="", type="description", order=29 },
 			resendprio = {
 				name = L["Resend prios"],
 				type = "execute",
-				order = 82,
+				order = 30,
 				func = function(info,val) Prio3:sendPriorities() end,
+			},
+			newline4 = { name="", type="description", order=39 },
+			priohandler = {
+				name = L["/prio handler"],
+				type = "toggle",
+				order = 40,
+				set = function(info,val) 
+					Prio3.db.profile.handle_enable_prio = val 
+					if Prio3.db.profile.handle_enable_prio then
+						Prio3:RegisterChatCommand('prio', 'handleChatCommand');
+					else
+						Prio3:UnregisterChatCommand('prio', 'handleChatCommand');
+					end
+				end,
+				get = function(info) return Prio3.db.profile.handle_enable_prio end,
+			},
+			newline5 = { name="", type="description", order=49 },
+			p3handler = {
+				name = L["/p3 handler"],
+				type = "toggle", 
+				order = 50,
+				set = function(info,val)
+					Prio3.db.profile.handle_enable_p3 = val 
+					if Prio3.db.profile.handle_enable_p3 then
+						Prio3:RegisterChatCommand('p3', 'handleChatCommand');
+					else
+						Prio3:UnregisterChatCommand('p3', 'handleChatCommand');
+					end
+				end,
+				get = function(info) return Prio3.db.profile.handle_enable_p3 end,
 			},
 
 		}

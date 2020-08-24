@@ -3,6 +3,11 @@ local L = LibStub("AceLocale-3.0"):NewLocale("Prio3", "enUS", true)
 if L then
 
 -- prioOptionsTable
+L["Output"] = "Output"
+L["Queries"] = "Queries"
+L["Import"] = "Import"
+L["Sync & Handler"] = "Sync & Handler"
+
 L["Enabled"] = "Enabled"
 L["Enables / disables the addon"] = "Enables / disables the addon"
 L["Announce No Priority"] = "Announce No Priority"
@@ -46,10 +51,19 @@ L["No priorities found for playerOrItem"] = function(username) return "No priori
 L["itemLink on Prio at userpriolist"] = function(itemlink, userpriolist) return itemlink .. " on Prio at " .. userpriolist end
 L["Newer version found at user: version. Please update your addon."] = function(user,version) return "Newer version found at " .. user .. ": " .. version .. ". Please update your addon." end
 
+L["Sync priorities"] = "Sync priorities"
+L["Allows to sync priorities between multiple users in the same raid running Prio3"] = "Allows to sync priorities between multiple users in the same raid running Prio3"
+L["Sync item accouncements"] = "Sync item accouncements"
+L["Prevents other users from posting the same item you already posted."] = "Prevents other users from posting the same item you already posted."
+L["/prio handler"] = "/prio handler"
+L["/p3 handler"] = "/p3 handler"
+
 L["You joined a new group. I looked for other Prio3 addons, but found none. If this is not a Prio3 group, do you want to disable your addon or at least clear old priorities?"] = "You joined a new group. I looked for other Prio3 addons, but found none. If this is not a Prio3 group, do you want to disable your addon or at least clear old priorities?"
 L["Disable"] = "Disable"
 L["Keep on"] = "Keep on"
 L["Clear priorities"] = "Clear priorities"
+
+
 
 L["Prio3 addon is currently disabled."] = "Prio3 addon is currently disabled."
 
