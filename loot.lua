@@ -153,9 +153,11 @@ function Prio3:reactToRaidWarning(id, sender)
 	
 end
 
+function Prio3:postLastBossMessage()
+	Prio3:Print(L["Congratulations on finishing the Raid! Thank you for using Prio3. If you like it, Alleister on EU-Transcendence (Alliance) is gladly taking donations."])
+end
 
 -- handling
-
 
 function Prio3:HandleLoot(itemLink, epicFound) 
 
@@ -177,10 +179,9 @@ function Prio3:HandleLoot(itemLink, epicFound)
 			or i == 21221 -- Eye of C'thun
 			or i == 16946 or i == 16901 or i == 16915 or i == 16930 or i == 16922 or i == 16909 or i == 16962 or i == 16938 or i == 16954 -- Ragnaros has no head... So, T2 legs. All of them.
 		then
-			Prio3:Print(L["Congratulations on finishing the Raid! Thank you for using Prio3. If you like it, Alleister on EU-Transcendence (Alliance) is gladly taking donations."])
+			Prio3:ScheduleTimer("postLastBossMessage", 12)
+			Prio3.onetimenotifications["finalboss"] = i
 		end
-	
-		Prio3.onetimenotifications["finalboss"] = i
 	end
 
 	
