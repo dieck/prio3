@@ -142,8 +142,10 @@ function Prio3:reactToRaidWarning(id, sender)
 			local t = {
 				needed_itemids = { id },
 				vars = { u = sender },
-				todo = function(itemlink,vars) 
-					Prio3:HandleLoot(itemlink, true)
+				todo = function(itemlinks,vars)
+					for _, itemlink in pairs(itemlinks) do 
+						Prio3:HandleLoot(itemlink, true)
+					end
 				end,
 			}
 			table.insert(Prio3.GET_ITEM_INFO_RECEIVED_TodoList, t)
