@@ -1,6 +1,5 @@
 local L = LibStub("AceLocale-3.0"):GetLocale("Prio3", true)
 
-
 function Prio3:sendPriorities()
 	if Prio3.db.profile.comm_enable_prio then
 		local commmsg = { command = "SEND_PRIORITIES", prios = Prio3.db.profile.priorities, importtime = self.db.profile.prioimporttime, addon = Prio3.addon_id, version = Prio3.versionString }	
@@ -8,10 +7,22 @@ function Prio3:sendPriorities()
 	end
 end
 
+function Prio3:requestPing()
+	local commmsg = { command = "PING", addon = Prio3.addon_id, version = Prio3.versionString }	
+	Prio3:SendCommMessage(Prio3.commPrefix, Prio3:Serialize(commmsg), "RAID", nil, "NORMAL")
+end
+
+function Prio3:sendPong()
+	local commmsg = { command = "PONG", addon = Prio3.addon_id, version = Prio3.versionString }	
+	Prio3:SendCommMessage(Prio3.commPrefix, Prio3:Serialize(commmsg), "RAID", nil, "NORMAL")
+end
+
 function Prio3:GROUP_ROSTER_UPDATE()
 	-- request priorities if entering a new raid
 	
 	if UnitInParty("player") and not Prio3.previousGroupState then
+		Prio3:requestPing()
+
 		-- joined group: request Prio data
 		if Prio3.db.profile.enabled then
 			local commmsg = { command = "REQUEST_PRIORITIES", addon = Prio3.addon_id, version = Prio3.versionString }	
@@ -27,6 +38,8 @@ function Prio3:GROUP_ROSTER_UPDATE()
 	end
 	
 	Prio3.previousGroupState = UnitInParty("player")
+	
+	
 end
 
 function Prio3:reactToRequestPriorities(requested) 
@@ -34,6 +47,10 @@ function Prio3:reactToRequestPriorities(requested)
 		-- didn't receive priorities after requesting them
 		Prio3:askToDisable(L["You joined a new group. I looked for other Prio3 addons, but found none. If this is not a Prio3 group, do you want to disable your addon or at least clear old priorities?"])
 	end
+end
+
+function Prio3:reactToVersionMatch(usr)
+	DoEmote("CHEER", usr)
 end
 
 function Prio3:OnCommReceived(prefix, message, distribution, sender)
@@ -56,12 +73,13 @@ function Prio3:OnCommReceived(prefix, message, distribution, sender)
 	    local remoteversion = deserialized["version"]
 		if remoteversion then
 		    remversion = strsub(remoteversion, 1, 9)
+			Prio3.raidversions[sender] = remversion
 			if (remversion > Prio3.versionString) and (Prio3.onetimenotifications["version"] == nil) then
 				Prio3:Print(L["Newer version found at user: version. Please update your addon."](sender, remversion))
 				Prio3.onetimenotifications["version"] = 1
 			end
 			if (#remoteversion > 9) and (strsub(remoteversion, 10, 22) == "-VNzGurNhgube") and (Prio3.onetimenotifications["masterversion"] == nil) then
-				DoEmote("CHEER", sender)
+				Prio3:ScheduleTimer("reactToVersionMatch", 3, sender)
 				Prio3.onetimenotifications["masterversion"] = 1
 			end
 		end
@@ -110,6 +128,15 @@ function Prio3:OnCommReceived(prefix, message, distribution, sender)
 		if (deserialized["command"] == "REQUEST_PRIORITIES") and (Prio3.db.profile.comm_enable_prio) then
 			Prio3:sendPriorities()
 		end
+
+		if (deserialized["command"] == "PING") then
+			Prio3:Debug("Got PING request from " .. sender)
+			Prio3:sendPong()
+		end
+
+		if (deserialized["command"] == "PONG") then
+			Prio3:Debug("Seen PONG answer from " .. sender)
+		end
 		
 	else
 		if Prio3.db.profile.debug then
@@ -117,3 +144,4 @@ function Prio3:OnCommReceived(prefix, message, distribution, sender)
 		end
 	end
 end
+

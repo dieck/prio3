@@ -25,8 +25,8 @@ function Prio3:LOOT_OPENED()
 	loot = GetLootInfo()
 	numLootItems = GetNumLootItems();
 
-	-- look if epics are found (for No prio announces)
-	local epicFound = false
+	-- look for maximum quality (for No prio announces)
+	local maxQuality = "a"
 	
 	local reportLinks = {}
 
@@ -43,17 +43,24 @@ function Prio3:LOOT_OPENED()
 	for dummy,itemLink in pairs(reportLinks) do
 		if itemLink then
 			-- if no itemLink, it's most likely money
+
 			local d, itemId, enchantId, jewelId1, jewelId2, jewelId3, jewelId4, suffixId, uniqueId, linkLevel, specializationID, reforgeId, unknown1, unknown2 = strsplit(":", itemLink)		
-			-- identifying Epics by color... (should I do Legendary as well? meh)
-			if d == "\124cffa335ee\124Hitem" then
-				epicFound = true
-			end
+
+			-- identifying quality by color...
+			-- Only other option would be GetItemInfo, but that might not be fully loaded, so I would have to create call to wait and look into it later, and... well, PITA
+			
+			if d == "\124cffff8000\124Hitem" then  if maxQuality < "f" then maxQuality = "f" end end -- LEGENDARY
+			if d == "\124cffa335ee\124Hitem" then  if maxQuality < "e" then maxQuality = "e" end end -- Epic
+			if d == "\124cff0070dd\124Hitem" then  if maxQuality < "d" then maxQuality = "d" end end -- Rare
+			if d == "\124cff1eff00\124Hitem" then  if maxQuality < "c" then maxQuality = "c" end end -- Uncommon
+			if d == "\124cffffffff\124Hitem" then  if maxQuality < "b" then maxQuality = "b" end end -- Common
+			
 		end
 	end
 	
 	-- handle loot
 	for dummy,itemLink in pairs(reportLinks) do
-		Prio3:HandleLoot(itemLink, epicFound)
+		Prio3:HandleLoot(itemLink, maxQuality)
 	end
 	
 end
@@ -83,8 +90,8 @@ function Prio3:START_LOOT_ROLL(eventname, rollID, rollTime, lootHandle)
 	
 	if quality >= 4 or bop then
 		Prio3:Print("Found loot roll for " .. itemLink)
-		-- state we found an epic. even if it's only BoP, so it will send the message out
-		Prio3:HandleLoot(itemLink, true)
+		-- use "maximum quality z" item, so it will always post
+		Prio3:HandleLoot(itemLink, "z")
 	end
 
 end
@@ -135,7 +142,8 @@ function Prio3:reactToRaidWarning(id, sender)
 		local _, itemLink = GetItemInfo(id) -- might not return item link right away
 
 		if itemLink then 
-			Prio3:HandleLoot(itemLink, true)
+			-- use "maximum quality z" item, so it will always post
+			Prio3:HandleLoot(itemLink, "z")
 		else
 			-- well, we COULD match the whole itemLink
 			-- deferred handling
@@ -143,7 +151,8 @@ function Prio3:reactToRaidWarning(id, sender)
 				needed_itemids = { id },
 				vars = { u = sender },
 				todo = function(itemlink,vars) 
-					Prio3:HandleLoot(itemlink, true)
+					-- use "maximum quality z" item, so it will always post
+					Prio3:HandleLoot(itemlink, "z")
 				end,
 			}
 			table.insert(Prio3.GET_ITEM_INFO_RECEIVED_TodoList, t)
@@ -159,7 +168,7 @@ end
 
 -- handling
 
-function Prio3:HandleLoot(itemLink, epicFound) 
+function Prio3:HandleLoot(itemLink, qualityFound) 
 
 	-- Loot found, but no itemLink: most likely money
 	if itemLink == nil then
@@ -232,7 +241,7 @@ function Prio3:HandleLoot(itemLink, epicFound)
 				
 		if table.getn(itemprios.p1) == 0 and table.getn(itemprios.p2) == 0 and table.getn(itemprios.p3) == 0 then
 			if Prio3.db.profile.noprioannounce then
-				if epicFound or Prio3.db.profile.noprioannounce_noepic then
+				if (qualityFound >= Prio3.db.profile.noprioannounce_quality) or Prio3.db.profile.noprioannounce_noepic then
 					if itemLink then
 						outputSent = Prio3:Output(L["No priorities found for playerOrItem"](itemLink))	or outputSent
 					end

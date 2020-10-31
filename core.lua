@@ -1,7 +1,7 @@
 local L = LibStub("AceLocale-3.0"):GetLocale("Prio3", true)
 
 local Prio3commPrefix = "Prio3-1.0-"
-local Prio3versionString = "v20200824"
+local Prio3versionString = "v202000901"
 
 local defaults = {
   profile = {
@@ -11,7 +11,7 @@ local defaults = {
 	raidwarnings = true,
 	raidannounce = true,
 	noprioannounce = true,
-	noprioannounce_noepic = false,
+	noprioannounce_quality = "e",
 	ignorereopen = 90,
 	charannounce = false,
 	whisperimport = false,
@@ -32,6 +32,7 @@ function Prio3:OnInitialize()
 
   self.commPrefix = Prio3commPrefix
   self.versionString = Prio3versionString	
+  self.raidversions = {}
 	
   self.addon_id = random(1, 999999) -- should be enough
   if #self.versionString > 9 then self.addon_id = 1000000 end
@@ -97,6 +98,9 @@ function Prio3:OnInitialize()
   -- entering an instance
   self.previousGroupState = UnitInParty("player")
   self:RegisterEvent("GROUP_ROSTER_UPDATE")
+  
+  self:requestPing()
+  
 end
 
 function Prio3:OnEnable()
@@ -136,19 +140,21 @@ Prio3.prioOptionsTable = {
 			newline1 = { name="", type="description", order=21 },
 			noprio = {
 			  name = L["Announce No Priority"],
-			  desc = L["Announces if there is no priority on an item. Will only trigger if at least one Epic is found."],
+			  desc = L["Announces if there is no priority on an item"],
 			  type = "toggle",
 			  order = 30,
 			  set = function(info,val) Prio3.db.profile.noprioannounce = val end,
 			  get = function(info) return Prio3.db.profile.noprioannounce end,
 			},
-			noprionoepic = {
-			  name = L["also announce without Epic"],
-			  desc = L["Announces if there is no priority on an item. Be careful: Will trigger on all mobs, not only bosses..."],
-			  type = "toggle",
+			nopriofilter = {
+			  name = L["min Quality"],
+			  desc = L["Announce only if there is an item of at least this quality in Loot"],
+			  type = "select",
+			  style = "dropdown",
 			  order = 31,
-			  set = function(info,val) Prio3.db.profile.noprioannounce_noepic = val end,
-			  get = function(info) return Prio3.db.profile.noprioannounce_noepic end,
+			  values = {a = L["Poor (Grey)"], b = L["Common (White)"], c = L["Uncommon (Green)"], d = L["Rare (Blue)"], e = L["Epic (Purple)"], f = L["Legendary (Orange)"]},
+			  set = function(info,val) Prio3.db.profile.noprioannounce_quality = val end,
+			  get = function(info) return Prio3.db.profile.noprioannounce_quality end,
 			},
 			newline2 = { name="", type="description", order=32 },
 			lootroll = {
@@ -350,16 +356,41 @@ Prio3.prioOptionsTable = {
 
 		}
 	},
+	grpversion = {
+		type = "group",
+		name = "Versions",
+		args = {
+			myversion = {
+			  name = "My Version",
+			  type = "input",
+			  order = 10,
+			  get = function(info) return strsub(Prio3.versionString, 1, 9) end,
+			  disabled = true,
+			},
+			newline1 = { name="", type="description", order=10 },
+			otherversions = {
+				name = "Other users",
+				type = "input",
+				order = 20,
+				width = 3.0,
+				multiline = 15,
+				get = function(info) return tprint(Prio3.raidversions) end,
+				disabled = true,
+			},
+			
+		},
+	},
 	
     debugging = {
       name = L["Debug"],
       desc = L["Enters Debug mode. Addon will have advanced output, and work outside of Raid"],
       type = "toggle",
-      order = 99,
+      order = 98,
       set = function(info,val) Prio3.db.profile.debug = val end,
       get = function(info) return Prio3.db.profile.debug end
     },
-  }
+
+	}
 }
 
 function Prio3:Debug(t, lvl) 

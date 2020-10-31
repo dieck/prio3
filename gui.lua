@@ -67,7 +67,7 @@ function Prio3:createPriorityFrame()
 	end
 	
 	local f = AceGUI:Create("Frame")
-	f:SetTitle(L["Priority List"])
+	f:SetTitle(L["Priority List"] .. " " .. strsub(Prio3.versionString, 1, 9))
 	f:SetStatusText("")
 	f:SetLayout("Flow")
 	f:SetWidth(700)
