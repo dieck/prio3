@@ -150,9 +150,11 @@ function Prio3:reactToRaidWarning(id, sender)
 			local t = {
 				needed_itemids = { id },
 				vars = { u = sender },
-				todo = function(itemlink,vars) 
-					-- use "maximum quality z" item, so it will always post
-					Prio3:HandleLoot(itemlink, "z")
+				todo = function(itemlinks,vars)
+					for _, itemlink in pairs(itemlinks) do 
+						-- use "maximum quality z" item, so it will always post
+						Prio3:HandleLoot(itemlink, "z")
+					end
 				end,
 			}
 			table.insert(Prio3.GET_ITEM_INFO_RECEIVED_TodoList, t)
