@@ -9,6 +9,7 @@ local defaults = {
     debug = false,
 	lootrolls = true,
 	raidwarnings = true,
+	ignorescalecloak = true,
 	raidannounce = true,
 	noprioannounce = true,
 	noprioannounce_quality = "e",
@@ -198,6 +199,14 @@ Prio3.prioOptionsTable = {
 			  order = 35,
 			  set = function(info,val) Prio3.db.profile.raidwarnings = val end,
 			  get = function(info) return Prio3.db.profile.raidwarnings end,
+			},
+			ignorescalecloak = {
+			  name = L["Ignore Ony Cloak"],
+			  desc = L["Ignore if someone raid warns about the Onyxia Scale Cloak"],
+			  type = "toggle",
+			  order = 36,
+			  set = function(info,val) Prio3.db.profile.ignorescalecloak = val end,
+			  get = function(info) return Prio3.db.profile.ignorescalecloak end,
 			},
 			newline4 = { name="", type="description", order=37 },
 			whisper = {

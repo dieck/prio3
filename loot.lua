@@ -118,7 +118,10 @@ function Prio3:CHAT_MSG_RAID_WARNING(event, text, sender)
 	
 	if id then
 		Prio3:Debug("Received Raid Warning for item " .. id)
-		
+	
+		-- ignore Onyxia Scale Cloak if configured
+		if Prio3.db.profile.ignorescalecloak and id == 15138 then return nil end
+	
 		-- announce to other addon that we want to react to raidwarning, but only if we would send something out actually
 		if Prio3.db.profile.raidannounce then
 		
