@@ -1,7 +1,7 @@
 local L = LibStub("AceLocale-3.0"):GetLocale("Prio3", true)
 
 local Prio3commPrefix = "Prio3-1.0-"
-local Prio3versionString = "v202000901"
+local Prio3versionString = "v20201031"
 
 local defaults = {
   profile = {
@@ -23,6 +23,7 @@ local defaults = {
 	comm_enable_item = true,
 	handle_enable_prio = false,
 	handle_enable_p3 = false,
+	outputlanguage = GetLocale(),
   }
 }
 
@@ -98,9 +99,13 @@ function Prio3:OnInitialize()
   -- entering an instance
   self.previousGroupState = UnitInParty("player")
   self:RegisterEvent("GROUP_ROSTER_UPDATE")
-  
+
   self:requestPing()
-  
+
+  -- change default output language if configured
+  if self.outputLocales[self.db.profile.outputlanguage] ~= nil then
+	for k,v in pairs(self.outputLocales[self.db.profile.outputlanguage]) do L[k] = v end
+  end
 end
 
 function Prio3:OnEnable()
@@ -129,6 +134,24 @@ Prio3.prioOptionsTable = {
 		type = "group",
 		name = L["Output"],
 		args = {
+			outputlanguage = {
+				name = L["Language"],
+				desc = L["Language for outputs"],
+				type = "select",
+				order = 15,
+				values = function()
+					r = {}
+					for k,v in pairs(Prio3.outputLocales) do r[k] = k end
+					return r
+				end,
+				set = function(info,val)
+					Prio3.db.profile.outputlanguage = val 
+					for k,v in pairs(Prio3.outputLocales[val]) do L[k] = v end
+				end,
+				get = function(info) return Prio3.db.profile.outputlanguage end,
+			},
+			newline0016 = { name="", type="description", order=16 },
+
 			raid = {
 				name = L["Announce to Raid"],
 				desc = L["Announces Loot Priority list to raid chat"],

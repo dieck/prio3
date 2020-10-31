@@ -10,6 +10,8 @@ L["Sync & Handler"] = "Sync & Handler"
 
 L["Enabled"] = "Enabled"
 L["Enables / disables the addon"] = "Enables / disables the addon"
+L["Language"] = "Language"
+L["Language for outputs"] = "Language for outputs"
 L["Announce No Priority"] = "Announce No Priority"
 L["min Quality"] = "min Quality"
 L["Announce only if there is an item of at least this quality in Loot"] = "Announce only if there is an item of at least this quality in Loot. Be aware: Might trigger on all mobs, not only bosses."
@@ -41,9 +43,6 @@ L["Show prio table"] = "Show prio table"
 L["Clear prio table"] = "Clear prio table"
 L["Debug"] = "Debug"
 L["Enters Debug mode. Addon will have advanced output, and work outside of Raid"] = "Enters Debug mode. Addon will have advanced output, and work outside of Raid"
-L["You will need to /roll when item is up."] = "You will need to /roll when item is up."
-L["itemlink dropped. You have this on priority x."] = function (itemLink, prio) return itemLink .. " dropped. You have this on priority " .. prio .. "." end
-L["Priorities of username: list"] = function(username,itemlinks) return "Priorities of " .. username .. ": " .. itemlinks end
 L["Waited 10sec for itemID id to be resolved. Giving up on this item."] = function(id) return "Waited 10sec for itemID " .. id .. " to be resolved. Giving up on this item." end
 
 L["Query own priority"] = "Query own priority"
@@ -52,8 +51,6 @@ L["Query raid priorities"] = "Query raid priorities"
 L["Allows to query priorities of all raid members. Whisper prio CHARNAME."] = "Allows to query priorities of all raid members. Whisper prio CHARNAME."
 L["Query item priorities"] = "Query item priorities"
 L["Allows to query own priority. Whisper prio ITEMLINK."] = "Allows to query own priority. Whisper prio ITEMLINK."
-L["No priorities found for playerOrItem"] = function(username) return "No priorities found for " .. username end
-L["itemLink on Prio at userpriolist"] = function(itemlink, userpriolist) return itemlink .. " on Prio at " .. userpriolist end
 L["Newer version found at user: version. Please update your addon."] = function(user,version) return "Newer version found at " .. user .. ": " .. version .. ". Please update your addon." end
 
 L["Sync priorities"] = "Sync priorities"
@@ -76,14 +73,6 @@ L["Congratulations on finishing the Raid! Thank you for using Prio3. If you like
 
 -- used terms from core.lua
 L["No priorities defined."] = "No priorities defined." -- also in loot.lua
-L["No priority on itemLink"] = function(itemlink) return "No priority on " .. itemlink end
-L["itemLink is at priority for users"] = function(itemlink,prio,userlist)
-	if (prio == 1) then
-		return itemlink .. " is at PRIORITY " .. prio .. " for " .. table.concat(userlist, ', ' )
-	else
-		return itemlink .. " is at priority " .. prio .. " for " .. table.concat(userlist, ', ' )
-	end
-end
 
 -- communications handling
 L["sender handled notification for item"] = function(sender, item) return sender .. " handled notification for " .. item end
@@ -94,5 +83,9 @@ L["Accepted new priorities sent from sender"] = function(sender) return "Accepte
 
 -- used terms from loot.lua
 L["Priority List"] = "Priority List"
+
+-- load default outputs 
+for k,v in pairs(Prio3.outputLocales["enUS"]) do L[k] = v end
+
 
 end

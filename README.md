@@ -74,16 +74,10 @@ If you need further formats, please let me know.
 
 Players can be informed by whispers about imported priorities (configurable in options).
 
-> **Plans (short-term)**:
-> Create easier access to import function :)
-
 > **Plans (mid-term)**:
-> React on loot events as well, e.g. if you forgot master looter and someone else loots.
-
-> **Plans (long-term)**:
 > Allow player to whisper in priorities, also for late joiners / replacements.
 
-> **Plans ((very-)long-term)**:
+> **Plans (long-term)**:
 > Simplified loot distribution (maybe even automated, with roll evaluation)
 
 ## Looking up and validating priorities
