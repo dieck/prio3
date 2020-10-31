@@ -14,6 +14,7 @@ local defaults = {
 	noprioannounce = true,
 	noprioannounce_quality = "e",
 	ignorereopen = 90,
+	showmasterlooterhint = true,
 	charannounce = false,
 	acceptwhisperprios = false,
 	acceptwhisperprios_new = true,
@@ -103,6 +104,9 @@ function Prio3:OnInitialize()
   self.previousGroupState = UnitInParty("player")
   self:RegisterEvent("GROUP_ROSTER_UPDATE")
 
+
+  self:RegisterEvent("OPEN_MASTER_LOOT_LIST")
+ 
   self:requestPing()
 
   -- change default output language if configured
@@ -229,6 +233,15 @@ Prio3.prioOptionsTable = {
 				order = 40,
 				set = function(info,val) Prio3.db.profile.ignorereopen = val end,
 				get = function(info) return Prio3.db.profile.ignorereopen end
+			},
+			newline49 = { name="", type="description", order=49 },
+			showmasterlooterhint = {
+				name = L["Master Looter Hint"],
+				desc = L["Shows hint window on Master Looter distribution"],
+				type = "toggle",
+				order = 50,
+				set = function(info,val) Prio3.db.profile.showmasterlooterhint = val end,
+				get = function(info) return Prio3.db.profile.showmasterlooterhint end
 			},
 		}
 	},
@@ -544,4 +557,5 @@ function tprint (tbl, indent)
   toprint = toprint .. string.rep(" ", indent-2) .. "}"
   return toprint
 end
+
 

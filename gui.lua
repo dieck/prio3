@@ -282,3 +282,106 @@ function Prio3:createPriorityFrame()
 	
 	return f
 end
+
+
+function Prio3:CreateMasterLootInfoFrame(itemId)
+	local frame = CreateFrame("Frame", "Prio3MasterLooterHint", UIParent)
+	frame:SetBackdrop({
+		bgFile = [[Interface\DialogFrame\UI-DialogBox-Background]],
+		edgeFile = [[Interface\Tooltips\UI-Tooltip-Border]],
+		edgeSize = 14,
+		insets = {left = 4, right = 4, top = 4, bottom = 4},
+    })
+	
+	frame:EnableMouse(false)
+	frame:SetPoint("CENTER")
+
+	l = {}
+		
+	-- build local prio list
+	local itemprios = {
+		p1 = {},
+		p2 = {},
+		p3 = {}
+	}
+	
+	-- iterate over priority table
+	for user, prios in pairs(Prio3.db.profile.priorities) do
+	
+		-- table always has 3 elements
+		if (tonumber(prios[1]) == tonumber(itemId)) then
+			table.insert(itemprios.p1, user)
+		end
+
+		if (tonumber(prios[2]) == tonumber(itemId)) then
+			table.insert(itemprios.p2, user)
+		end
+
+		if (tonumber(prios[3]) == tonumber(itemId)) then
+			table.insert(itemprios.p3, user)
+		end
+		
+	end
+		
+	if getn(itemprios.p1) > 0 then
+		tinsert(l, "Prio 1")
+		tinsert(l, "===============")
+		for k,v in pairs(itemprios.p1) do tinsert(l, v) end
+		tinsert(l, "===============")
+	end
+	if getn(itemprios.p2) > 0 then
+		tinsert(l, "Prio 2")
+		tinsert(l, "===============")
+		for k,v in pairs(itemprios.p2) do tinsert(l, v) end
+		tinsert(l, "===============")
+	end
+	if getn(itemprios.p3) > 0 then
+		tinsert(l, "Prio 3")
+		tinsert(l, "===============")
+		for k,v in pairs(itemprios.p3) do tinsert(l, v) end
+	end
+
+	if getn(l) == 0 then return nil end
+
+	frame:SetSize(140, 5+17*getn(l))
+	
+	frame.text = frame:CreateFontString(nil,"ARTWORK") 
+	frame.text:SetFont("Fonts\\ARIALN.ttf", 16, "OUTLINE")
+	frame.text:SetPoint("TOPLEFT",5,-5)
+	
+    frame.text:SetText(table.concat(l, "\n"))
+
+	frame:Hide()
+	
+	function frame:ShowParent(parent)
+		self:SetParent(parent)
+		self:ClearAllPoints()
+		self:SetPoint("TOPLEFT",parent,"TOPRIGHT")
+		self:Show()
+	end
+	
+	function frame:HideParent()
+		self:SetParent(UIParent)
+		self:Hide()
+	end
+	return frame
+end
+
+function Prio3:OPEN_MASTER_LOOT_LIST()
+	if Prio3.MLF ~= nil then 
+		-- hide old frame. Will still be in memory and attached to Master Looter Frame, so needs to be hidden here
+		Prio3.MLF:Hide()
+		Prio3.MLF:SetParent(nil) 
+	end
+	-- garbage collection will take this up later on
+	Prio3.MLF = nil
+	
+	
+	if Prio3.db.profile.showmasterlooterhint then
+		itemLink = GetLootSlotLink(LootFrame.selectedSlot);
+		local itemID = select(3, strfind(itemLink, "item:(%d+)"))
+
+		Prio3.MLF = self:CreateMasterLootInfoFrame(itemID)
+		if Prio3.MLF ~= nil then Prio3.MLF:ShowParent(MasterLooterFrame) end
+	end
+end
