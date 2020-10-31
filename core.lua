@@ -14,6 +14,8 @@ local defaults = {
 	noprioannounce_quality = "e",
 	ignorereopen = 90,
 	charannounce = false,
+	acceptwhisperprios = false,
+	acceptwhisperprios_new = true,
 	whisperimport = false,
 	queryself = true,
 	queryraid = false,
@@ -197,7 +199,7 @@ Prio3.prioOptionsTable = {
 			  set = function(info,val) Prio3.db.profile.raidwarnings = val end,
 			  get = function(info) return Prio3.db.profile.raidwarnings end,
 			},
-			newline4 = { name="", type="description", order=36 },
+			newline4 = { name="", type="description", order=37 },
 			whisper = {
 				name = L["Whisper to Char"],
 				desc = L["Announces Loot Priority list to char by whisper"],
@@ -238,6 +240,7 @@ Prio3.prioOptionsTable = {
 				name = L["Query raid priorities"],
 				desc = L["Allows to query priorities of all raid members. Whisper prio CHARNAME."],
 				type = "toggle",
+				disabled = function() return Prio3.db.profile.acceptwhisperprios end,
 				order = 63,
 				set = function(info,val) Prio3.db.profile.queryraid = val end,
 				get = function(info) return Prio3.db.profile.queryraid end,
@@ -247,6 +250,7 @@ Prio3.prioOptionsTable = {
 				name = L["Query item priorities"],
 				desc = L["Allows to query own priority. Whisper prio ITEMLINK."],
 				type = "toggle",
+				disabled = function() return Prio3.db.profile.acceptwhisperprios end,
 				order = 65,
 				set = function(info,val) Prio3.db.profile.queryitems = val end,
 				get = function(info) return Prio3.db.profile.queryitems end,
@@ -269,6 +273,7 @@ Prio3.prioOptionsTable = {
 				name = L["Clear prio table"],
 				desc = L["Please note that current Prio settings WILL BE OVERWRITTEN"],
 				type = "execute",
+				disabled = function() return Prio3.db.profile.acceptwhisperprios end,
 				order = 31,
 				confirm = true,
 				func = function(info) Prio3.db.profile.priorities = {} end,
@@ -277,6 +282,7 @@ Prio3.prioOptionsTable = {
 				name = L["Import String"],
 				desc = L["Please note that current Prio settings WILL BE OVERWRITTEN"],
 				type = "input",
+				disabled = function() return Prio3.db.profile.acceptwhisperprios end,
 				order = 50,
 				confirm = true,
 				width = 3.0,
@@ -289,6 +295,7 @@ Prio3.prioOptionsTable = {
 			resendprio = {
 				name = L["Resend prios"],
 				type = "execute",
+				disabled = function() return Prio3.db.profile.acceptwhisperprios end,
 				order = 52,
 				func = function(info,val) Prio3:sendPriorities() end,
 			},
@@ -316,6 +323,79 @@ Prio3.prioOptionsTable = {
 				order = 99,
 				func = function(info) Prio3:guiPriorityFrame() end,
 			},
+
+			newline100 = { name="", type="description", order=100 },
+			header1 = { name=L["Accept whispers"], type="header", order=100 },
+
+			txt1 = { name=L["Enables receiving participant priorities by whisper."], type="description", order=101 },
+			txt2 = { name=L["Itemlinks, Item ID numbers or Wowhead Links; separated by Space or Comma"], type="description", order=102 },
+			txt3 = { name=L["Using import later will overwrite/delete received priorities."], type="description", order=103 },
+			txt4 = { name=L["Deleting, importing, resending, receiving and querying of priorities will be disabled while accepting whispers."], type="description", order=104 },
+			txt5 = { name=L["Will send out priorities to other Prio3 addons when ending."], type="description", order=105 },
+			txt6 = { name=L["Be aware addon user will be able to see incoming priorities before opening it up to the public."], type="description", order=105 },
+
+			acceptwhisperprios_new = {
+				name = L["Accept only new"],
+				desc = L["Accept only from new players without priorities yet. If disabled, accepts from all players and allow overwriting"],
+				type = "toggle",
+				order = 120,
+				set = function(info,val) Prio3.db.profile.acceptwhisperprios_new = val end,
+				get = function(info) return Prio3.db.profile.acceptwhisperprios_new end,
+			},
+			newline125 = { name="", type="description", order=125 },
+			
+			acceptwhisperprios_start = {
+				name = L["Start accepting"],
+				desc = "",
+				disabled = function() return Prio3.db.profile.acceptwhisperprios end,
+				type = "execute",
+				order = 140,
+				func = function()
+					Prio3.db.profile.acceptwhispers_storedsettings = {
+						comm_enable_prio = Prio3.db.profile.comm_enable_prio,
+						queryraid = Prio3.db.profile.queryraid,
+						queryitems = Prio3.db.profile.queryitems,
+						whisperimport = Prio3.db.profile.whisperimport
+					}
+					Prio3.db.profile.comm_enable_prio = false
+					Prio3.db.profile.queryraid = false
+					Prio3.db.profile.queryitems = false
+					Prio3.db.profile.whisperimport = true
+					Prio3.db.profile.acceptwhisperprios = true
+
+					Prio3:Output(L["Now accepting Prio3 updates by whisper. Send 3 [Itemlinks], wowhead Links or IDs my way, separated by space or comma"])
+					if Prio3.db.profile.acceptwhisperprios_new then
+						Prio3:Output(L["Only accepting whispers from players who have not yet set a priority."])
+					end
+				end
+			},
+			acceptwhisperprios_end = {
+				name = L["End accepting"],
+				desc = "",
+				disabled = function() return not Prio3.db.profile.acceptwhisperprios end,
+				type = "execute",
+				order = 145,
+				func = function() 
+					if Prio3.db.profile.acceptwhispers_storedsettings then
+						Prio3.db.profile.comm_enable_prio = Prio3.db.profile.acceptwhispers_storedsettings.comm_enable_prio
+						Prio3.db.profile.queryraid = Prio3.db.profile.acceptwhispers_storedsettings.queryraid
+						Prio3.db.profile.whisperimport = Prio3.db.profile.acceptwhispers_storedsettings.whisperimport
+						Prio3.db.profile.queryitems = Prio3.db.profile.acceptwhispers_storedsettings.queryitems
+					end
+
+					Prio3.db.profile.acceptwhisperprios = false
+	
+					Prio3:sendPriorities()
+					
+					Prio3:Output(L["No longer accepting Prio3 updates by whisper."])
+					for user,prios in pairs(Prio3.db.profile.priorities) do
+						Prio3:OutputUserPrio(user, "RAID")
+					end
+					
+				end, 
+			},
+			newline149 = { name="", type="description", order=149 },
+			
 		},
 	},
 	grpcomm = {
@@ -326,6 +406,7 @@ Prio3.prioOptionsTable = {
 				name = "Sync priorities",
 				desc = "Allows to sync priorities between multiple users in the same raid running Prio3",
 				type = "toggle",
+				disabled = function() return Prio3.db.profile.acceptwhisperprios end,
 				order = 10,
 				set = function(info,val) Prio3.db.profile.comm_enable_prio = val end,
 				get = function(info) return Prio3.db.profile.comm_enable_prio end,
@@ -412,7 +493,7 @@ Prio3.prioOptionsTable = {
       set = function(info,val) Prio3.db.profile.debug = val end,
       get = function(info) return Prio3.db.profile.debug end
     },
-
+	
 	}
 }
 

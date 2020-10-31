@@ -5,6 +5,8 @@ Prio3 - World of Warcraft Classic addon
 
 Generate loot lists in format `Username;Prio1;Prio2;Prio3` per line. (e.g. CSV SHORT export from sahne-team.de)
 Go to Menu Interfaces, Tab Addon, Prio3; or type /prio3 config, and import.
+You could opt to enable sending in priorities by whispers in the same menu, good option also for strugglers or replacement raiders.
+
 Loot corpses and have chosen loot announced in raid chat.
 
 
@@ -74,8 +76,10 @@ If you need further formats, please let me know.
 
 Players can be informed by whispers about imported priorities (configurable in options).
 
-> **Plans (mid-term)**:
-> Allow player to whisper in priorities, also for late joiners / replacements.
+Since v20201031, you could opt for accepting priorities by whisper.
+Go to Menu Interfaces, Tab Addon, Prio3; or type /prio3 config, and import.
+Good option also for late joiners / replacements.
+
 
 > **Plans (long-term)**:
 > Simplified loot distribution (maybe even automated, with roll evaluation)

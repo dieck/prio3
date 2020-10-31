@@ -75,4 +75,9 @@ function Prio3:CHAT_MSG_WHISPER(event, text, sender)
 	
 	end
 	
+	-- not returned yet? See if we are accepting new whispers
+	if Prio3.db.profile.acceptwhisperprios then
+		Prio3:ParseWhisperLine(sender, text)
+	end
+	
 end

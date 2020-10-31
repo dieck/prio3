@@ -66,6 +66,19 @@ L["Keep on"] = "Keep on"
 L["Clear priorities"] = "Clear priorities"
 
 
+L["Accept whispers"] = "Accept whispers"
+L["Enables receiving participant priorities by whisper."] = "Enables receiving participant priorities by whisper."
+L["Itemlinks, Item ID numbers or Wowhead Links; separated by Space or Comma"] = "Itemlinks, Item ID numbers or Wowhead Links; separated by Space or Comma"
+L["Using import later will overwrite/delete received priorities."] = "Using import later will overwrite/delete received priorities."
+L["Deleting, importing, resending, receiving and querying of priorities will be disabled while accepting whispers."] = "Deleting, importing, resending, receiving and querying of priorities will be disabled while accepting whispers."
+L["Will send out priorities to other Prio3 addons when ending."] = "Will send out priorities to other Prio3 addons when ending."
+L["Be aware addon user will be able to see incoming priorities before opening it up to the public."] = "Be aware addon user will be able to see incoming priorities before opening it up to the public."
+L["Accept only new"] = "Accept only new"
+L["Accept only from new players without priorities yet. If disabled, accepts from all players and allow overwriting"] = "Accept only from new players without priorities yet. If disabled, accepts from all players and allow overwriting"
+L["Announce start"] = "Announce start"
+L["Announce end"] = "Announce end"
+L["Start accepting"] = "Start accepting"
+L["End accepting"] = "End accepting"
 
 L["Prio3 addon is currently disabled."] = "Prio3 addon is currently disabled."
 

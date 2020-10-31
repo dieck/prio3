@@ -65,6 +65,129 @@ function Prio3:SetPriorities(info, value)
 end
 
 
+function Prio3:toPriorityId(s)
+	for id in string.gmatch(s, "%d+") do 
+
+		-- there are some items that are rewards from quest items
+		-- sahne-team e.g. allows for selecting the rewards directly
+		-- match to drop item, so it will be listed correctly on drops
+
+		-- Heart of Hakkar for Zandalarion Hero trinkets
+		if id == 19948 then id = 19802 end
+		if id == 19949 then id = 19802 end
+		if id == 19950 then id = 19802 end
+
+		-- Head of Onyxia, depending on faction
+		if id == 18403 and UnitFactionGroup(player) == 'Horde' then id = 18422 end
+		if id == 18404 and UnitFactionGroup(player) == 'Horde' then id = 18422 end
+		if id == 18405 and UnitFactionGroup(player) == 'Horde' then id = 18422 end
+		if id == 18403 and UnitFactionGroup(player) == 'Alliance' then id = 18423 end
+		if id == 18404 and UnitFactionGroup(player) == 'Alliance' then id = 18423 end
+		if id == 18405 and UnitFactionGroup(player) == 'Alliance' then id = 18423 end
+
+		-- Head of Nefarian, depending on faction
+		if id == 19383 and UnitFactionGroup(player) == 'Horde' then id = 19002 end
+		if id == 19366 and UnitFactionGroup(player) == 'Horde' then id = 19002 end
+		if id == 19384 and UnitFactionGroup(player) == 'Horde' then id = 19002 end
+		if id == 19383 and UnitFactionGroup(player) == 'Alliance' then id = 19003 end
+		if id == 19366 and UnitFactionGroup(player) == 'Alliance' then id = 19003 end
+		if id == 19384 and UnitFactionGroup(player) == 'Alliance' then id = 19003 end
+
+		-- Head of Ossirian the Unscarred
+		if id == 21504 then id = 21220 end
+		if id == 21505 then id = 21220 end
+		if id == 21506 then id = 21220 end
+		if id == 21507 then id = 21220 end
+		
+		-- there are quite some more... All AQ tokens, ZG tokens and so on
+		-- but for now I'll only list the most common mistakes here.
+		
+		GetItemInfo(id) -- firing server-side request here, so it can start getting cached early
+		return id 
+	end
+end
+
+function Prio3:OutputUserPrio(user, channel)
+	local itemLinks =  {}
+
+	local p1, p2, p3 = unpack(Prio3.db.profile.priorities[user])
+		
+	local itemName1, itemLink1 = GetItemInfo(p1)
+	
+	table.insert(itemLinks, itemLink1)
+	
+	local itemName2, itemLink2 = ""
+	local itemName3, itemLink3 = ""
+	if p2 then
+		itemName2, itemLink2 = GetItemInfo(p2)
+		table.insert(itemLinks, itemLink2)
+	end
+	if p3 then
+		itemName3, itemLink3 = GetItemInfo(p3)
+		table.insert(itemLinks, itemLink3)
+	end
+
+	local existAll = itemLink1 and (itemLink2 or not p2) and (itemLink3 or not p3)
+	if existAll then
+		
+		SendChatMessage(L["Priorities of username: list"](user,table.concat(itemLinks,", ")), channel, nil, user)	
+
+	else
+
+		local t = {
+			needed_itemids = Prio3.db.profile.priorities[user],
+			vars = { u = user },
+			todo = function(itemlinks,vars) 
+				SendChatMessage(L["Priorities of username: list"](vars["u"],table.concat(itemlinks,", ")), channel, nil, vars["u"])
+			end,
+		}
+		table.insert(Prio3.GET_ITEM_INFO_RECEIVED_TodoList, t)
+	
+	end
+
+end 
+
+function Prio3:HandleNewPriorities(user, prio1, prio2, prio3, origin) 
+	-- avoid Priorities being nil, if not all are used up
+	p1 = 0
+	p2 = 0
+	p3 = 0
+	
+	if user == nil then	
+		Prio3:Debug("DEBUG: No user found in " .. origin) 
+	else
+		user = strtrim(user)
+		
+		if prio1 == nil then
+			Prio3:Debug("DEBUG: No prio1 found in " .. origin) 
+		else
+			p1 = Prio3:toPriorityId(prio1) 
+			Prio3:Debug("DEBUG: Found PRIORITY 1 ITEM " .. p1 .. " for user " .. user .. " in " .. origin) 
+		end
+		if prio2 == nil then
+			Prio3:Debug("DEBUG: No prio2 found in " .. origin) 
+		else
+			p2 = Prio3:toPriorityId(prio2) 
+			Prio3:Debug("DEBUG: Found PRIORITY 2 ITEM " .. p2 .. " for user " .. user .. " in " .. origin) 
+		end
+		if prio3 == nil then
+			Prio3:Debug("DEBUG: No prio3 found in " .. origin) 
+		else
+			p3 = Prio3:toPriorityId(prio3) 
+			Prio3:Debug("DEBUG: Found PRIORITY 3 ITEM " .. p3 .. " for user " .. user .. " in " .. origin) 
+		end
+		
+		Prio3.db.profile.priorities[user] = {p1, p2, p3}
+	
+		-- whisper if player is in RAID, oder in debug mode to player char
+		if Prio3.db.profile.whisperimport and ((Prio3.db.profile.debug and user == UnitName("player")) or UnitInRaid(user)) then
+			Prio3:OutputUserPrio(user, "WHISPER")
+		end
+		
+	end
+	
+end
+
 -- parse incoming priorities
 function Prio3:SetPriority(info, line, formatType)
 	local user, prio1, prio2, prio3, dummy
@@ -83,123 +206,64 @@ function Prio3:SetPriority(info, line, formatType)
 		-- replace tabs and multi-spaces by &
 		linecsv = string.gsub(line, "[\t]+", "&")
 		linecsv = string.gsub(linecsv, "%s%s+", "&")
-		-- will be enough: toId below will parse number from string
+		-- will be enough: toPriorityId below will parse number from string
 		user, dummy, prio1, prio2, prio3 = strsplit("&", linecsv)		
 	end
-	
-	local function toId(s) 
-		for id in string.gmatch(s, "%d+") do 
-		
-			-- there are some items that are rewards from quest items
-			-- sahne-team e.g. allows for selecting the rewards directly
-			-- match to dop item, so it will be listed correctly on drops
-		
-			-- Heart of Hakkar for Zandalarion Hero trinkets
-		    if id == 19948 then id = 19802 end
-		    if id == 19949 then id = 19802 end
-		    if id == 19950 then id = 19802 end
 
-			-- Head of Onyxia, depending on faction
-			if id == 18403 and UnitFactionGroup(player) == 'Horde' then id = 18422 end
-			if id == 18404 and UnitFactionGroup(player) == 'Horde' then id = 18422 end
-			if id == 18405 and UnitFactionGroup(player) == 'Horde' then id = 18422 end
-			if id == 18403 and UnitFactionGroup(player) == 'Alliance' then id = 18423 end
-			if id == 18404 and UnitFactionGroup(player) == 'Alliance' then id = 18423 end
-			if id == 18405 and UnitFactionGroup(player) == 'Alliance' then id = 18423 end
-
-			-- Head of Nefarian, depending on faction
-			if id == 19383 and UnitFactionGroup(player) == 'Horde' then id = 19002 end
-			if id == 19366 and UnitFactionGroup(player) == 'Horde' then id = 19002 end
-			if id == 19384 and UnitFactionGroup(player) == 'Horde' then id = 19002 end
-			if id == 19383 and UnitFactionGroup(player) == 'Alliance' then id = 19003 end
-			if id == 19366 and UnitFactionGroup(player) == 'Alliance' then id = 19003 end
-			if id == 19384 and UnitFactionGroup(player) == 'Alliance' then id = 19003 end
-
-			-- Head of Ossirian the Unscarred
-			if id == 21504 then id = 21220 end
-			if id == 21505 then id = 21220 end
-			if id == 21506 then id = 21220 end
-			if id == 21507 then id = 21220 end
-			
-			-- there are quite some more... All AQ tokens, ZG tokens and so on
-			-- but for now I'll only list the most common mistakes here.
-			
-			GetItemInfo(id) -- firing server-side request here, so it can start getting cached early
-			return id 
-		end
-	end
-
-	-- avoid Priorities being nil, if not all are used up
-	p1 = 0
-	p2 = 0
-	p3 = 0
-	
-	if user == nil then	
-		Prio3:Debug("DEBUG: No user found in " .. line) 
-	else
-		user = strtrim(user)
-		
-		if prio1 == nil then
-			Prio3:Debug("DEBUG: No prio1 found in " .. line) 
-		else
-			p1 = toId(prio1) 
-			Prio3:Debug("DEBUG: Found PRIORITY 1 ITEM " .. p1 .. " for user " .. user .. " in " .. line) 
-		end
-		if prio2 == nil then
-			Prio3:Debug("DEBUG: No prio2 found in " .. line) 
-		else
-			p2 = toId(prio2) 
-			Prio3:Debug("DEBUG: Found PRIORITY 2 ITEM " .. p2 .. " for user " .. user .. " in " .. line) 
-		end
-		if prio3 == nil then
-			Prio3:Debug("DEBUG: No prio3 found in " .. line) 
-		else
-			p3 = toId(prio3) 
-			Prio3:Debug("DEBUG: Found PRIORITY 3 ITEM " .. p3 .. " for user " .. user .. " in " .. line) 
-		end
-		
-		Prio3.db.profile.priorities[user] = {p1, p2, p3}
-	
-		-- whisper if player is in RAID, oder in debug mode to player char
-		if Prio3.db.profile.whisperimport and ((Prio3.db.profile.debug and user == UnitName("player")) or UnitInRaid(user)) then
-			local itemLinks =  {}
-			local itemName1, itemLink1 = GetItemInfo(p1)
-			
-			table.insert(itemLinks, itemLink1)
-			
-			local itemName2, itemLink2 = ""
-			local itemName3, itemLink3 = ""
-			if p2 then
-				itemName2, itemLink2 = GetItemInfo(p2)
-				table.insert(itemLinks, itemLink2)
-			end
-			if p3 then
-				itemName3, itemLink3 = GetItemInfo(p3)
-				table.insert(itemLinks, itemLink3)
-			end
-
-			local existAll = itemLink1 and (itemLink2 or not p2) and (itemLink3 or not p3)
-			if existAll then
-				
-				SendChatMessage(L["Priorities of username: list"](user,table.concat(itemLinks,", ")), "WHISPER", nil, user)
-	
-			else
-
-				local t = {
-					needed_itemids = Prio3.db.profile.priorities[user],
-					vars = { u = user },
-					todo = function(itemlinks,vars) 
-						SendChatMessage(L["Priorities of username: list"](vars["u"],table.concat(itemlinks,", ")), "WHISPER", nil, vars["u"])
-					end,
-				}
-				table.insert(Prio3.GET_ITEM_INFO_RECEIVED_TodoList, t)
-			
-			end
-
-		end
-		
-	end
+	Prio3:HandleNewPriorities(user, prio1, prio2, prio3, line) 
 		
 end
 
+
+function Prio3:ParseWhisperLine(sender, line)
+	-- check if we would accept from this user anyway
+	if Prio3.db.profile.acceptwhisperprios_new then
+		if Prio3.db.profile.priorities[sender] ~= nil then
+			-- prios already set for this user, and not accepting overwrites
+			return nil
+		end	
+	end
+	
+	-- to avoid loops, filter out L["Priorities of username: list"] outputs. Well, part of it.
+	if line:match(UnitName("player") .. ":") then return nil end
+	
+	-- look for item links:
+	-- should look like |cff9d9d9d|Hitem:3299::::::::20:257::::::|h[Fractured Canine]|h|rno
+	-- so, look for 1, 2 or 3 itemLinks (Might be Prio2 or Prio1 run, or user does not want to set all prios)
+	-- nesting matches for 2 and 3 doesn't seem to work properly, so taking the long road
+	
+	local p1, p2, p3 = line:match("|Hitem:(%d+):.-|Hitem:(%d+):.-|Hitem:(%d+):")
+	if (p3 ~= nil) then return Prio3:HandleNewPriorities(sender, p1, p2, p3, line) end
+
+	local p1, p2 = line:match("|Hitem:(%d+):.-|Hitem:(%d+):")
+	if (p2 ~= nil) then	return Prio3:HandleNewPriorities(sender, p1, p2, nil, line) end
+
+	local p1 = line:match("|Hitem:(%d+):")
+	if (p1 ~= nil) then return Prio3:HandleNewPriorities(sender, p1, nil, nil, line) end
+
+	-- ok, no itemlink. Let's look for wowhead links
+	-- should look like https://classic.wowhead.com/item=19351/maladath-runed-blade-of-the-black-flight or https://de.classic.wowhead.com/item=2482/minderwertiger-tomahawk
+	-- same as above, nested matching seems not to work properly
+	
+	local p1, p2, p3 = line:match("item=(%d+).-item=(%d+).-item=(%d+)")
+	if (p3 ~= nil) then return Prio3:HandleNewPriorities(sender, p1, p2, p3, line) end
+
+	local p1, p2 = line:match("item=(%d+).-item=(%d+)")
+	if (p2 ~= nil) then return Prio3:HandleNewPriorities(sender, p1, p2, nil, line) end
+
+	local p1 = line:match("item=(%d+)")
+	if (p1 ~= nil) then return Prio3:HandleNewPriorities(sender, p1, nil, nil, line) end
+
+	-- finally, look if we find 3 numbers that look feasible
+	
+	local p1, p2, p3 = line:match("(%d+).-(%d+).-(%d+)")
+	if (p3 ~= nil) then return Prio3:HandleNewPriorities(sender, p1, p2, p3, line) end
+
+	local p1, p2 = line:match("(%d+).-(%d+)")
+	if (p2 ~= nil) then return Prio3:HandleNewPriorities(sender, p1, p2, nil, line) end
+
+	local p1 = line:match("(%d+)")
+	if (p1 ~= nil) then return Prio3:HandleNewPriorities(sender, p1, nil, nil, line) end
+
+end
 
