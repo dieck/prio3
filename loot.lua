@@ -16,8 +16,11 @@ function Prio3:LOOT_OPENED()
 	end
 
 	-- look if priorities are defined
-	if Prio3.db.profile.priorities == nil then
-		Prio3:Print(L["No priorities defined."])	
+	if Prio3.db.profile.priorities == nil or getn(Prio3.db.profile.priorities)==0 then
+		if Prio3.onetimenotifications["prio_unset"] == nil then 
+			Prio3:Print(L["No priorities defined."])
+			Prio3.onetimenotifications["prio_unset"] = 1
+		end
 		return
 	end
 	
@@ -57,7 +60,7 @@ function Prio3:LOOT_OPENED()
 			
 		end
 	end
-	
+
 	-- handle loot
 	for dummy,itemLink in pairs(reportLinks) do
 		Prio3:HandleLoot(itemLink, maxQuality)
@@ -78,8 +81,11 @@ function Prio3:START_LOOT_ROLL(eventname, rollID, rollTime, lootHandle)
 	end
 
 	-- look if priorities are defined
-	if Prio3.db.profile.priorities == nil then
-		Prio3:Print(L["No priorities defined."])	
+	if Prio3.db.profile.priorities == nil or getn(Prio3.db.profile.priorities)==0 then
+		if Prio3.onetimenotifications["prio_unset"] == nil then 
+			Prio3:Print(L["No priorities defined."])
+			Prio3.onetimenotifications["prio_unset"] = 1
+		end
 		return
 	end
 
@@ -141,6 +147,16 @@ end
 
 function Prio3:reactToRaidWarning(id, sender)
 
+	-- look if priorities are defined
+	if Prio3.db.profile.priorities == nil or getn(Prio3.db.profile.priorities)==0 then
+		if Prio3.onetimenotifications["prio_unset"] == nil then 
+			Prio3:Print(L["No priorities defined."])
+			Prio3.onetimenotifications["prio_unset"] = 1
+		end
+		return
+	end
+	
+
 	if Prio3.doReactToRaidWarning then
 		local _, itemLink = GetItemInfo(id) -- might not return item link right away
 
@@ -180,6 +196,15 @@ function Prio3:HandleLoot(itemLink, qualityFound)
 		return
 	end
 
+	-- look if priorities are defined
+	if Prio3.db.profile.priorities == nil or getn(Prio3.db.profile.priorities)==0 then
+		if Prio3.onetimenotifications["prio_unset"] == nil then 
+			Prio3:Print(L["No priorities defined."])
+			Prio3.onetimenotifications["prio_unset"] = 1
+		end
+		return
+	end
+	
 	local _, itemId, enchantId, jewelId1, jewelId2, jewelId3, jewelId4, suffixId, uniqueId, linkLevel, specializationID, reforgeId, unknown1, unknown2 = strsplit(":", itemLink)
 	-- bad argument, might be gold? (or copper, here)
 
