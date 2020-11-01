@@ -1,7 +1,7 @@
 local L = LibStub("AceLocale-3.0"):GetLocale("Prio3", true)
 
 local Prio3commPrefix = "Prio3-1.0-"
-local Prio3versionString = "v20201031"
+local Prio3versionString = "v20201101"
 
 local defaults = {
   profile = {
@@ -558,4 +558,17 @@ function tprint (tbl, indent)
   return toprint
 end
 
+function tablesize(t)
+    local count = 0
+    for _, __ in pairs(t) do
+        count = count + 1
+    end
+    return count
+end
 
+function tempty(t)
+	if t == nil then return true end
+	if tablesize(t) > 0 then return false end
+	return true
+
+end
