@@ -72,6 +72,8 @@ function Prio3:toPriorityId(s)
 		-- sahne-team e.g. allows for selecting the rewards directly
 		-- match to drop item, so it will be listed correctly on drops
 
+		id = tonumber(id)
+
 		-- Heart of Hakkar for Zandalarion Hero trinkets
 		if id == 19948 then id = 19802 end
 		if id == 19949 then id = 19802 end
