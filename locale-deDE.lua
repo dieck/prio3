@@ -95,6 +95,10 @@ L["sender received priorities and answered"] = function(sender, answered) return
 L["accepted"] = "hat akzeptiert"
 L["discarded"] = "hat nicht angenommen"
 L["Accepted new priorities sent from sender"] = function(sender) return "Neue Prioritäten von " .. sender .." angenommen" end
+L["Received new priorities sent from sender, but I am Master Looter"] = function(sender) return "Neue Prioritäten von " .. sender .. " erhalten, aber ich bin Plündermeister" end
+L["Received Priorities"] = "Prioritäten empfangen"
+L["Accept incoming"] = "Eingehende akzeptieren"
+L["Reject and keep mine"] = "Ablehnen und meine behalten"
 
 -- used terms from loot.lua
 L["Priority List"] = "Prioritäts-Liste"
