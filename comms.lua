@@ -127,11 +127,31 @@ function Prio3:OnCommReceived(prefix, message, distribution, sender)
 
 		-- SEND_PRIORITIES
 		if (deserialized["command"] == "SEND_PRIORITIES") and (Prio3.db.profile.comm_enable_prio) then
-			Prio3.db.profile.priorities = deserialized["prios"]
-			Prio3.db.profile.receivedPriorities = time()
-			Prio3:Print(L["Accepted new priorities sent from sender"](sender))
-			local commmsg = { command = "RECEIVED_PRIORITIES", answer = "accepted", addon = Prio3.addon_id, version = Prio3.versionString }
-			Prio3:SendCommMessage(Prio3.commPrefix, Prio3:Serialize(commmsg), "RAID", nil, "NORMAL")
+		
+			local playerIsMasterLooter = false
+
+			local _, _, masterlooterRaidID = GetLootMethod()
+			if masterlooterRaidID then
+				local name, rank, subgroup, level, class, fileName, zone, online, isDead, role, isML = GetRaidRosterInfo(masterlooterRaidID);
+				if isML and name == UnitName("player") then
+					playerIsMasterLooter = true
+				end
+			end
+			
+			if playerIsMasterLooter then
+				local newPriorities = deserialized["prios"]
+				local newReceived = time()
+				Prio3:Print(L["Received new priorities sent from sender, but I am Master Looter"](sender))
+				Prio3:askToAcceptIncomingPriorities(sender, newPriorities, newReceived)
+				
+			else
+				-- no master looting is used, or player is not master looter
+				Prio3.db.profile.priorities = deserialized["prios"]
+				Prio3.db.profile.receivedPriorities = time()
+				Prio3:Print(L["Accepted new priorities sent from sender"](sender))
+				local commmsg = { command = "RECEIVED_PRIORITIES", answer = "accepted", addon = Prio3.addon_id, version = Prio3.versionString }
+				Prio3:SendCommMessage(Prio3.commPrefix, Prio3:Serialize(commmsg), "RAID", nil, "NORMAL")
+			end
 		end
 
 		-- REQUEST_PRIORITIES
