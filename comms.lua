@@ -54,11 +54,6 @@ function Prio3:reactToVersionMatch(usr)
 end
 
 function Prio3:OnCommReceived(prefix, message, distribution, sender)
-	-- disabled?
-    if not Prio3.db.profile.enabled then
-	  return
-	end
-
 	-- playerName may contain "-REALM"
 	sender = strsplit("-", sender)
 
@@ -68,12 +63,27 @@ function Prio3:OnCommReceived(prefix, message, distribution, sender)
 	end
 
     local success, deserialized = Prio3:Deserialize(message);
+
+	-- first thing we'll do: Note down the version
+	if success then
+		local remoteversion = deserialized["version"]
+		if remoteversion then
+			remversion = strsub(remoteversion, 1, 9)
+			Prio3.raidversions[sender] = remversion
+		end
+	end
+
+	-- disabled? get out here. Only thing that happened was recording the version in raid
+    if not Prio3.db.profile.enabled then
+	  return
+	end
+
+	-- every thing else get handled if (if not disabled)
     if success then
 	
 	    local remoteversion = deserialized["version"]
 		if remoteversion then
 		    remversion = strsub(remoteversion, 1, 9)
-			Prio3.raidversions[sender] = remversion
 			if (remversion > Prio3.versionString) and (Prio3.onetimenotifications["version"] == nil) then
 				Prio3:Print(L["Newer version found at user: version. Please update your addon."](sender, remversion))
 				Prio3.onetimenotifications["version"] = 1
