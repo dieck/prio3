@@ -93,6 +93,7 @@ L["No priorities defined."] = "No priorities defined." -- also in loot.lua
 L["sender handled notification for item"] = function(sender, item) return sender .. " handled notification for " .. item end
 L["sender received priorities and answered"] = function(sender, answered) return sender .. " received priorities and " .. answered end
 L["accepted"] = "accepted"
+L["rejected as Master Looter"] = "rejected as Master Looter"
 L["discarded"] = "discarded"
 L["Accepted new priorities sent from sender"] = function(sender) return "Accepted new priorities sent from " .. sender end
 L["Received new priorities sent from sender, but I am Master Looter"] = function(sender) return "Received new priorities sent from " .. sender .. ", but I am Master Looter" end

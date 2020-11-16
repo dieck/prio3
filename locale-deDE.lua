@@ -93,6 +93,7 @@ L["No priorities defined."] = "Keine Prioritäten eingestellt." -- also in loot.
 L["sender handled notification for item"] = function(sender, item) return sender .. " hat Benachrichtungen für " .. item .. " bearbeitet" end
 L["sender received priorities and answered"] = function(sender, answered) return sender .. " hat neue Prioritäten erhalten und " .. L[answered] end
 L["accepted"] = "hat akzeptiert"
+L["rejected as Master Looter"] = "abgelehnt vom Master Looter"
 L["discarded"] = "hat nicht angenommen"
 L["Accepted new priorities sent from sender"] = function(sender) return "Neue Prioritäten von " .. sender .." angenommen" end
 L["Received new priorities sent from sender, but I am Master Looter"] = function(sender) return "Neue Prioritäten von " .. sender .. " erhalten, aber ich bin Plündermeister" end

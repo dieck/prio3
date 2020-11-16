@@ -87,6 +87,10 @@ function Prio3:toPriorityId(s)
 		if id == 18404 and UnitFactionGroup(player) == 'Alliance' then id = 18423 end
 		if id == 18405 and UnitFactionGroup(player) == 'Alliance' then id = 18423 end
 
+		-- Head of Onyxia, wrong faction chosen
+		if id == 18423 and UnitFactionGroup(player) == 'Horde' then id = 18422 end
+		if id == 18422 and UnitFactionGroup(player) == 'Alliance' then id = 18423 end
+
 		-- Head of Nefarian, depending on faction
 		if id == 19383 and UnitFactionGroup(player) == 'Horde' then id = 19002 end
 		if id == 19366 and UnitFactionGroup(player) == 'Horde' then id = 19002 end
@@ -94,6 +98,10 @@ function Prio3:toPriorityId(s)
 		if id == 19383 and UnitFactionGroup(player) == 'Alliance' then id = 19003 end
 		if id == 19366 and UnitFactionGroup(player) == 'Alliance' then id = 19003 end
 		if id == 19384 and UnitFactionGroup(player) == 'Alliance' then id = 19003 end
+
+		-- Head of Nefarian, wrong faction chosen
+		if id == 19003 and UnitFactionGroup(player) == 'Horde' then id = 19002 end
+		if id == 19002 and UnitFactionGroup(player) == 'Alliance' then id = 19003 end
 
 		-- Head of Ossirian the Unscarred
 		if id == 21504 then id = 21220 end

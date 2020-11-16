@@ -49,7 +49,7 @@ function Prio3:guiPriorityFrame()
 		Prio3.lootframe = Prio3:createPriorityFrame()
 		Prio3.lootframe:Show()
 	else
-		if self.db.profile.debug then Prio3:Print("DEBUG: requested window to open after GET_ITEM_INFO_RECEIVED") end
+		if Prio3.db.profile.debug then Prio3:Print("DEBUG: requested window to open after GET_ITEM_INFO_RECEIVED") end
 		-- queue for handling when GET_ITEM_INFO_RECEIVED event came through
 		local t = {
 			needed_itemids = tblrequest,
@@ -141,7 +141,11 @@ function Prio3:createPriorityFrame()
 				s:AddChild(lbIcon)
 
 				local lbPrio = AceGUI:Create("InteractiveLabel")
-				lbPrio:SetText(itemLink)
+				if (Prio3.db.profile.debug) then 
+					lbPrio:SetText("("..prios[1]..") " .. itemLink)
+				else 
+					lbPrio:SetText(itemLink)
+				end
 				lbPrio:SetRelativeWidth(0.20)
 				s:AddChild(lbPrio)
 			else
@@ -190,7 +194,11 @@ function Prio3:createPriorityFrame()
 				s:AddChild(lbIcon)
 
 				local lbPrio = AceGUI:Create("InteractiveLabel")
-				lbPrio:SetText(itemLink)
+				if (Prio3.db.profile.debug) then 
+					lbPrio:SetText("("..prios[2]..") " .. itemLink)
+				else 
+					lbPrio:SetText(itemLink)
+				end
 				lbPrio:SetRelativeWidth(0.20)
 				s:AddChild(lbPrio)
 			else
@@ -241,7 +249,11 @@ function Prio3:createPriorityFrame()
 				s:AddChild(lbIcon)
 
 				local lbPrio = AceGUI:Create("InteractiveLabel")
-				lbPrio:SetText(itemLink)
+				if (Prio3.db.profile.debug) then 
+					lbPrio:SetText("("..prios[3]..") " .. itemLink)
+				else 
+					lbPrio:SetText(itemLink)
+				end
 				lbPrio:SetRelativeWidth(0.20)
 				s:AddChild(lbPrio)
 			else
