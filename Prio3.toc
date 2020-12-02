@@ -1,4 +1,4 @@
-## Interface: 11305
+## Interface: 11306
 ## Title: Prio3
 ## Notes: Loot notification for Priority Loot system. Can use export from Sahne-Team.de website
 ## Author: dieck
