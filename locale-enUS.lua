@@ -59,7 +59,7 @@ L["Newer version found at user: version. Please update your addon."] = function(
 
 L["Sync priorities"] = "Sync priorities"
 L["Allows to sync priorities between multiple users in the same raid running Prio3"] = "Allows to sync priorities between multiple users in the same raid running Prio3"
-L["Sync item accouncements"] = "Sync item accouncements"
+L["Sync item announcements"] = "Sync item announcements"
 L["Prevents other users from posting the same item you already posted."] = "Prevents other users from posting the same item you already posted."
 L["/prio handler"] = "/prio handler"
 L["/p3 handler"] = "/p3 handler"

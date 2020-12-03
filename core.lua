@@ -1,7 +1,7 @@
 local L = LibStub("AceLocale-3.0"):GetLocale("Prio3", true)
 
 local Prio3commPrefix = "Prio3-1.0-"
-local Prio3versionString = "v20201116"
+local Prio3versionString = "v20201203"
 
 local defaults = {
   profile = {
@@ -435,7 +435,7 @@ Prio3.prioOptionsTable = {
 			},
 			newline2 = { name="", type="description", order=19 },
 			syncitems = {
-				name = "Sync item accouncements",
+				name = "Sync item announcements",
 				desc = "Prevents other users from posting the same item you already posted.",
 				type = "toggle",
 				order = 20,
