@@ -59,7 +59,7 @@ L["Newer version found at user: version. Please update your addon."] = function(
 
 L["Sync priorities"] = "Prioritäten synchronisieren"
 L["Allows to sync priorities between multiple users in the same raid running Prio3"] = "Erlaubt der syncen von Prioritäten mit anderen Prio3-Addons im Raid"
-L["Sync item accouncements"] = "Ausgaben synchronisieren"
+L["Sync item announcements"] = "Ausgaben synchronisieren"
 L["Prevents other users from posting the same item you already posted."] = "Synct Ausgaben, so dass andere Raidteilnehmer den gleichen Loot nicht erneut posten."
 L["/prio handler"] = "/prio benutzen"
 L["/p3 handler"] = "/p3 benutzen"
