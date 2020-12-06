@@ -79,29 +79,29 @@ function Prio3:toPriorityId(s)
 		if id == 19949 then id = 19802 end
 		if id == 19950 then id = 19802 end
 
-		-- Head of Onyxia, depending on faction
-		if id == 18403 and UnitFactionGroup(player) == 'Horde' then id = 18422 end
-		if id == 18404 and UnitFactionGroup(player) == 'Horde' then id = 18422 end
-		if id == 18405 and UnitFactionGroup(player) == 'Horde' then id = 18422 end
-		if id == 18403 and UnitFactionGroup(player) == 'Alliance' then id = 18423 end
-		if id == 18404 and UnitFactionGroup(player) == 'Alliance' then id = 18423 end
-		if id == 18405 and UnitFactionGroup(player) == 'Alliance' then id = 18423 end
+		-- Head of Onyxia items, depending on faction
+		if id == 18403 and UnitFactionGroup("player") == 'Horde' then id = 18422 end
+		if id == 18404 and UnitFactionGroup("player") == 'Horde' then id = 18422 end
+		if id == 18405 and UnitFactionGroup("player") == 'Horde' then id = 18422 end
+		if id == 18403 and UnitFactionGroup("player") == 'Alliance' then id = 18423 end
+		if id == 18404 and UnitFactionGroup("player") == 'Alliance' then id = 18423 end
+		if id == 18405 and UnitFactionGroup("player") == 'Alliance' then id = 18423 end
 
 		-- Head of Onyxia, wrong faction chosen
-		if id == 18423 and UnitFactionGroup(player) == 'Horde' then id = 18422 end
-		if id == 18422 and UnitFactionGroup(player) == 'Alliance' then id = 18423 end
+		if id == 18423 and UnitFactionGroup("player") == 'Horde' then id = 18422 end
+		if id == 18422 and UnitFactionGroup("player") == 'Alliance' then id = 18423 end
 
-		-- Head of Nefarian, depending on faction
-		if id == 19383 and UnitFactionGroup(player) == 'Horde' then id = 19002 end
-		if id == 19366 and UnitFactionGroup(player) == 'Horde' then id = 19002 end
-		if id == 19384 and UnitFactionGroup(player) == 'Horde' then id = 19002 end
-		if id == 19383 and UnitFactionGroup(player) == 'Alliance' then id = 19003 end
-		if id == 19366 and UnitFactionGroup(player) == 'Alliance' then id = 19003 end
-		if id == 19384 and UnitFactionGroup(player) == 'Alliance' then id = 19003 end
+		-- Head of Nefarian items, depending on faction
+		if id == 19383 and UnitFactionGroup("player") == 'Horde' then id = 19002 end
+		if id == 19366 and UnitFactionGroup("player") == 'Horde' then id = 19002 end
+		if id == 19384 and UnitFactionGroup("player") == 'Horde' then id = 19002 end
+		if id == 19383 and UnitFactionGroup("player") == 'Alliance' then id = 19003 end
+		if id == 19366 and UnitFactionGroup("player") == 'Alliance' then id = 19003 end
+		if id == 19384 and UnitFactionGroup("player") == 'Alliance' then id = 19003 end
 
 		-- Head of Nefarian, wrong faction chosen
-		if id == 19003 and UnitFactionGroup(player) == 'Horde' then id = 19002 end
-		if id == 19002 and UnitFactionGroup(player) == 'Alliance' then id = 19003 end
+		if id == 19003 and UnitFactionGroup("player") == 'Horde' then id = 19002 end
+		if id == 19002 and UnitFactionGroup("player") == 'Alliance' then id = 19003 end
 
 		-- Head of Ossirian the Unscarred
 		if id == 21504 then id = 21220 end
