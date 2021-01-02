@@ -132,6 +132,11 @@ function Prio3:CHAT_MSG_RAID_WARNING(event, text, sender)
 			Prio3:Debug("Ignoring Onyxia Scale Cloak")
 			return nil 
 		end
+		-- ignore Drakefire Amulet if configured
+		if Prio3.db.profile.ignoredrakefire and tonumber(id) == 16309 then
+			Prio3:Debug("Ignoring Drakefire Amulet")
+			return nil 
+		end
 	
 		-- announce to other addon that we want to react to raidwarning, but only if we would send something out actually
 		if Prio3.db.profile.raidannounce then
@@ -223,6 +228,7 @@ function Prio3:HandleLoot(itemLink, qualityFound)
 			or i == 18422 or i == 18423 -- Head of Onyxia
 			or i == 19002 or i == 19003 -- Head of Nefarian
 			or i == 21221 -- Eye of C'thun
+			or i == 22520 -- Phylactery of Kel'Thuzad
 			or i == 16946 or i == 16901 or i == 16915 or i == 16930 or i == 16922 or i == 16909 or i == 16962 or i == 16938 or i == 16954 -- Ragnaros has no head... So, T2 legs. All of them.
 		then
 			Prio3:ScheduleTimer("postLastBossMessage", 12)

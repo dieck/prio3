@@ -1,7 +1,7 @@
 local L = LibStub("AceLocale-3.0"):GetLocale("Prio3", true)
 
 local Prio3commPrefix = "Prio3-1.0-"
-local Prio3versionString = "v20201206"
+local Prio3versionString = "v20210102"
 
 local defaults = {
   profile = {
@@ -10,6 +10,7 @@ local defaults = {
 	lootrolls = true,
 	raidwarnings = true,
 	ignorescalecloak = true,
+	ignoredrakefire = true,
 	raidannounce = true,
 	noprioannounce = true,
 	noprioannounce_quality = "e",
@@ -213,15 +214,24 @@ Prio3.prioOptionsTable = {
 			  set = function(info,val) Prio3.db.profile.raidwarnings = val end,
 			  get = function(info) return Prio3.db.profile.raidwarnings end,
 			},
-			ignorescalecloak = {
+			newline38 = { name="", type="description", order=38 },
+			ignorescalecloak = {			
 			  name = L["Ignore Ony Cloak"],
 			  desc = L["Ignore if someone raid warns about the Onyxia Scale Cloak"],
 			  type = "toggle",
-			  order = 38,
+			  order = 39,
 			  set = function(info,val) Prio3.db.profile.ignorescalecloak = val end,
 			  get = function(info) return Prio3.db.profile.ignorescalecloak end,
 			},
-			newline5 = { name="", type="description", order=39 },
+			ignoredrakefire = {			
+			  name = L["Ignore Drakefire"],
+			  desc = L["Ignore if someone raid warns about the Drakefire Amulet"],
+			  type = "toggle",
+			  order = 40,
+			  set = function(info,val) Prio3.db.profile.ignoredrakefire = val end,
+			  get = function(info) return Prio3.db.profile.ignoredrakefire end,
+			},
+			newline5 = { name="", type="description", order=41 },
 			reopen = {
 				name = L["Mute (sec)"],
 				desc = L["Ignores loot encountered a second time for this amount of seconds. 0 to turn off."],
@@ -230,7 +240,7 @@ Prio3.prioOptionsTable = {
 				max = 600,
 				step = 1,
 				bigStep = 15,
-				order = 40,
+				order = 42,
 				set = function(info,val) Prio3.db.profile.ignorereopen = val end,
 				get = function(info) return Prio3.db.profile.ignorereopen end
 			},
