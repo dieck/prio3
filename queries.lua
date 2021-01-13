@@ -28,14 +28,14 @@ function Prio3:QueryItem(item, whisperto)
 	
 	for username,userprio in pairs(Prio3.db.profile.priorities) do
 		for pr,item in pairs(userprio) do
-			if item == itemID then
+			if tonumber(userprio[pr]) == tonumber(itemID) then
 				table.insert(prios, username .. " (" .. pr .. ")")
 			end
 		end
 	end
 	
 	if table.getn(prios) > 0 then
-		SendChatMessage(L["itemLink on Prio at userpriolist"](itemLink, table.concat(prios, ", ")), "WHISPER", nil, whisperto)
+		SendChatMessage(L["itemLink on Prio at userpriolist"](itemLink, table.concat(prios, ", ").." Total: "..table.getn(prios)), "WHISPER", nil, whisperto)
 	else
 		SendChatMessage(L["No priorities found for playerOrItem"](itemLink), "WHISPER", nil, whisperto)
 	end
