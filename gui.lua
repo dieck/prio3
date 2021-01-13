@@ -116,7 +116,7 @@ function Prio3:createPriorityFrame()
 	
 	for user, prios in pairs(self.db.profile.priorities) do
 	
-				function processPrio (prioNumber)
+		function processPrio (prioNumber)
 			local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, itemSellPrice = GetItemInfo(prios[prioNumber])
 
 			if itemLink then
