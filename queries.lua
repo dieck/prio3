@@ -28,7 +28,7 @@ function Prio3:QueryItem(item, whisperto)
 	
 	for username,userprio in pairs(Prio3.db.profile.priorities) do
 		for pr,item in pairs(userprio) do
-			if tonumber(userprio[pr]) == tonumber(itemID) then
+			if tonumber(item) == tonumber(itemID) then
 				table.insert(prios, username .. " (" .. pr .. ")")
 			end
 		end
