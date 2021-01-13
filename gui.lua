@@ -114,9 +114,21 @@ function Prio3:createPriorityFrame()
 	scrollcontainer:AddChild(s)
 	
 	
-	for user, prios in pairs(self.db.profile.priorities) do
+	sortedUsers = {} -- Hashmap User
+	userPrios = {} -- Hashmap Prios
 	
-		function processPrio (prioNumber)
+	playerIndex = 1
+    	for user, prios in pairs(self.db.profile.priorities) do
+		table.insert(sortedUsers, playerIndex, user)
+		table.insert(userPrios, playerIndex, prios)
+		playerIndex = playerIndex+1
+	end
+    	table.sort(sortedUsers) -- Sorts users alphabetically
+	
+	for index, user in ipairs(sortedUsers) do
+		prios = userPrios[index] -- Link user and prios via index
+			
+		function processPrio (prioNumber) -- function to process existing prios 
 			local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, itemSellPrice = GetItemInfo(prios[prioNumber])
 
 			if itemLink then
@@ -142,8 +154,7 @@ function Prio3:createPriorityFrame()
 				end
 				lbPrio:SetRelativeWidth(0.20)
 				s:AddChild(lbPrio)
-			else
-			
+			else			
 				local lbIcon = AceGUI:Create("Icon")
 				lbIcon:SetRelativeWidth(0.04)
 				lbIcon:SetImage("Interface\\Icons\\ability_vanish")
@@ -153,53 +164,41 @@ function Prio3:createPriorityFrame()
 				local lbPrio = AceGUI:Create("InteractiveLabel")
 				lbPrio:SetText("-ERROR: ID-")
 				lbPrio:SetRelativeWidth(0.20)
-				s:AddChild(lbPrio)
-			
+				s:AddChild(lbPrio)			
 			end
 		end	
 		
-		function noPrio(prioNumber)
+		function noPrio(prioNumber) -- function to process missing prios 
 			local lbIcon = AceGUI:Create("Icon")
-				lbIcon:SetRelativeWidth(0.04)
-				lbIcon:SetImage("Interface\\Icons\\ability_vanish")
-				lbIcon:SetImageSize(15,15)
-				s:AddChild(lbIcon)
+			lbIcon:SetRelativeWidth(0.04)
+			lbIcon:SetImage("Interface\\Icons\\ability_vanish")
+			lbIcon:SetImageSize(15,15)
+			s:AddChild(lbIcon)
 
-				local lbPrio = AceGUI:Create("InteractiveLabel")
-				lbPrio:SetText("-no prio "..prioNumber.." set-")
-				lbPrio:SetRelativeWidth(0.20)
-				s:AddChild(lbPrio)
+			local lbPrio = AceGUI:Create("InteractiveLabel")
+			lbPrio:SetText("-no prio "..prioNumber.." set-")
+			lbPrio:SetRelativeWidth(0.20)
+			s:AddChild(lbPrio)
+		end
+		
+		function cellSeperator(columns)
+			for i=1,columns do  
+				local lbHR = AceGUI:Create("Label")
+				lbHR:SetText("-----------------------------")
+				lbHR:SetRelativeWidth(0.24)
+				s:AddChild(lbHR)
+			end
 		end
 	
 		local lbPlayerName = AceGUI:Create("Label")
-		lbPlayerName:SetText(user)
+		lbPlayerName:SetText(index.." "..user)
 		lbPlayerName:SetRelativeWidth(0.24)
 		s:AddChild(lbPlayerName)	
 		
 		if tonumber(prios[1]) > 0 then processPrio(1) else noPrio(1) end
 		if tonumber(prios[2]) > 0 then processPrio(2) else noPrio(2) end
-		if tonumber(prios[3]) > 0 then processPrio(3) else noPrio(3) end
-		
-		local lbHR = AceGUI:Create("Label")
-		lbHR:SetText("-----------------------------")
-		lbHR:SetRelativeWidth(0.24)
-		s:AddChild(lbHR)
-
-		local lbHR = AceGUI:Create("Label")
-		lbHR:SetText("-----------------------------")
-		lbHR:SetRelativeWidth(0.24)
-		s:AddChild(lbHR)
-
-		local lbHR = AceGUI:Create("Label")
-		lbHR:SetText("-----------------------------")
-		lbHR:SetRelativeWidth(0.24)
-		s:AddChild(lbHR)
-
-		local lbHR = AceGUI:Create("Label")
-		lbHR:SetText("-----------------------------")
-		lbHR:SetRelativeWidth(0.24)
-		s:AddChild(lbHR)
-		
+		if tonumber(prios[3]) > 0 then processPrio(3) else noPrio(3) end		
+		cellSeperator(4)
 	end
 	
 	return f
