@@ -116,175 +116,69 @@ function Prio3:createPriorityFrame()
 	
 	for user, prios in pairs(self.db.profile.priorities) do
 	
+				function processPrio (prioNumber)
+			local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, itemSellPrice = GetItemInfo(prios[prioNumber])
+
+			if itemLink then
+				local lbIcon = AceGUI:Create("Icon")
+				lbIcon:SetRelativeWidth(0.04)
+				lbIcon:SetImage(itemTexture)
+				lbIcon:SetImageSize(15,15)
+				lbIcon:SetCallback("OnEnter", function(widget)
+					GameTooltip:SetOwner(widget.frame, "ANCHOR_TOPRIGHT")
+					GameTooltip:SetHyperlink(itemLink)
+					GameTooltip:Show()
+				end)
+				lbIcon:SetCallback("OnLeave", function(widget)
+					GameTooltip:Hide()
+				end)
+				s:AddChild(lbIcon)
+
+				local lbPrio = AceGUI:Create("InteractiveLabel")
+				if (Prio3.db.profile.debug) then 
+					lbPrio:SetText("("..prios[prioNumber]..") " .. itemLink)
+				else 
+					lbPrio:SetText(itemLink)
+				end
+				lbPrio:SetRelativeWidth(0.20)
+				s:AddChild(lbPrio)
+			else
+			
+				local lbIcon = AceGUI:Create("Icon")
+				lbIcon:SetRelativeWidth(0.04)
+				lbIcon:SetImage("Interface\\Icons\\ability_vanish")
+				lbIcon:SetImageSize(15,15)
+				s:AddChild(lbIcon)
+
+				local lbPrio = AceGUI:Create("InteractiveLabel")
+				lbPrio:SetText("-ERROR: ID-")
+				lbPrio:SetRelativeWidth(0.20)
+				s:AddChild(lbPrio)
+			
+			end
+		end	
+		
+		function noPrio(prioNumber)
+			local lbIcon = AceGUI:Create("Icon")
+				lbIcon:SetRelativeWidth(0.04)
+				lbIcon:SetImage("Interface\\Icons\\ability_vanish")
+				lbIcon:SetImageSize(15,15)
+				s:AddChild(lbIcon)
+
+				local lbPrio = AceGUI:Create("InteractiveLabel")
+				lbPrio:SetText("-no prio "..prioNumber.." set-")
+				lbPrio:SetRelativeWidth(0.20)
+				s:AddChild(lbPrio)
+		end
+	
 		local lbPlayerName = AceGUI:Create("Label")
 		lbPlayerName:SetText(user)
 		lbPlayerName:SetRelativeWidth(0.24)
-		s:AddChild(lbPlayerName)
+		s:AddChild(lbPlayerName)	
 		
-		
-		if tonumber(prios[1]) > 0 then
-			local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, itemSellPrice = GetItemInfo(prios[1])
-
-			if itemLink then
-				local lbIcon = AceGUI:Create("Icon")
-				lbIcon:SetRelativeWidth(0.04)
-				lbIcon:SetImage(itemTexture)
-				lbIcon:SetImageSize(15,15)
-				lbIcon:SetCallback("OnEnter", function(widget)
-					GameTooltip:SetOwner(widget.frame, "ANCHOR_TOPRIGHT")
-					GameTooltip:SetHyperlink(itemLink)
-					GameTooltip:Show()
-				end)
-				lbIcon:SetCallback("OnLeave", function(widget)
-					GameTooltip:Hide()
-				end)
-				s:AddChild(lbIcon)
-
-				local lbPrio = AceGUI:Create("InteractiveLabel")
-				if (Prio3.db.profile.debug) then 
-					lbPrio:SetText("("..prios[1]..") " .. itemLink)
-				else 
-					lbPrio:SetText(itemLink)
-				end
-				lbPrio:SetRelativeWidth(0.20)
-				s:AddChild(lbPrio)
-			else
-			
-				local lbIcon = AceGUI:Create("Icon")
-				lbIcon:SetRelativeWidth(0.04)
-				lbIcon:SetImage("Interface\\Icons\\ability_vanish")
-				lbIcon:SetImageSize(15,15)
-				s:AddChild(lbIcon)
-
-				local lbPrio = AceGUI:Create("InteractiveLabel")
-				lbPrio:SetText("-ERROR: ID-")
-				lbPrio:SetRelativeWidth(0.20)
-				s:AddChild(lbPrio)
-			
-			end
-		else
-			local lbIcon = AceGUI:Create("Icon")
-			lbIcon:SetRelativeWidth(0.04)
-			lbIcon:SetImage("Interface\\Icons\\ability_vanish")
-			lbIcon:SetImageSize(15,15)
-			s:AddChild(lbIcon)
-
-			local lbPrio = AceGUI:Create("InteractiveLabel")
-			lbPrio:SetText("-no prio 1 set-")
-			lbPrio:SetRelativeWidth(0.20)
-			s:AddChild(lbPrio)
-		end
-		
-		if tonumber(prios[2]) > 0 then
-			local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, itemSellPrice = GetItemInfo(prios[2])
-
-			if itemLink then
-				local lbIcon = AceGUI:Create("Icon")
-				lbIcon:SetRelativeWidth(0.04)
-				lbIcon:SetImage(itemTexture)
-				lbIcon:SetImageSize(15,15)
-				lbIcon:SetCallback("OnEnter", function(widget)
-					GameTooltip:SetOwner(widget.frame, "ANCHOR_TOPRIGHT")
-					GameTooltip:SetHyperlink(itemLink)
-					GameTooltip:Show()
-				end)
-				lbIcon:SetCallback("OnLeave", function(widget)
-					GameTooltip:Hide()
-				end)
-				s:AddChild(lbIcon)
-
-				local lbPrio = AceGUI:Create("InteractiveLabel")
-				if (Prio3.db.profile.debug) then 
-					lbPrio:SetText("("..prios[2]..") " .. itemLink)
-				else 
-					lbPrio:SetText(itemLink)
-				end
-				lbPrio:SetRelativeWidth(0.20)
-				s:AddChild(lbPrio)
-			else
-			
-				local lbIcon = AceGUI:Create("Icon")
-				lbIcon:SetRelativeWidth(0.04)
-				lbIcon:SetImage("Interface\\Icons\\ability_vanish")
-				lbIcon:SetImageSize(15,15)
-				s:AddChild(lbIcon)
-
-				local lbPrio = AceGUI:Create("InteractiveLabel")
-				lbPrio:SetText("-ERROR: ID-")
-				lbPrio:SetRelativeWidth(0.20)
-				s:AddChild(lbPrio)
-			
-			end
-
-		else
-			local lbIcon = AceGUI:Create("Icon")
-			lbIcon:SetRelativeWidth(0.04)
-			lbIcon:SetImage("Interface\\Icons\\ability_vanish")
-			lbIcon:SetImageSize(15,15)
-			s:AddChild(lbIcon)
-
-			local lbPrio = AceGUI:Create("InteractiveLabel")
-			lbPrio:SetText("-no prio 2 set-")
-			lbPrio:SetRelativeWidth(0.20)
-			s:AddChild(lbPrio)
-		end
-
-		if tonumber(prios[3]) > 0 then
-		
-			local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, itemSellPrice = GetItemInfo(prios[3])
-
-			if itemLink then
-				local lbIcon = AceGUI:Create("Icon")
-				lbIcon:SetRelativeWidth(0.04)
-				lbIcon:SetImage(itemTexture)
-				lbIcon:SetImageSize(15,15)
-				lbIcon:SetCallback("OnEnter", function(widget)
-					GameTooltip:SetOwner(widget.frame, "ANCHOR_TOPRIGHT")
-					GameTooltip:SetHyperlink(itemLink)
-					GameTooltip:Show()
-				end)
-				lbIcon:SetCallback("OnLeave", function(widget)
-					GameTooltip:Hide()
-				end)
-				s:AddChild(lbIcon)
-
-				local lbPrio = AceGUI:Create("InteractiveLabel")
-				if (Prio3.db.profile.debug) then 
-					lbPrio:SetText("("..prios[3]..") " .. itemLink)
-				else 
-					lbPrio:SetText(itemLink)
-				end
-				lbPrio:SetRelativeWidth(0.20)
-				s:AddChild(lbPrio)
-			else
-			
-				local lbIcon = AceGUI:Create("Icon")
-				lbIcon:SetRelativeWidth(0.04)
-				lbIcon:SetImage("Interface\\Icons\\ability_vanish")
-				lbIcon:SetImageSize(15,15)
-				s:AddChild(lbIcon)
-
-				local lbPrio = AceGUI:Create("InteractiveLabel")
-				lbPrio:SetText("-ERROR: ID-")
-				lbPrio:SetRelativeWidth(0.20)
-				s:AddChild(lbPrio)
-			
-			end
-
-		else
-			local lbIcon = AceGUI:Create("Icon")
-			lbIcon:SetRelativeWidth(0.04)
-			lbIcon:SetImage("Interface\\Icons\\ability_vanish")
-			lbIcon:SetImageSize(15,15)
-			s:AddChild(lbIcon)
-
-			local lbPrio = AceGUI:Create("InteractiveLabel")
-			lbPrio:SetText("-no prio 3 set-")
-			lbPrio:SetRelativeWidth(0.20)
-			s:AddChild(lbPrio)
-		end
-
-		
+		if tonumber(prios[1]) > 0 then processPrio(1) else noPrio(1) end
+		if tonumber(prios[2]) > 0 then processPrio(2) else noPrio(2) end
+		if tonumber(prios[3]) > 0 then processPrio(3) else noPrio(3) end
 		
 		local lbHR = AceGUI:Create("Label")
 		lbHR:SetText("-----------------------------")
