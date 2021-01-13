@@ -114,20 +114,6 @@ function Prio3:createPriorityFrame()
 	scrollcontainer:AddChild(s)
 	
 	
-	sortedUsers = {} -- Hashmap User
-	userPrios = {} -- Hashmap Prios
-	
-	playerIndex = 1
-    	for user, prios in pairs(self.db.profile.priorities) do
-		table.insert(sortedUsers, playerIndex, user)
-		table.insert(userPrios, playerIndex, prios)
-		playerIndex = playerIndex+1
-	end
-    	table.sort(sortedUsers) -- Sorts users alphabetically
-	
-	for index, user in ipairs(sortedUsers) do
-		prios = userPrios[index] -- Link user and prios via index
-			
 		function processPrio (prioNumber) -- function to process existing prios 
 			local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, itemSellPrice = GetItemInfo(prios[prioNumber])
 
@@ -190,11 +176,22 @@ function Prio3:createPriorityFrame()
 			end
 		end
 	
+	sortedUsers = {} -- Hashmap User	
+	local playerIndex = 1
+    	for user, prios in pairs(self.db.profile.priorities) do
+		table.insert(sortedUsers, playerIndex, user)
+		playerIndex = playerIndex+1
+	end
+    	table.sort(sortedUsers) -- Sorts users alphabetically
+	
+	for index, user in ipairs(sortedUsers) do
+		
 		local lbPlayerName = AceGUI:Create("Label")
 		lbPlayerName:SetText(index.." "..user)
 		lbPlayerName:SetRelativeWidth(0.24)
 		s:AddChild(lbPlayerName)	
 		
+		prios = self.db.profile.priorities[user] -- access prios via user key		
 		if tonumber(prios[1]) > 0 then processPrio(1) else noPrio(1) end
 		if tonumber(prios[2]) > 0 then processPrio(2) else noPrio(2) end
 		if tonumber(prios[3]) > 0 then processPrio(3) else noPrio(3) end		
