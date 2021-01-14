@@ -148,12 +148,12 @@ Prio3.prioOptionsTable = {
 				type = "select",
 				order = 15,
 				values = function()
-					r = {}
+					local r = {}
 					for k,v in pairs(Prio3.outputLocales) do r[k] = k end
 					return r
 				end,
 				set = function(info,val)
-					Prio3.db.profile.outputlanguage = val 
+					Prio3.db.profile.outputlanguage = val
 					for k,v in pairs(Prio3.outputLocales[val]) do L[k] = v end
 				end,
 				get = function(info) return Prio3.db.profile.outputlanguage end,
@@ -236,7 +236,7 @@ Prio3.prioOptionsTable = {
 				name = L["Mute (sec)"],
 				desc = L["Ignores loot encountered a second time for this amount of seconds. 0 to turn off."],
 				type = "range",
-				min = 0, 
+				min = 0,
 				max = 600,
 				step = 1,
 				bigStep = 15,
@@ -465,7 +465,7 @@ Prio3.prioOptionsTable = {
 				type = "toggle",
 				order = 40,
 				set = function(info,val)
-					Prio3.db.profile.handle_enable_prio = val 
+					Prio3.db.profile.handle_enable_prio = val
 					if Prio3.db.profile.handle_enable_prio then
 						Prio3:RegisterChatCommand('prio', 'handleChatCommand');
 					else
@@ -553,7 +553,7 @@ end
 function tprint (tbl, indent)
   if not indent then indent = 0 end
   local toprint = string.rep(" ", indent) .. "{\r\n"
-  indent = indent + 2 
+  indent = indent + 2
   for k, v in pairs(tbl) do
     toprint = toprint .. string.rep(" ", indent)
     if (type(k) == "number") then

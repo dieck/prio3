@@ -2,7 +2,7 @@ local L = LibStub("AceLocale-3.0"):GetLocale("Prio3", true)
 
 function Prio3:sendPriorities()
 	if Prio3.db.profile.comm_enable_prio then
-		local commmsg = { command = "SEND_PRIORITIES", prios = Prio3.db.profile.priorities, importtime = self.db.profile.prioimporttime, addon = Prio3.addon_id, version = Prio3.versionString }	
+		local commmsg = { command = "SEND_PRIORITIES", prios = Prio3.db.profile.priorities, importtime = self.db.profile.prioimporttime, addon = Prio3.addon_id, version = Prio3.versionString }
 		Prio3:SendCommMessage(Prio3.commPrefix, Prio3:Serialize(commmsg), "RAID", nil, "NORMAL")
 	end
 end
@@ -29,9 +29,9 @@ function Prio3:GROUP_ROSTER_UPDATE()
 			Prio3:SendCommMessage(Prio3.commPrefix, Prio3:Serialize(commmsg), "RAID", nil, "NORMAL")
 
 			-- if no prio data received after 10sec, ask to disable Addon
-			current = time()
+			local current = time()
 			Prio3:ScheduleTimer("reactToRequestPriorities", 10, current)
-		else 
+		else
 			Prio3:Print(L["Prio3 addon is currently disabled."])
 		end
 
@@ -42,7 +42,7 @@ function Prio3:GROUP_ROSTER_UPDATE()
 
 end
 
-function Prio3:reactToRequestPriorities(requested) 
+function Prio3:reactToRequestPriorities(requested)
 	if Prio3.db.profile.receivedPriorities < requested then
 		-- didn't receive priorities after requesting them
 		Prio3:askToDisable(L["You joined a new group. I looked for other Prio3 addons, but found none. If this is not a Prio3 group, do you want to disable your addon or at least clear old priorities?"])
@@ -68,7 +68,7 @@ function Prio3:OnCommReceived(prefix, message, distribution, sender)
 	if success then
 		local remoteversion = deserialized["version"]
 		if remoteversion then
-			remversion = strsub(remoteversion, 1, 9)
+			local remversion = strsub(remoteversion, 1, 9)
 			Prio3.raidversions[sender] = remversion
 		end
 	end
@@ -83,7 +83,7 @@ function Prio3:OnCommReceived(prefix, message, distribution, sender)
 
 	    local remoteversion = deserialized["version"]
 		if remoteversion then
-		    remversion = strsub(remoteversion, 1, 9)
+		    local remversion = strsub(remoteversion, 1, 9)
 			if (remversion > Prio3.versionString) and (Prio3.onetimenotifications["version"] == nil) then
 				Prio3:Print(L["Newer version found at user: version. Please update your addon."](sender, remversion))
 				Prio3.onetimenotifications["version"] = 1
@@ -100,7 +100,7 @@ function Prio3:OnCommReceived(prefix, message, distribution, sender)
 
 		-- another addon handled an Item
 		if (deserialized["command"] == "ITEM") and (Prio3.db.profile.comm_enable_item) then
-			-- mark as handled just now and set ignore time to maximum of yours and remote time 
+			-- mark as handled just now and set ignore time to maximum of yours and remote time
 			if Prio3.db.profile.debug then
 				-- only announce in debug mode: You will have seen the raid notification anyway, most likely
 				Prio3:Print(L["sender handled notification for item"](sender, deserialized["itemlink"]))
@@ -174,4 +174,3 @@ function Prio3:OnCommReceived(prefix, message, distribution, sender)
 		end
 	end
 end
-

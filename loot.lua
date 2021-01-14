@@ -27,7 +27,7 @@ function Prio3:LOOT_OPENED()
 
 	-- process the event
 	loot = GetLootInfo()
-	numLootItems = GetNumLootItems();
+	local numLootItems = GetNumLootItems();
 
 	-- look for maximum quality (for No prio announces)
 	local maxQuality = "a"
@@ -36,8 +36,8 @@ function Prio3:LOOT_OPENED()
 
 	-- might not work out with "faster autoloot" addons like Leatrix
 	-- so get the itemlinks as fast as possible, then do other stuff
-	for i=1,numLootItems do 
-		itemLink = GetLootSlotLink(i)
+	for i=1,numLootItems do
+		local itemLink = GetLootSlotLink(i)
 		if itemLink then
 			table.insert(reportLinks, itemLink)
 		end
@@ -48,7 +48,7 @@ function Prio3:LOOT_OPENED()
 		if itemLink then
 			-- if no itemLink, it's most likely money
 
-			local d, itemId, enchantId, jewelId1, jewelId2, jewelId3, jewelId4, suffixId, uniqueId, linkLevel, specializationID, reforgeId, unknown1, unknown2 = strsplit(":", itemLink)		
+			local d, itemId, enchantId, jewelId1, jewelId2, jewelId3, jewelId4, suffixId, uniqueId, linkLevel, specializationID, reforgeId, unknown1, unknown2 = strsplit(":", itemLink)
 
 			-- identifying quality by color...
 			-- Only other option would be GetItemInfo, but that might not be fully loaded, so I would have to create call to wait and look into it later, and... well, PITA
@@ -116,9 +116,9 @@ function Prio3:CHAT_MSG_RAID_WARNING(event, text, sender)
 
 	-- itemLink looks like |cff9d9d9d|Hitem:3299::::::::20:257::::::|h[Fractured Canine]|h|r
 
-	-- TODO: avoid race condition 
+	-- TODO: avoid race condition
 	-- sending out notification first and waiting for AceTimer: Might collide as well
-	-- will need to clear priorisation WHO will send out. 
+	-- will need to clear priorisation WHO will send out.
 	-- send random number, and send answer if you will not post
 	-- highest number wins, so only lower numbers need to send they won't participate
 
@@ -130,12 +130,12 @@ function Prio3:CHAT_MSG_RAID_WARNING(event, text, sender)
 		-- ignore Onyxia Scale Cloak if configured
 		if Prio3.db.profile.ignorescalecloak and tonumber(id) == 15138 then
 			Prio3:Debug("Ignoring Onyxia Scale Cloak")
-			return nil 
+			return nil
 		end
 		-- ignore Drakefire Amulet if configured
 		if Prio3.db.profile.ignoredrakefire and tonumber(id) == 16309 then
 			Prio3:Debug("Ignoring Drakefire Amulet")
-			return nil 
+			return nil
 		end
 
 		-- announce to other addon that we want to react to raidwarning, but only if we would send something out actually
@@ -171,7 +171,7 @@ function Prio3:reactToRaidWarning(id, sender)
 	if Prio3.doReactToRaidWarning then
 		local _, itemLink = GetItemInfo(id) -- might not return item link right away
 
-		if itemLink then 
+		if itemLink then
 			-- use "maximum quality z" item, so it will always post
 			Prio3:HandleLoot(itemLink, "z")
 		else
@@ -302,7 +302,7 @@ function Prio3:HandleLoot(itemLink, qualityFound)
 		end
 
 	else
-		Prio3:Debug("DEBUG: Item " .. itemLink .. " ignored because of mute time setting") 
+		Prio3:Debug("DEBUG: Item " .. itemLink .. " ignored because of mute time setting")
 	end
 
 	-- send only notification if you actually outputted something. Otherwise, someelse else might want to output, even if you don't have it enabled
@@ -331,7 +331,7 @@ end
 function Prio3:Announce(itemLink, prio, chars, hasPreviousPrio)
 
 	-- output to raid or print to user
-	msg = L["itemLink is at priority for users"](itemLink, prio, chars)
+	local msg = L["itemLink is at priority for users"](itemLink, prio, chars)
 
 	local ret = Prio3:Output(msg)
 
@@ -348,7 +348,7 @@ function Prio3:Announce(itemLink, prio, chars, hasPreviousPrio)
 			if (UnitInRaid(chr)) or (Prio3.db.profile.debug and chr == UnitName("player")) then
 				SendChatMessage(whispermsg, "WHISPER", nil, chr);
 			else
-				Prio3:Debug("DEBUG: " .. chr .. " not in raid, will not send out whisper notification") 
+				Prio3:Debug("DEBUG: " .. chr .. " not in raid, will not send out whisper notification")
 			end
 		end
 	end
