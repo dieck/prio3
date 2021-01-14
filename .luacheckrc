@@ -6,6 +6,9 @@ exclude_files = {
 	"libs/",
 }
 ignore = {
+	"1", -- line contains only whitespace
+	"24", -- trailing whitespace in a comment
+	"390", -- line contains trailing whitespace
 	"11./SLASH_.*", -- Setting an undefined (Slash handler) global variable
 	"11./BINDING_.*", -- Setting an undefined (Keybinding header) global variable
 	"113/LE_.*", -- Accessing an undefined (Lua ENUM type) global variable
