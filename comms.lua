@@ -8,38 +8,38 @@ function Prio3:sendPriorities()
 end
 
 function Prio3:requestPing()
-	local commmsg = { command = "PING", addon = Prio3.addon_id, version = Prio3.versionString }	
+	local commmsg = { command = "PING", addon = Prio3.addon_id, version = Prio3.versionString }
 	Prio3:SendCommMessage(Prio3.commPrefix, Prio3:Serialize(commmsg), "RAID", nil, "NORMAL")
 end
 
 function Prio3:sendPong()
-	local commmsg = { command = "PONG", addon = Prio3.addon_id, version = Prio3.versionString }	
+	local commmsg = { command = "PONG", addon = Prio3.addon_id, version = Prio3.versionString }
 	Prio3:SendCommMessage(Prio3.commPrefix, Prio3:Serialize(commmsg), "RAID", nil, "NORMAL")
 end
 
 function Prio3:GROUP_ROSTER_UPDATE()
 	-- request priorities if entering a new raid
-	
+
 	if UnitInParty("player") and not Prio3.previousGroupState then
 		Prio3:requestPing()
 
 		-- joined group: request Prio data
 		if Prio3.db.profile.enabled then
-			local commmsg = { command = "REQUEST_PRIORITIES", addon = Prio3.addon_id, version = Prio3.versionString }	
+			local commmsg = { command = "REQUEST_PRIORITIES", addon = Prio3.addon_id, version = Prio3.versionString }
 			Prio3:SendCommMessage(Prio3.commPrefix, Prio3:Serialize(commmsg), "RAID", nil, "NORMAL")
 
-			-- if no prio data received after 10sec, ask to disable Addon	
+			-- if no prio data received after 10sec, ask to disable Addon
 			current = time()
 			Prio3:ScheduleTimer("reactToRequestPriorities", 10, current)
 		else 
 			Prio3:Print(L["Prio3 addon is currently disabled."])
 		end
-		
+
 	end
-	
+
 	Prio3.previousGroupState = UnitInParty("player")
-	
-	
+
+
 end
 
 function Prio3:reactToRequestPriorities(requested) 
@@ -58,7 +58,7 @@ function Prio3:OnCommReceived(prefix, message, distribution, sender)
 	sender = strsplit("-", sender)
 
 	-- don't react to own messages
-	if sender == UnitName("player") then 
+	if sender == UnitName("player") then
 		return 0
 	end
 
@@ -80,7 +80,7 @@ function Prio3:OnCommReceived(prefix, message, distribution, sender)
 
 	-- every thing else get handled if (if not disabled)
     if success then
-	
+
 	    local remoteversion = deserialized["version"]
 		if remoteversion then
 		    remversion = strsub(remoteversion, 1, 9)
@@ -93,11 +93,11 @@ function Prio3:OnCommReceived(prefix, message, distribution, sender)
 				Prio3.onetimenotifications["masterversion"] = 1
 			end
 		end
-	
+
 		if Prio3.db.profile.debug then
 			Prio3:Print(distribution .. " message from " .. sender .. ": " .. deserialized["command"])
 		end
-		
+
 		-- another addon handled an Item
 		if (deserialized["command"] == "ITEM") and (Prio3.db.profile.comm_enable_item) then
 			-- mark as handled just now and set ignore time to maximum of yours and remote time 
@@ -108,7 +108,7 @@ function Prio3:OnCommReceived(prefix, message, distribution, sender)
 			Prio3.db.profile.lootlastopened[deserialized["item"]] = time()
 			Prio3.db.profile.ignorereopen = max(Prio3.db.profile.ignorereopen, deserialized["ignore"])
 		end
-		
+
 		-- RAIDWARNING
 		if deserialized["command"] == "RAIDWARNING" then
 			-- another add stated they want to react to a raidwarning. Let the highest id one win.
@@ -127,7 +127,7 @@ function Prio3:OnCommReceived(prefix, message, distribution, sender)
 
 		-- SEND_PRIORITIES
 		if (deserialized["command"] == "SEND_PRIORITIES") and (Prio3.db.profile.comm_enable_prio) then
-		
+
 			local playerIsMasterLooter = false
 
 			local _, _, masterlooterRaidID = GetLootMethod()
@@ -137,13 +137,13 @@ function Prio3:OnCommReceived(prefix, message, distribution, sender)
 					playerIsMasterLooter = true
 				end
 			end
-			
+
 			if playerIsMasterLooter then
 				local newPriorities = deserialized["prios"]
 				local newReceived = time()
 				Prio3:Print(L["Received new priorities sent from sender, but I am Master Looter"](sender))
 				Prio3:askToAcceptIncomingPriorities(sender, newPriorities, newReceived)
-				
+
 			else
 				-- no master looting is used, or player is not master looter
 				Prio3.db.profile.priorities = deserialized["prios"]
@@ -167,7 +167,7 @@ function Prio3:OnCommReceived(prefix, message, distribution, sender)
 		if (deserialized["command"] == "PONG") then
 			Prio3:Debug("Seen PONG answer from " .. sender)
 		end
-		
+
 	else
 		if Prio3.db.profile.debug then
 			Prio3:Print("ERROR: " .. distribution .. " message from " .. sender .. ": cannot be deserialized")

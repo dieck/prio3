@@ -10,11 +10,11 @@ function Prio3:createTwoDialogFrame(title, text, onetxt, one, twotxt, two)
 	f:SetWidth(400)
 	f:SetHeight(100)
 	f:SetCallback("OnClose",function(widget) AceGUI:Release(widget) end)
-	
+
 	-- close on escape
 	_G["Prio3Prio3.twodialogframe"] = f.frame
 	tinsert(UISpecialFrames, "Prio3Prio3.twodialogframe")
-	
+
 	local txt = AceGUI:Create("Label")
 	txt:SetText(text)
 	txt:SetRelativeWidth(1)
@@ -50,11 +50,11 @@ function Prio3:createThreeDialogFrame(title, text, onetxt, one, twotxt, two, thr
 	f:SetWidth(400)
 	f:SetHeight(150)
 	f:SetCallback("OnClose",function(widget) AceGUI:Release(widget) end)
-	
+
 	-- close on escape
 	_G["Prio3Prio3.threedialogframe"] = f.frame
 	tinsert(UISpecialFrames, "Prio3Prio3.threedialogframe")
-	
+
 	local txt = AceGUI:Create("Label")
 	txt:SetText(text)
 	txt:SetRelativeWidth(1)
@@ -89,22 +89,22 @@ function Prio3:createThreeDialogFrame(title, text, onetxt, one, twotxt, two, thr
 end
 
 
-function Prio3:askToDisable(question) 
+function Prio3:askToDisable(question)
 	Prio3.askframe = nil
 
-	yes = function() 
+	local yes = function()
 		Prio3.askframe:Hide()
 		Prio3.db.profile.enabled = false
-		Prio3:Print(L["Prio3 addon is currently disabled."]) 
+		Prio3:Print(L["Prio3 addon is currently disabled."])
 	end
 
-	clear = function()
+	local clear = function()
 		Prio3.askframe:Hide()
 		Prio3.db.profile.priorities = {}
-		Prio3:Print(L["No priorities defined."]) 
+		Prio3:Print(L["No priorities defined."])
 	end
-	
-	no = function()
+
+	local no = function()
 		Prio3.askframe:Hide()
 		-- do nothing
 	end
@@ -127,7 +127,7 @@ function Prio3:askToAcceptIncomingPriorities(sender, newPriorities, newReceived)
 		local commmsg = { command = "RECEIVED_PRIORITIES", answer = "accepted", addon = Prio3.addon_id, version = Prio3.versionString }
 		Prio3:SendCommMessage(Prio3.commPrefix, Prio3:Serialize(commmsg), "RAID", nil, "NORMAL")
 	end
-	
+
 	local no = function()
 		Prio3.askIncomingPrioframe:Hide()
 		-- send my own priorities to superseed the rogue sender
@@ -138,5 +138,5 @@ function Prio3:askToAcceptIncomingPriorities(sender, newPriorities, newReceived)
 	end
 	Prio3.askIncomingPrioframe = Prio3:createTwoDialogFrame(L["Received Priorities"], L["Received new priorities sent from sender, but I am Master Looter"](sender), L["Accept incoming"], yes, L["Reject and keep mine"], no)
 	Prio3.askIncomingPrioframe:Show()
-				
+
 end

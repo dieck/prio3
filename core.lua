@@ -37,30 +37,30 @@ function Prio3:OnInitialize()
   self.db = LibStub("AceDB-3.0"):New("Prio3DB", defaults)
 
   self.commPrefix = Prio3commPrefix
-  self.versionString = Prio3versionString	
+  self.versionString = Prio3versionString
   self.raidversions = {}
-	
+
   self.addon_id = random(1, 999999) -- should be enough
   if #self.versionString > 9 then self.addon_id = 1000000 end
-  
+
   LibStub("AceConfig-3.0"):RegisterOptionsTable("Prio3", self.prioOptionsTable)
   self.optionsFrame = LibStub("AceConfigDialog-3.0"):AddToBlizOptions("Prio3", "Prio3")
-  
+
   -- Blizzard... Why doesn't GetItemInfo return items infos... No, it only starts loading them...
   self.GET_ITEM_INFO_RECEIVED_TodoList = {}
   -- format: { { needed_itemids={}, vars={}, todo=function(itemids,vars) },  ... }
   self.GET_ITEM_INFO_RECEIVED_NotYetReady = {}
   self.GET_ITEM_INFO_RECEIVED_IgnoreIDs = {}
   self.GET_ITEM_INFO_Timer = nil
-  
+
   -- trigger GetItemInfo for all items in database
   -- if you had disconnect / relog, cache needs to be rebuild to avoid having to handle GET_ITEM_INFO_RECEIVED stuff at Boss announcements
   -- so better to load it here. But only once per itemid.
-	
+
   local tblrequest = {}
   if self.db.profile.priorities == nil then self.db.profile.priorities = {} end
   if self.db.profile.receivedPriorities == nil then self.db.profile.receivedPriorities = 0 end
-  
+
   for user, prios in pairs(self.db.profile.priorities) do
 	for prio, itemid in pairs(prios) do
 	  tblrequest[itemid] = itemid;
@@ -69,15 +69,15 @@ function Prio3:OnInitialize()
   for itemid,id2 in pairs(tblrequest) do
     GetItemInfo(itemid)
   end
-  
+
   self.db.profile.lootlastopened = {}
   self.doReactToRaidWarning = true
-  
+
   self.onetimenotifications = {}
-  
+
   -- /prio3 handler
   self:RegisterChatCommand('prio3', 'handleChatCommand');
-  
+
   if self.db.profile.handle_enable_prio then
 	self:RegisterChatCommand('prio', 'handleChatCommand');
   end
@@ -87,27 +87,27 @@ function Prio3:OnInitialize()
 
   -- communicate between addons
   self:RegisterComm(self.commPrefix, "OnCommReceived")
-  
+
   -- only register events after initializing all other variables
-  
+
   -- main event: do something when the Loot Window is being shown
   self:RegisterEvent("LOOT_OPENED")
   self:RegisterEvent("START_LOOT_ROLL")
 
   -- Blizzard... Why doesn't GetItemInfo return items infos... No, it only starts loading them...
   self:RegisterEvent("GET_ITEM_INFO_RECEIVED")
-  
+
   -- interaction from raid members
   self:RegisterEvent("CHAT_MSG_WHISPER")
   self:RegisterEvent("CHAT_MSG_RAID_WARNING")
-  
+
   -- entering an instance
   self.previousGroupState = UnitInParty("player")
   self:RegisterEvent("GROUP_ROSTER_UPDATE")
 
 
   self:RegisterEvent("OPEN_MASTER_LOOT_LIST")
- 
+
   self:requestPing()
 
   -- change default output language if configured
@@ -138,7 +138,7 @@ Prio3.prioOptionsTable = {
       set = function(info,val) Prio3.db.profile.enabled = val end,
       get = function(info) return Prio3.db.profile.enabled end,
     },
-	grpoutput = {    
+	grpoutput = {
 		type = "group",
 		name = L["Output"],
 		args = {
@@ -215,7 +215,7 @@ Prio3.prioOptionsTable = {
 			  get = function(info) return Prio3.db.profile.raidwarnings end,
 			},
 			newline38 = { name="", type="description", order=38 },
-			ignorescalecloak = {			
+			ignorescalecloak = {
 			  name = L["Ignore Ony Cloak"],
 			  desc = L["Ignore if someone raid warns about the Onyxia Scale Cloak"],
 			  type = "toggle",
@@ -223,7 +223,7 @@ Prio3.prioOptionsTable = {
 			  set = function(info,val) Prio3.db.profile.ignorescalecloak = val end,
 			  get = function(info) return Prio3.db.profile.ignorescalecloak end,
 			},
-			ignoredrakefire = {			
+			ignoredrakefire = {
 			  name = L["Ignore Drakefire"],
 			  desc = L["Ignore if someone raid warns about the Drakefire Amulet"],
 			  type = "toggle",
@@ -375,7 +375,7 @@ Prio3.prioOptionsTable = {
 				get = function(info) return Prio3.db.profile.acceptwhisperprios_new end,
 			},
 			newline125 = { name="", type="description", order=125 },
-			
+
 			acceptwhisperprios_start = {
 				name = L["Start accepting"],
 				desc = "",
@@ -407,7 +407,7 @@ Prio3.prioOptionsTable = {
 				disabled = function() return not Prio3.db.profile.acceptwhisperprios end,
 				type = "execute",
 				order = 145,
-				func = function() 
+				func = function()
 					if Prio3.db.profile.acceptwhispers_storedsettings then
 						Prio3.db.profile.comm_enable_prio = Prio3.db.profile.acceptwhispers_storedsettings.comm_enable_prio
 						Prio3.db.profile.queryraid = Prio3.db.profile.acceptwhispers_storedsettings.queryraid
@@ -416,18 +416,18 @@ Prio3.prioOptionsTable = {
 					end
 
 					Prio3.db.profile.acceptwhisperprios = false
-	
+
 					Prio3:sendPriorities()
-					
+
 					Prio3:Output(L["No longer accepting Prio3 updates by whisper."])
 					for user,prios in pairs(Prio3.db.profile.priorities) do
 						Prio3:OutputUserPrio(user, "RAID")
 					end
-					
-				end, 
+
+				end,
 			},
 			newline149 = { name="", type="description", order=149 },
-			
+
 		},
 	},
 	grpcomm = {
@@ -464,7 +464,7 @@ Prio3.prioOptionsTable = {
 				name = L["/prio handler"],
 				type = "toggle",
 				order = 40,
-				set = function(info,val) 
+				set = function(info,val)
 					Prio3.db.profile.handle_enable_prio = val 
 					if Prio3.db.profile.handle_enable_prio then
 						Prio3:RegisterChatCommand('prio', 'handleChatCommand');
@@ -477,10 +477,10 @@ Prio3.prioOptionsTable = {
 			newline5 = { name="", type="description", order=49 },
 			p3handler = {
 				name = L["/p3 handler"],
-				type = "toggle", 
+				type = "toggle",
 				order = 50,
 				set = function(info,val)
-					Prio3.db.profile.handle_enable_p3 = val 
+					Prio3.db.profile.handle_enable_p3 = val
 					if Prio3.db.profile.handle_enable_p3 then
 						Prio3:RegisterChatCommand('p3', 'handleChatCommand');
 					else
@@ -513,10 +513,10 @@ Prio3.prioOptionsTable = {
 				get = function(info) return tprint(Prio3.raidversions) end,
 				disabled = true,
 			},
-			
+
 		},
 	},
-	
+
     debugging = {
       name = L["Debug"],
       desc = L["Enters Debug mode. Addon will have advanced output, and work outside of Raid"],
@@ -525,7 +525,7 @@ Prio3.prioOptionsTable = {
       set = function(info,val) Prio3.db.profile.debug = val end,
       get = function(info) return Prio3.db.profile.debug end
     },
-	
+
 	showhelp = {
 		name = "Help",
 		type = "execute",
@@ -536,7 +536,7 @@ Prio3.prioOptionsTable = {
 	}
 }
 
-function Prio3:Debug(t, lvl) 
+function Prio3:Debug(t, lvl)
     if lvl == nil then
 	  lvl = "DEBUG"
 	end
@@ -559,7 +559,7 @@ function tprint (tbl, indent)
     if (type(k) == "number") then
       toprint = toprint .. "[" .. k .. "] = "
     elseif (type(k) == "string") then
-      toprint = toprint  .. k ..  "= "   
+      toprint = toprint  .. k ..  "= "
     end
     if (type(v) == "number") then
       toprint = toprint .. v .. ",\r\n"

@@ -17,21 +17,21 @@ function Prio3:LOOT_OPENED()
 
 	-- look if priorities are defined
 	if tempty(Prio3.db.profile.priorities) then
-		if Prio3.onetimenotifications["prio_unset"] == nil then 
+		if Prio3.onetimenotifications["prio_unset"] == nil then
 			Prio3:Print(L["No priorities defined."])
 			Prio3.onetimenotifications["prio_unset"] = 1
 		end
 		Prio3:Debug("Leaving LOOT_OPENED because of Prio3.db.profile.priorities")
 		return
 	end
-	
+
 	-- process the event
 	loot = GetLootInfo()
 	numLootItems = GetNumLootItems();
 
 	-- look for maximum quality (for No prio announces)
 	local maxQuality = "a"
-	
+
 	local reportLinks = {}
 
 	-- might not work out with "faster autoloot" addons like Leatrix
@@ -42,7 +42,7 @@ function Prio3:LOOT_OPENED()
 			table.insert(reportLinks, itemLink)
 		end
 	end
-	
+
     -- search for epics	(to determine if we print output)
 	for dummy,itemLink in pairs(reportLinks) do
 		if itemLink then
@@ -52,13 +52,13 @@ function Prio3:LOOT_OPENED()
 
 			-- identifying quality by color...
 			-- Only other option would be GetItemInfo, but that might not be fully loaded, so I would have to create call to wait and look into it later, and... well, PITA
-			
+
 			if d == "\124cffff8000\124Hitem" then  if maxQuality < "f" then maxQuality = "f" end end -- LEGENDARY
 			if d == "\124cffa335ee\124Hitem" then  if maxQuality < "e" then maxQuality = "e" end end -- Epic
 			if d == "\124cff0070dd\124Hitem" then  if maxQuality < "d" then maxQuality = "d" end end -- Rare
 			if d == "\124cff1eff00\124Hitem" then  if maxQuality < "c" then maxQuality = "c" end end -- Uncommon
 			if d == "\124cffffffff\124Hitem" then  if maxQuality < "b" then maxQuality = "b" end end -- Common
-			
+
 		end
 	end
 
@@ -66,7 +66,7 @@ function Prio3:LOOT_OPENED()
 	for dummy,itemLink in pairs(reportLinks) do
 		Prio3:HandleLoot(itemLink, maxQuality)
 	end
-	
+
 end
 
 -- if someone loots without PM active
@@ -83,7 +83,7 @@ function Prio3:START_LOOT_ROLL(eventname, rollID, rollTime, lootHandle)
 
 	-- look if priorities are defined
 	if tempty(Prio3.db.profile.priorities) then
-		if Prio3.onetimenotifications["prio_unset"] == nil then 
+		if Prio3.onetimenotifications["prio_unset"] == nil then
 			Prio3:Print(L["No priorities defined."])
 			Prio3.onetimenotifications["prio_unset"] = 1
 		end
@@ -95,7 +95,7 @@ function Prio3:START_LOOT_ROLL(eventname, rollID, rollTime, lootHandle)
 
 	local texture, name, count, quality, bop = GetLootRollItemInfo(rollID)
 	local itemLink = GetLootRollItemLink(rollID)
-	
+
 	if quality >= 4 or bop then
 		Prio3:Print("Found loot roll for " .. itemLink)
 		-- use "maximum quality z" item, so it will always post
@@ -121,12 +121,12 @@ function Prio3:CHAT_MSG_RAID_WARNING(event, text, sender)
 	-- will need to clear priorisation WHO will send out. 
 	-- send random number, and send answer if you will not post
 	-- highest number wins, so only lower numbers need to send they won't participate
-		
+
 	local id = text:match("|Hitem:(%d+):")
-	
+
 	if id then
 		Prio3:Debug("Recdeived Raid Warning for item " .. id)
-	
+
 		-- ignore Onyxia Scale Cloak if configured
 		if Prio3.db.profile.ignorescalecloak and tonumber(id) == 15138 then
 			Prio3:Debug("Ignoring Onyxia Scale Cloak")
@@ -137,21 +137,21 @@ function Prio3:CHAT_MSG_RAID_WARNING(event, text, sender)
 			Prio3:Debug("Ignoring Drakefire Amulet")
 			return nil 
 		end
-	
+
 		-- announce to other addon that we want to react to raidwarning, but only if we would send something out actually
 		if Prio3.db.profile.raidannounce then
-		
+
 			Prio3.doReactToRaidWarning = true
-			local commmsg = { command = "RAIDWARNING", item = id, addon = Prio3.addon_id, version = Prio3.versionString }	
+			local commmsg = { command = "RAIDWARNING", item = id, addon = Prio3.addon_id, version = Prio3.versionString }
 			Prio3:SendCommMessage(Prio3.commPrefix, Prio3:Serialize(commmsg), "RAID", nil, "ALERT")
 
 			-- invoce AceTimer to wait 1 second before posting
 			Prio3:ScheduleTimer("reactToRaidWarning", 1, id, sender)
 
 		end
-		
+
 	end
-	
+
 end
 
 
@@ -159,14 +159,14 @@ function Prio3:reactToRaidWarning(id, sender)
 
 	-- look if priorities are defined
 	if tempty(Prio3.db.profile.priorities) then
-		if Prio3.onetimenotifications["prio_unset"] == nil then 
+		if Prio3.onetimenotifications["prio_unset"] == nil then
 			Prio3:Print(L["No priorities defined."])
 			Prio3.onetimenotifications["prio_unset"] = 1
 		end
 		Prio3:Debug("Leaving reactToRaidWarning because of Prio3.db.profile.priorities")
 		return
 	end
-	
+
 
 	if Prio3.doReactToRaidWarning then
 		local _, itemLink = GetItemInfo(id) -- might not return item link right away
@@ -181,7 +181,7 @@ function Prio3:reactToRaidWarning(id, sender)
 				needed_itemids = { id },
 				vars = { u = sender },
 				todo = function(itemlinks,vars)
-					for _, itemlink in pairs(itemlinks) do 
+					for _, itemlink in pairs(itemlinks) do
 						-- use "maximum quality z" item, so it will always post
 						Prio3:HandleLoot(itemlink, "z")
 					end
@@ -189,9 +189,9 @@ function Prio3:reactToRaidWarning(id, sender)
 			}
 			table.insert(Prio3.GET_ITEM_INFO_RECEIVED_TodoList, t)
 		end
-		
+
 	end
-	
+
 end
 
 function Prio3:postLastBossMessage()
@@ -200,7 +200,7 @@ end
 
 -- handling
 
-function Prio3:HandleLoot(itemLink, qualityFound) 
+function Prio3:HandleLoot(itemLink, qualityFound)
 
 	-- Loot found, but no itemLink: most likely money
 	if itemLink == nil then
@@ -209,20 +209,20 @@ function Prio3:HandleLoot(itemLink, qualityFound)
 
 	-- look if priorities are defined
 	if tempty(Prio3.db.profile.priorities) then
-		if Prio3.onetimenotifications["prio_unset"] == nil then 
+		if Prio3.onetimenotifications["prio_unset"] == nil then
 			Prio3:Print(L["No priorities defined."])
 			Prio3.onetimenotifications["prio_unset"] = 1
 		end
 		Prio3:Debug("Leaving HandleLoot because of Prio3.db.profile.priorities")
 		return
 	end
-	
+
 	local _, itemId, enchantId, jewelId1, jewelId2, jewelId3, jewelId4, suffixId, uniqueId, linkLevel, specializationID, reforgeId, unknown1, unknown2 = strsplit(":", itemLink)
 	-- bad argument, might be gold? (or copper, here)
 
 	if Prio3.onetimenotifications["finalboss"] == nil then
 		local i = tonumber(itemId)
-		
+
 		if 	   i == 19802 -- Heart of Hakkar
 			or i == 21220 -- Head of Ossirian the Unscarred
 			or i == 18422 or i == 18423 -- Head of Onyxia
@@ -236,10 +236,10 @@ function Prio3:HandleLoot(itemLink, qualityFound)
 		end
 	end
 
-	
+
 	-- ignore re-opened
 	-- re-open is processed by Item
-	
+
 	-- initialization of tables
 	if Prio3.db.profile.lootlastopened == nil then
 		Prio3.db.profile.lootlastopened = {}
@@ -247,26 +247,26 @@ function Prio3:HandleLoot(itemLink, qualityFound)
 	if Prio3.db.profile.lootlastopened[itemId] == nil then
 		Prio3.db.profile.lootlastopened[itemId] = 0
 	end
-	
+
 	if Prio3.db.profile.ignorereopen == nil then
 		Prio3.db.profile.ignorereopen = 0
 	end
 
 	local outputSent = false
-	
+
 	if Prio3.db.profile.lootlastopened[itemId] + Prio3.db.profile.ignorereopen < time() then
 	-- enough time has passed, not ignored.
-	
+
 		-- build local prio list
 		local itemprios = {
 			p1 = {},
 			p2 = {},
 			p3 = {}
 		}
-		
+
 		-- iterate over priority table
 		for user, prios in pairs(Prio3.db.profile.priorities) do
-		
+
 			-- table always has 3 elements
 			if (tonumber(prios[1]) == tonumber(itemId)) then
 				table.insert(itemprios.p1, user)
@@ -279,9 +279,9 @@ function Prio3:HandleLoot(itemLink, qualityFound)
 			if (tonumber(prios[3]) == tonumber(itemId)) then
 				table.insert(itemprios.p3, user)
 			end
-			
+
 		end
-				
+
 		if table.getn(itemprios.p1) == 0 and table.getn(itemprios.p2) == 0 and table.getn(itemprios.p3) == 0 then
 			if Prio3.db.profile.noprioannounce then
 				if (qualityFound >= Prio3.db.profile.noprioannounce_quality) or Prio3.db.profile.noprioannounce_noepic then
@@ -307,12 +307,12 @@ function Prio3:HandleLoot(itemLink, qualityFound)
 
 	-- send only notification if you actually outputted something. Otherwise, someelse else might want to output, even if you don't have it enabled
 	if Prio3.db.profile.comm_enable_item and outputSent then
-		local commmsg = { command = "ITEM", item = itemId, itemlink = itemLink, ignore = Prio3.db.profile.ignorereopen, addon = Prio3.addon_id, version = Prio3.versionString }	
+		local commmsg = { command = "ITEM", item = itemId, itemlink = itemLink, ignore = Prio3.db.profile.ignorereopen, addon = Prio3.addon_id, version = Prio3.versionString }
 		Prio3:SendCommMessage(Prio3.commPrefix, Prio3:Serialize(commmsg), "RAID", nil, "ALERT")
 	end
-		
+
 	Prio3.db.profile.lootlastopened[itemId] = time()
-	
+
 end
 
 
@@ -328,7 +328,7 @@ function Prio3:Output(msg)
 	end
 end
 
-function Prio3:Announce(itemLink, prio, chars, hasPreviousPrio) 
+function Prio3:Announce(itemLink, prio, chars, hasPreviousPrio)
 
 	-- output to raid or print to user
 	msg = L["itemLink is at priority for users"](itemLink, prio, chars)
@@ -337,11 +337,11 @@ function Prio3:Announce(itemLink, prio, chars, hasPreviousPrio)
 
 	-- whisper to characters
 	local whispermsg = L["itemlink dropped. You have this on priority x."](itemLink, prio)
-	
+
 	-- add request to roll, if more than one user and no one has a higher priority
 	-- yes, this will ignore the fact you might have to roll if higher priority users already got that item on another drop. But well, this doesn't happen very often.
 	if not hasPreviousPrio and table.getn(chars) >= 2 then whispermsg = whispermsg .. " " .. L["You will need to /roll when item is up."] end
-		
+
 	if Prio3.db.profile.charannounce then
 		for dummy, chr in pairs(chars) do
 			-- whisper if target char is in RAID. In debug mode whisper only to your own player char
@@ -350,11 +350,11 @@ function Prio3:Announce(itemLink, prio, chars, hasPreviousPrio)
 			else
 				Prio3:Debug("DEBUG: " .. chr .. " not in raid, will not send out whisper notification") 
 			end
-		end	
+		end
 	end
-	
+
 	return ret
-	
+
 end
 
 
