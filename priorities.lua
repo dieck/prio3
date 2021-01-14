@@ -245,34 +245,34 @@ function Prio3:ParseWhisperLine(sender, line)
 	local p1, p2, p3 = line:match("|Hitem:(%d+):.-|Hitem:(%d+):.-|Hitem:(%d+):")
 	if (p3 ~= nil) then return Prio3:HandleNewPriorities(sender, p1, p2, p3, line) end
 
-	local p1, p2 = line:match("|Hitem:(%d+):.-|Hitem:(%d+):")
+	p1, p2 = line:match("|Hitem:(%d+):.-|Hitem:(%d+):")
 	if (p2 ~= nil) then	return Prio3:HandleNewPriorities(sender, p1, p2, nil, line) end
 
-	local p1 = line:match("|Hitem:(%d+):")
+	p1 = line:match("|Hitem:(%d+):")
 	if (p1 ~= nil) then return Prio3:HandleNewPriorities(sender, p1, nil, nil, line) end
 
 	-- ok, no itemlink. Let's look for wowhead links
 	-- should look like https://classic.wowhead.com/item=19351/maladath-runed-blade-of-the-black-flight or https://de.classic.wowhead.com/item=2482/minderwertiger-tomahawk
 	-- same as above, nested matching seems not to work properly
 
-	local p1, p2, p3 = line:match("item=(%d+).-item=(%d+).-item=(%d+)")
+	p1, p2, p3 = line:match("item=(%d+).-item=(%d+).-item=(%d+)")
 	if (p3 ~= nil) then return Prio3:HandleNewPriorities(sender, p1, p2, p3, line) end
 
-	local p1, p2 = line:match("item=(%d+).-item=(%d+)")
+	p1, p2 = line:match("item=(%d+).-item=(%d+)")
 	if (p2 ~= nil) then return Prio3:HandleNewPriorities(sender, p1, p2, nil, line) end
 
-	local p1 = line:match("item=(%d+)")
+	p1 = line:match("item=(%d+)")
 	if (p1 ~= nil) then return Prio3:HandleNewPriorities(sender, p1, nil, nil, line) end
 
 	-- finally, look if we find 3 numbers that look feasible
 
-	local p1, p2, p3 = line:match("(%d+).-(%d+).-(%d+)")
+	p1, p2, p3 = line:match("(%d+).-(%d+).-(%d+)")
 	if (p3 ~= nil) then return Prio3:HandleNewPriorities(sender, p1, p2, p3, line) end
 
-	local p1, p2 = line:match("(%d+).-(%d+)")
+	p1, p2 = line:match("(%d+).-(%d+)")
 	if (p2 ~= nil) then return Prio3:HandleNewPriorities(sender, p1, p2, nil, line) end
 
-	local p1 = line:match("(%d+)")
+	p1 = line:match("(%d+)")
 	if (p1 ~= nil) then return Prio3:HandleNewPriorities(sender, p1, nil, nil, line) end
 
 end
