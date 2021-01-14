@@ -153,7 +153,7 @@ Prio3.prioOptionsTable = {
 					return r
 				end,
 				set = function(info,val)
-					Prio3.db.profile.outputlanguage = val 
+					Prio3.db.profile.outputlanguage = val
 					for k,v in pairs(Prio3.outputLocales[val]) do L[k] = v end
 				end,
 				get = function(info) return Prio3.db.profile.outputlanguage end,
@@ -465,7 +465,7 @@ Prio3.prioOptionsTable = {
 				type = "toggle",
 				order = 40,
 				set = function(info,val)
-					Prio3.db.profile.handle_enable_prio = val 
+					Prio3.db.profile.handle_enable_prio = val
 					if Prio3.db.profile.handle_enable_prio then
 						Prio3:RegisterChatCommand('prio', 'handleChatCommand');
 					else

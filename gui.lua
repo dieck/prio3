@@ -67,7 +67,7 @@ end
 function Prio3:createPriorityFrame()
 	local AceGUI = LibStub("AceGUI-3.0")
 
-	if self.db.profile.priorities == nil then 
+	if self.db.profile.priorities == nil then
 		Prio3:Print(L["No priorities defined."])
 		return;
 	end
@@ -292,7 +292,7 @@ function Prio3:HelpFrameTab_tldr(container)
 		c:AddChild(i)
 	end
 
-	local function label(c, txt) 
+	local function label(c, txt)
 		i = AceGUI:Create("Label")
 		i:SetText(txt)
 		i:SetRelativeWidth(1)
@@ -346,14 +346,14 @@ function Prio3:HelpFrameTab_prio3(container)
 	s:SetLayout("Flow") -- probably?
 	container:AddChild(s)
 
-	local function heading(c, txt) 
+	local function heading(c, txt)
 		i = AceGUI:Create("Heading")
 		i:SetText(txt)
 		i:SetRelativeWidth(1)
 		c:AddChild(i)
 	end
 
-	local function label(c, txt) 
+	local function label(c, txt)
 		i = AceGUI:Create("Label")
 		i:SetText(txt)
 		i:SetRelativeWidth(1)
@@ -413,7 +413,7 @@ function Prio3:HelpFrameTab_manual(container)
 		c:AddChild(i)
 	end
 
-	local function label(c, txt) 
+	local function label(c, txt)
 		i = AceGUI:Create("Label")
 		i:SetText(txt)
 		i:SetRelativeWidth(1)
@@ -591,7 +591,7 @@ function Prio3:CreateMasterLootInfoFrame(itemId)
 end
 
 function Prio3:OPEN_MASTER_LOOT_LIST()
-	if Prio3.MLF ~= nil then 
+	if Prio3.MLF ~= nil then
 		-- hide old frame. Will still be in memory and attached to Master Looter Frame, so needs to be hidden here
 		Prio3.MLF:Hide()
 		Prio3.MLF:SetParent(nil)

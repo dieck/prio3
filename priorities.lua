@@ -27,11 +27,11 @@ function Prio3:SetPriorities(info, value)
 
 	if string.match(firstline, 'Name;Klasse;prio1itemid;prio2itemid;prio3itemid;prio1itemname;prio2itemname;prio3itemname;') then
 		formatType = "CSV";
-	else 	
+	else
 		-- at least three tab separated values: assume TXT. If there will be more supported formats with Tab, will need to reassess
 		-- I am not sure why, but "[^\t]\t+[^\t]+\t+[^\t]" did work in LUA interpreters but not in WoW. 
 		-- So, resorting to other methods, replaceing all tabs and all multi-spaces by & (I wanted to use ; but then it identified CSV-SHORT as TXT here)
-		fl = string.gsub(firstline, "[\t]+", "&")
+		local fl = string.gsub(firstline, "[\t]+", "&")
 		fl = string.gsub(fl, "%s%s+", "&")
 		if string.match(fl, ".*&.*&.*") then
 			formatType = "TXT";
@@ -214,7 +214,7 @@ function Prio3:SetPriority(info, line, formatType)
 	end
 	if formatType == "TXT" then
 		-- replace tabs and multi-spaces by &
-		linecsv = string.gsub(line, "[\t]+", "&")
+		local linecsv = string.gsub(line, "[\t]+", "&")
 		linecsv = string.gsub(linecsv, "%s%s+", "&")
 		-- will be enough: toPriorityId below will parse number from string
 		user, dummy, prio1, prio2, prio3 = strsplit("&", linecsv)

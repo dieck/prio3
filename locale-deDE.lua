@@ -66,7 +66,7 @@ L["Prevents other users from posting the same item you already posted."] = "Sync
 L["/prio handler"] = "/prio benutzen"
 L["/p3 handler"] = "/p3 benutzen"
 
-L["You joined a new group. I looked for other Prio3 addons, but found none. If this is not a Prio3 group, do you want to disable your addon or at least clear old priorities?"] = "Du hast eine neue Gruppe betreten. Ich habe nach anderen Prio3 Addons gesucht, aber keine gefunden. Falls dies keine Prio3 Gruppe ist, möchtest du das Addon deaktivieren oder zumindest die Prioritäten löschen?" 
+L["You joined a new group. I looked for other Prio3 addons, but found none. If this is not a Prio3 group, do you want to disable your addon or at least clear old priorities?"] = "Du hast eine neue Gruppe betreten. Ich habe nach anderen Prio3 Addons gesucht, aber keine gefunden. Falls dies keine Prio3 Gruppe ist, möchtest du das Addon deaktivieren oder zumindest die Prioritäten löschen?"
 L["Disable"] = "Deaktivieren"
 L["Keep on"] = "Aktiv lassen"
 L["Clear priorities"] = "Prios löschen"
@@ -87,7 +87,7 @@ L["Prio3 addon is currently disabled."] = "Prio3-Addon ist zur Zeit deaktiviert.
 
 L["Congratulations on finishing the Raid! Thank you for using Prio3. If you like it, Alleister on EU-Transcendence (Alliance) is gladly taking donations."] = "Herzlichen Glückwunsch zum Abschluss des Raids! Danke dass ihr Prio3 nutze. Wenn es euch gefällt, Alleister auf EU-Transcendence (Allianz) nimmt gerne Spenden an :)"
 
- 
+
 -- used terms from core.lua
 L["No priorities defined."] = "Keine Prioritäten eingestellt." -- also in loot.lua
 
@@ -146,7 +146,7 @@ L["What is Priority 3 Looting?"] = "Was ist das Prio 3 Lootsystem?"
 L["This loot distribution scheme is based on participants choosing up to three items they want to gain priority on when they actually drop."] =  "Bei diesem System zur Lootverteilung wählen die Teilnehmer vor dem Raid bis zu drei Gegenstände, auf die sie eine Priorität erhalten wenn er fällt."
 L["It is especially nice for pug raids or raids with a high amount of random fillers, as there is no history, no earning of points, everyone starts the same with every raid. But of course it can also be of value on regular raid groups that do not want the hassle of full DKP tracking or avoid long loot council discussions."] = "Es ist besonders gut geeignet für zufällige oder spontane Raids ohne feste Gruppe, oder wenn man als Stammgruppe mal einen Abend auffüllen muss. Es gibt keine Historie, keine Punkte die man verdienen muss, jeder startet mit derselben Ausgangsgrundlage. Aber es kann natürlich auch von Stammgruppen verwendet werden, die einfach nur spielen und sich nicht um DKP kümmern oder lange in Loot Councils diskutieren wollen."
 L["Side note: Prio 3 does not distinguish between main/need and offspec/greed priorities. It can thus be a good choice if you want to collect offspec gear for your char. (Hint: In order to avoid grief on main spec characters who are interested in the same items, it could be better to announce this intention beforehand.)"] = "Randnotiz: Prio 3 kennt keinen Unterschied zwischen Rollen und Zweitnutzung, zwischen Bedarf oder Gier. Es kann gut geeignet sein sich Gegenstände für eine zweite Ausrichtung zu besorgen. (Hinweis: Das kann durchaus schlecht ankommen, wenn zB. Heiler für ihre Rolle dasselbe Item auf Prio nehmen wie Krieger die sonst nichts brauchen für ihr Diamantenfläschchen -- sprecht es besser vorher an.)"
-	
+
 L["So, how does this work now?"] = "Also, wie läuft das jetzt?"
 
 L["Before the raid, you will choose (up to) 3 items you want to have priority on."] = "Vor dem Raid wählst du (bis zu) 3 Gegenstände, auf die du Priorität haben willst."
@@ -160,14 +160,14 @@ L["Every user can choose their items, in secret. Even the admin cannot see those
 L["After all participants have chosen their loot, the admin can set the run to be visible for all."] = "Wenn alle Teilnehmer ihre Gegenstände gewählt haben, schaltet der Admin die Anzeige für alle frei."
 L["For use with the Prio3 addon, you can then use the Exports."] = "Um das Prio3 Addon zu benutzten kann man die Liste jetzt exportieren."
 L["Prio3 native would be CSV Short, but the addon can actually read sahne-team.de full CSV and TXT export as well."] = "Nativ für das Addon wäre CSV Short, aber auch die anderen Formate von sahne-team.de können gelesen werden. CSV öffnet eventuell mit Excel, daher die Empfehlung TXT zu exportieren."
-	
+
 L["If the loot drops, it will be handled along the priority table, starting with all users that have this on Priority 1."] = "Wenn Gegner getötet werden die Gegenstände auf Priorität fallen lassen, werden diese anhand der Prioritäten verteilt, beginnend mit Priorität 1."
 L["If there is only one user: Congrats, you have a new item."] = "Wenn es nur einen Teilnehmer gibt der den Gegenstände auf Prio 1 hat: Herzlichen Glückwunsch."
 L["If there are more users with the same priority, those are asked to roll for the item, highest roll wins."] = "Bei mehreren Teilnehmern mit derselben Priorität wird das Item zwischen diesen verwürfelt."
 L["Every user will get only one item per priority. If an items drops a second time, it is handled among the others with the highest remaining priority."] = "Jeder Teilnehmer bekommt nur ein Item pro Priorität. Wenn ein Gegenstand ein zweites Mal droppt (z.B. ZG Götze), wird es zwischen den anderen Teilnehmern mit höchster Priorität vergeben."
 L["If no one selected that particular item for Prio 1, then Prio 2 will be handled, and afterwards Prio 3. For all items where no one set a Priority, those are usually handled by FFA. Some raids tend to apply main>offspec here."] = "Wenn niemand einen Gegenstand auf Prio 1 hat, wird danach Prio 2 abgehandelt, dann Prio 3.  Im Anschluss wird typischerweise FFA verrollt, das kann aber nach Raid variieren. Manchmal gilt hier dann Rolle > Zweitnutzung."
 L["Of course choosing which items to put where, that is part of the fun, and risk. Do I put this item on Prio 1, because others may want it too? Or it is unlikely, and I can savely put it on Prio 3?"] = "Auf welche Priorität man was nimmt, ist dabei Teil des Spaßes, und des Risikos. Nehme ich diesen Gegenstand auf Prio 1, weil ihn noch andere wollen? Oder ist das unwahrscheinlich, und Prio 3 ist noch sicher genug?"
-	
+
 L["Where does the Prio3 addon comes into play?"] = "Was macht das Prio3 Addon denn jetzt?"
 L["Looking up if someone actually has marked down a priority can be a tedious task, and it's easy to miss someone."] = "Nachzuschlagen, wer nun welchen Gegenstand auf welcher Priorität hat, ist durchaus mühsam, und man kann leicht mal was übersehen. Gerade wenn die Mitspieler die Liste nicht kennen und nicht direkt nachfragen können kann schnell Mißtrauen gegenüber einem Plündermeister den sie nicht kennen entstehen."
 L["The Prio3 addon will notify you on looting if there are any Priorities set up."] = "Das Prio3 Addon gibt in den Raid aus, wenn jemand einen Gegenstand auf Priorität hat. Andere Prio3 Benutzer können die volle Liste einsehen, Benutzer ohne das Addon die Abfrage-Funktionen in-game nutzen um zu sehen wer 'ihren' Gegenstand sonst noch will."
@@ -176,7 +176,7 @@ L["This way you don't have to switch to your lookup table, e.g. on a website lik
 -- help texts manual
 
 L["IMPORT, or How does the addon know about the priorities?"] = "IMPORT, oder Woher kennt das Addon die Prioritäten?"
-	
+
 L["You can import simple CSV strings on the Addon config page (Menu Interfaces, Tab Addon, Prio3)"] = "Man kann einfach CSV-Einträge in das Addon importieren, zB. in /prio3 config"
 L["where Prio1, 2, 3 can be numeric item Ids, or even strings with the IDs somewhere in (will take first number found), e.g. wowhead links. This is basically the CSV-SHORT export format of sahne-team.de."] = "wobei Prio1, 2, und 3 entweder die ItemID (Kennzahl) ist, oder Texte oder auch Links mit dieser Zahl (es wird die erste gefundene genommen), zB. Links zu Wowhead. Dies ist im Prinzip das CSV-SHORT Format von sahne-team.de."
 L["Also accepted format: sahne-team.de CSV normal export, with german header line:"] = "Ebenfalls möglich: sahne-team.de CSV-Normal Export, mit deutschen Kopfzeilen:"
@@ -196,7 +196,7 @@ L["Prio3 will react to loot events (if you open a loot window)"] = "Prio3 reagie
 L["You can configure it to also react to rolls (if e.g. there is no PM and the roll window starts) and to raid warnings (if e.g. someone else does Master Looter). You can also configure to ignore Onyxia Cloaks posted as raid warnings. Special service for BWL Prio3 runs :)"] = "Man kann einstellen, dass auch auf Würfel-Aufforderungen reagiert wird (z.B. wenn es keinen Plündermeister gibt), sowie auf Raidwarnungen (wenn jemand anders Plündermeister macht und den Gegenstand ankündigt). Man kann auch einstellen, dass der Onyxia-Umhang ignoriert wird, da er häufig in BWL als Raidwarnung angesagt wird :)"
 L["In order to avoid multiple posts, e.g. if you loot a corpse twice, there is a mute setting pausing outputs for a defined time."] = "Um mehrfache Benachrichtigungen zu vermeiden, z.B. wenn man einen Gegner zweimal anklickt, kann man eine Stummschaltung einstellen, während der nicht erneut geschrieben wird."
 L["For Master Looter, a hint window can be added to the distribution window, showing all priorities for an item"] = "Für Plündermeister gibt es die Option, ein Fenster einzublenden wenn man Gegner plündert, mit allen Prioritäten."
-	
+
 L["QUERIES, or How to look up and validate priorities"] = "ABFRAGEN, oder Wie kann ich die Liste einsehen?"
 
 L["For addon users, /prio3 will open up a priority list"] = "Addon-Benutzer können mit /prio3 die aktuelle Liste einsehen"
@@ -205,7 +205,7 @@ L["* Whisper 'prio' to get your own priorities. (default: on)"] = "* Flüstere '
 L["* Whisper 'prio USERNAME' to look up another raid member. (default: off)"] = "* Flüstere 'prio USERNAME' um andere Raidmitglieder abzufragen. (Standard: aus)"
 L["* Whisper 'prio ITEMLINK' to look up priorities on an item. (default: on)"] = "* Flüstere 'prio ITEMLINK' um zu erfahren wer Prioritäten auf einem Gegenstand hat. (Standard: an)"
 L["(If you don't get an answer at all, ask your Prio3 master if they turned on the options)"] = "(Wenn man überhaupt keine Antwort bekommt, fragt den Prio3 Benutzer ob er die Einstellungen deaktiviert hat.)"
-	
+
 L["SYNC & HANDLER, or How does this work with multiple people"] = "SYNC & HANDLER, oder Wie funktioniert das wenn mehrere Leute das Addon haben?"
 
 L["Here are two options to handle how the addon talks to other users in the same raid. It is HIGHLY recommended to leave both turned on."]  = "Hier findet man zwei Optionen die festlegen, wie mehrere Addons im Raid miteinander umgehen. Es wird UNBEDINGT empfohlen, diese Einstellungen aktiviert zu lassen."
@@ -213,15 +213,15 @@ L["Sync priorities will sync the list of items between multiple users, on import
 L["The Resend prios button will send out Prios if needed - normally when someone new with the addon joins the raid, it will be synced automatically. But if the disabled the addon and turns it on later, you can send out your priorities with this."] = "Neu senden schickt die Liste erneut an andere Raidmitglieder. Normalerweise synchronisiert sich ein neu hinzukommendes Addon wenn man einen Raid betritt, aber falls das Addon zb. deaktiviert war und später zugeschaltet wird, kann man die Prioritäten erneut aussenden."
 L["Sync item announcements will coordinate between multiple users' addons which user will actually post to raid (depending on output options). This is to avoid multiple posts of the same information. (May still happen though if addon communication is lagging slightly)."] = "Ausgaben synchronisieren koordiniert zwischen den Addons mehrere User, wer eine Benachrichtigung sendet. Dies verhindert mehrere gleichzeitige Nachrichten über dieselben Prioritäten. (Kann immer noch selten vorkommen, wenn etwas Lag in der Kommunikation der Addons ist)"
 L["Also, you can opt to use /prio or /p3 in addition to /prio3 as command line trigger."] = "Ebenfalls hier kann man festlegen, dass das Addon, zusätzlich zu /prio3, auch auf /prio oder /p3 hört."
-	
+
 L["and more"] = "und sonst?"
-	
+
 L["There is a 'Versions' tab in the options, which is basically only there for debugging purposes."] = "Es gibt einen Tab mit einer Versionsübesicht für andere Addons im Raid. Dies dient in erster Linie für Debug."
 L["Users are notified if they have an older version of the application."] = "Benutzer werden informiert, wenn sie ein älteres Addon benutzen als andere Mitspieler."
 L["Until now, all addon synchronisation features were backwards compatible. If this changes at some point in time, a comprehensive error message will be put in place"] = "Bis jetzt sind alle Synchronisations-Features des Addons immer abwärtskompatibel. Wenn sich das einmal ändern sollte, wird das Addon mit einer aussagekräftigen Fehlermeldung darauf aufmerksam machen."
 
 
--- load default outputs 
+-- load default outputs
 for k,v in pairs(Prio3.outputLocales["deDE"]) do L[k] = v end
 
 

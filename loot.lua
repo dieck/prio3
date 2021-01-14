@@ -27,7 +27,7 @@ function Prio3:LOOT_OPENED()
 
 	-- process the event
 	loot = GetLootInfo()
-	numLootItems = GetNumLootItems();
+	local numLootItems = GetNumLootItems();
 
 	-- look for maximum quality (for No prio announces)
 	local maxQuality = "a"
@@ -36,8 +36,8 @@ function Prio3:LOOT_OPENED()
 
 	-- might not work out with "faster autoloot" addons like Leatrix
 	-- so get the itemlinks as fast as possible, then do other stuff
-	for i=1,numLootItems do 
-		itemLink = GetLootSlotLink(i)
+	for i=1,numLootItems do
+		local itemLink = GetLootSlotLink(i)
 		if itemLink then
 			table.insert(reportLinks, itemLink)
 		end
@@ -130,12 +130,12 @@ function Prio3:CHAT_MSG_RAID_WARNING(event, text, sender)
 		-- ignore Onyxia Scale Cloak if configured
 		if Prio3.db.profile.ignorescalecloak and tonumber(id) == 15138 then
 			Prio3:Debug("Ignoring Onyxia Scale Cloak")
-			return nil 
+			return nil
 		end
 		-- ignore Drakefire Amulet if configured
 		if Prio3.db.profile.ignoredrakefire and tonumber(id) == 16309 then
 			Prio3:Debug("Ignoring Drakefire Amulet")
-			return nil 
+			return nil
 		end
 
 		-- announce to other addon that we want to react to raidwarning, but only if we would send something out actually
@@ -331,7 +331,7 @@ end
 function Prio3:Announce(itemLink, prio, chars, hasPreviousPrio)
 
 	-- output to raid or print to user
-	msg = L["itemLink is at priority for users"](itemLink, prio, chars)
+	local msg = L["itemLink is at priority for users"](itemLink, prio, chars)
 
 	local ret = Prio3:Output(msg)
 
