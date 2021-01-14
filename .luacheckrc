@@ -29,7 +29,12 @@ globals = {
 
   -- Prio3
   "Prio3",
-  "tempty",
+  "tprint",
+
+  -- other WoW APIs
+  "GameFontGreenSmall",
+  "LootFrame",
+  "MasterLooterFrame",
 
   -- misc custom
 	"AceGUIWidgetLSMlists",
