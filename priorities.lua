@@ -1,6 +1,6 @@
 local L = LibStub("AceLocale-3.0"):GetLocale("Prio3", true)
 
--- import priorities 
+-- import priorities
 function Prio3:SetPriorities(info, value)
 
 	Prio3.db.profile.priorities = {}
@@ -29,7 +29,7 @@ function Prio3:SetPriorities(info, value)
 		formatType = "CSV";
 	else
 		-- at least three tab separated values: assume TXT. If there will be more supported formats with Tab, will need to reassess
-		-- I am not sure why, but "[^\t]\t+[^\t]+\t+[^\t]" did work in LUA interpreters but not in WoW. 
+		-- I am not sure why, but "[^\t]\t+[^\t]+\t+[^\t]" did work in LUA interpreters but not in WoW.
 		-- So, resorting to other methods, replaceing all tabs and all multi-spaces by & (I wanted to use ; but then it identified CSV-SHORT as TXT here)
 		local fl = string.gsub(firstline, "[\t]+", "&")
 		fl = string.gsub(fl, "%s%s+", "&")
@@ -66,7 +66,7 @@ end
 
 
 function Prio3:toPriorityId(s)
-	for id in string.gmatch(s, "%d+") do 
+	for id in string.gmatch(s, "%d+") do
 
 		-- there are some items that are rewards from quest items
 		-- sahne-team e.g. allows for selecting the rewards directly
@@ -147,7 +147,7 @@ function Prio3:OutputUserPrio(user, channel)
 		local t = {
 			needed_itemids = Prio3.db.profile.priorities[user],
 			vars = { u = user },
-			todo = function(itemlinks,vars) 
+			todo = function(itemlinks,vars)
 				SendChatMessage(L["Priorities of username: list"](vars["u"],table.concat(itemlinks,", ")), channel, nil, vars["u"])
 			end,
 		}
@@ -171,20 +171,20 @@ function Prio3:HandleNewPriorities(user, prio1, prio2, prio3, origin)
 		if prio1 == nil then
 			Prio3:Debug("DEBUG: No prio1 found in " .. origin)
 		else
-			p1 = Prio3:toPriorityId(prio1) 
-			Prio3:Debug("DEBUG: Found PRIORITY 1 ITEM " .. p1 .. " for user " .. user .. " in " .. origin) 
+			p1 = Prio3:toPriorityId(prio1)
+			Prio3:Debug("DEBUG: Found PRIORITY 1 ITEM " .. p1 .. " for user " .. user .. " in " .. origin)
 		end
 		if prio2 == nil then
 			Prio3:Debug("DEBUG: No prio2 found in " .. origin)
 		else
-			p2 = Prio3:toPriorityId(prio2) 
-			Prio3:Debug("DEBUG: Found PRIORITY 2 ITEM " .. p2 .. " for user " .. user .. " in " .. origin) 
+			p2 = Prio3:toPriorityId(prio2)
+			Prio3:Debug("DEBUG: Found PRIORITY 2 ITEM " .. p2 .. " for user " .. user .. " in " .. origin)
 		end
 		if prio3 == nil then
 			Prio3:Debug("DEBUG: No prio3 found in " .. origin)
 		else
 			p3 = Prio3:toPriorityId(prio3)
-			Prio3:Debug("DEBUG: Found PRIORITY 3 ITEM " .. p3 .. " for user " .. user .. " in " .. origin) 
+			Prio3:Debug("DEBUG: Found PRIORITY 3 ITEM " .. p3 .. " for user " .. user .. " in " .. origin)
 		end
 
 		Prio3.db.profile.priorities[user] = {p1, p2, p3}

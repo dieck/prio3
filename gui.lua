@@ -102,19 +102,19 @@ function Prio3:createPriorityFrame()
 	end)
 	f:AddChild(btHelp)
 
-	scrollcontainer = AceGUI:Create("SimpleGroup") -- "InlineGroup" is also good
+	local scrollcontainer = AceGUI:Create("SimpleGroup") -- "InlineGroup" is also good
 	scrollcontainer:SetFullWidth(true)
 	scrollcontainer:SetFullHeight(true) -- probably?
 	scrollcontainer:SetLayout("Fill") -- important!
 
 	f:AddChild(scrollcontainer)
 
-	s = AceGUI:Create("ScrollFrame")
+	local s = AceGUI:Create("ScrollFrame")
 	s:SetLayout("Flow") -- probably?
 	scrollcontainer:AddChild(s)
 
 
-		function processPrio (prios,prioNumber) -- function to process existing prios
+		local function processPrio (prios,prioNumber) -- function to process existing prios
 			local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, itemSellPrice = GetItemInfo(prios[prioNumber])
 
 			if itemLink then
@@ -133,7 +133,7 @@ function Prio3:createPriorityFrame()
 				s:AddChild(lbIcon)
 
 				local lbPrio = AceGUI:Create("InteractiveLabel")
-				if (Prio3.db.profile.debug) then 
+				if (Prio3.db.profile.debug) then
 					lbPrio:SetText("("..prios[prioNumber]..") " .. itemLink)
 				else
 					lbPrio:SetText(itemLink)
@@ -154,7 +154,7 @@ function Prio3:createPriorityFrame()
 			end
 		end
 
-		function noPrio(prioNumber) -- function to process missing prios 
+		local function noPrio(prioNumber) -- function to process missing prios
 			local lbIcon = AceGUI:Create("Icon")
 			lbIcon:SetRelativeWidth(0.04)
 			lbIcon:SetImage("Interface\\Icons\\ability_vanish")
@@ -167,7 +167,7 @@ function Prio3:createPriorityFrame()
 			s:AddChild(lbPrio)
 		end
 
-		function cellSeperator(columns)
+		local function cellSeperator(columns)
 			for i=1,columns do
 				local lbHR = AceGUI:Create("Label")
 				lbHR:SetText("-----------------------------")
@@ -281,19 +281,19 @@ end
 function Prio3:HelpFrameTab_tldr(container)
 	local AceGUI = LibStub("AceGUI-3.0")
 
-	s = AceGUI:Create("ScrollFrame")
+	local s = AceGUI:Create("ScrollFrame")
 	s:SetLayout("Flow") -- probably?
 	container:AddChild(s)
 
-	local function heading(c, txt) 
-		i = AceGUI:Create("Heading")
+	local function heading(c, txt)
+		local i = AceGUI:Create("Heading")
 		i:SetText(txt)
 		i:SetRelativeWidth(1)
 		c:AddChild(i)
 	end
 
 	local function label(c, txt)
-		i = AceGUI:Create("Label")
+		local i = AceGUI:Create("Label")
 		i:SetText(txt)
 		i:SetRelativeWidth(1)
 		c:AddChild(i)
@@ -302,7 +302,7 @@ function Prio3:HelpFrameTab_tldr(container)
 	heading(s, L["tl;dr"])
 	label(s, L["Import Priorities or have people whisper in priorities. Loot corpses and have chosen loot announced in raid chat."])
 
-	sgig = AceGUI:Create("InlineGroup")
+	local sgig = AceGUI:Create("InlineGroup")
 	sgig:SetRelativeWidth(0.5)
 	s:AddChild(sgig)
 
@@ -316,7 +316,7 @@ function Prio3:HelpFrameTab_tldr(container)
 	label(sgig, L["Participants will need to have the Prio3 addon to see current list."])
 	label(sgig, L["If enabled in config, Participants can use whisper queries to find out who else has their items on prio."])
 
-	sgde = AceGUI:Create("InlineGroup")
+	local sgde = AceGUI:Create("InlineGroup")
 	sgde:SetRelativeWidth(0.5)
 	s:AddChild(sgde)
 
@@ -342,19 +342,19 @@ end
 function Prio3:HelpFrameTab_prio3(container)
 	local AceGUI = LibStub("AceGUI-3.0")
 
-	s = AceGUI:Create("ScrollFrame")
+	local s = AceGUI:Create("ScrollFrame")
 	s:SetLayout("Flow") -- probably?
 	container:AddChild(s)
 
 	local function heading(c, txt)
-		i = AceGUI:Create("Heading")
+		local i = AceGUI:Create("Heading")
 		i:SetText(txt)
 		i:SetRelativeWidth(1)
 		c:AddChild(i)
 	end
 
 	local function label(c, txt)
-		i = AceGUI:Create("Label")
+		local i = AceGUI:Create("Label")
 		i:SetText(txt)
 		i:SetRelativeWidth(1)
 		c:AddChild(i)
@@ -371,7 +371,7 @@ function Prio3:HelpFrameTab_prio3(container)
 	label(s, L["Mostly, the raid lead or designated PM is collecting these requests, noting them down. Sometimes a Google Doc is used to post as read only link to users later on."])
 	label(s, L["Prio3 can also be used to collect these requests in-game. See tl;dr tab for a short intro."])
 
-	sg = AceGUI:Create("InlineGroup")
+	local sg = AceGUI:Create("InlineGroup")
 	sg:SetRelativeWidth(1)
 	s:AddChild(sg)
 
@@ -402,26 +402,26 @@ end
 function Prio3:HelpFrameTab_manual(container)
 	local AceGUI = LibStub("AceGUI-3.0")
 
-	s = AceGUI:Create("ScrollFrame")
+	local s = AceGUI:Create("ScrollFrame")
 	s:SetLayout("Flow") -- probably?
 	container:AddChild(s)
 
-	local function heading(c, txt) 
-		i = AceGUI:Create("Heading")
+	local function heading(c, txt)
+		local i = AceGUI:Create("Heading")
 		i:SetText(txt)
 		i:SetRelativeWidth(1)
 		c:AddChild(i)
 	end
 
 	local function label(c, txt)
-		i = AceGUI:Create("Label")
+		local i = AceGUI:Create("Label")
 		i:SetText(txt)
 		i:SetRelativeWidth(1)
 		c:AddChild(i)
 	end
 
 	local function code(c, txt)
-		cg = AceGUI:Create("InlineGroup")
+		local cg = AceGUI:Create("InlineGroup")
 		cg:SetRelativeWidth(1)
 
 		if type(txt) ~= "table" then
@@ -568,7 +568,7 @@ function Prio3:CreateMasterLootInfoFrame(itemId)
 
 	frame:SetSize(140, 5+17*getn(l))
 
-	frame.text = frame:CreateFontString(nil,"ARTWORK") 
+	frame.text = frame:CreateFontString(nil,"ARTWORK")
 	frame.text:SetFont("Fonts\\ARIALN.ttf", 16, "OUTLINE")
 	frame.text:SetPoint("TOPLEFT",5,-5)
 
@@ -601,7 +601,7 @@ function Prio3:OPEN_MASTER_LOOT_LIST()
 
 
 	if Prio3.db.profile.showmasterlooterhint then
-		itemLink = GetLootSlotLink(LootFrame.selectedSlot);
+		local itemLink = GetLootSlotLink(LootFrame.selectedSlot);
 		local itemID = select(3, strfind(itemLink, "item:(%d+)"))
 
 		Prio3.MLF = self:CreateMasterLootInfoFrame(itemID)
