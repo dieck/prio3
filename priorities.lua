@@ -122,18 +122,18 @@ function Prio3:OutputUserPrio(user, channel)
 
 	local p1, p2, p3 = unpack(Prio3.db.profile.priorities[user])
 
-	local itemName1, itemLink1 = GetItemInfo(p1)
+	local itemLink1 = GetItemInfo(p1)
 
 	table.insert(itemLinks, itemLink1)
 
-	local itemName2, itemLink2 = ""
-	local itemName3, itemLink3 = ""
+	local itemLink2 = ""
+	local itemLink3 = ""
 	if p2 then
-		itemName2, itemLink2 = GetItemInfo(p2)
+		itemLink2 = GetItemInfo(p2)
 		table.insert(itemLinks, itemLink2)
 	end
 	if p3 then
-		itemName3, itemLink3 = GetItemInfo(p3)
+		itemLink3 = GetItemInfo(p3)
 		table.insert(itemLinks, itemLink3)
 	end
 

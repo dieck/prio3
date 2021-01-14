@@ -125,7 +125,7 @@ function Prio3:OnDisable()
 end
 
 -- for debug outputs
-local function tprint (tbl, indent)
+function tprint (tbl, indent)
 	if not indent then indent = 0 end
 	local toprint = string.rep(" ", indent) .. "{\r\n"
 	indent = indent + 2
