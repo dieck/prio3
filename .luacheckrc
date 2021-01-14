@@ -3,6 +3,7 @@ max_line_length = false
 exclude_files = {
 	"README.md",
 	".luacheckrc",
+	"libs/",
 }
 ignore = {
 	"11./SLASH_.*", -- Setting an undefined (Slash handler) global variable
