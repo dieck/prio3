@@ -29,6 +29,7 @@ globals = {
 
   -- Prio3
   "Prio3",
+  "tempty",
 
   -- misc custom
 	"AceGUIWidgetLSMlists",
