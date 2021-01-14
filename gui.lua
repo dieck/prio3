@@ -114,7 +114,7 @@ function Prio3:createPriorityFrame()
 	scrollcontainer:AddChild(s)
 	
 	
-		function processPrio (prioNumber) -- function to process existing prios 
+		function processPrio (prios,prioNumber) -- function to process existing prios
 			local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, itemSellPrice = GetItemInfo(prios[prioNumber])
 
 			if itemLink then
@@ -135,12 +135,12 @@ function Prio3:createPriorityFrame()
 				local lbPrio = AceGUI:Create("InteractiveLabel")
 				if (Prio3.db.profile.debug) then 
 					lbPrio:SetText("("..prios[prioNumber]..") " .. itemLink)
-				else 
+				else
 					lbPrio:SetText(itemLink)
 				end
 				lbPrio:SetRelativeWidth(0.20)
 				s:AddChild(lbPrio)
-			else			
+			else
 				local lbIcon = AceGUI:Create("Icon")
 				lbIcon:SetRelativeWidth(0.04)
 				lbIcon:SetImage("Interface\\Icons\\ability_vanish")
@@ -150,9 +150,9 @@ function Prio3:createPriorityFrame()
 				local lbPrio = AceGUI:Create("InteractiveLabel")
 				lbPrio:SetText("-ERROR: ID-")
 				lbPrio:SetRelativeWidth(0.20)
-				s:AddChild(lbPrio)			
+				s:AddChild(lbPrio)
 			end
-		end	
+		end
 		
 		function noPrio(prioNumber) -- function to process missing prios 
 			local lbIcon = AceGUI:Create("Icon")
@@ -168,7 +168,7 @@ function Prio3:createPriorityFrame()
 		end
 		
 		function cellSeperator(columns)
-			for i=1,columns do  
+			for i=1,columns do
 				local lbHR = AceGUI:Create("Label")
 				lbHR:SetText("-----------------------------")
 				lbHR:SetRelativeWidth(0.24)
@@ -176,11 +176,9 @@ function Prio3:createPriorityFrame()
 			end
 		end
 	
-	sortedUsers = {} -- Hashmap User	
-	local playerIndex = 1
+	local sortedUsers = {}
     	for user, prios in pairs(self.db.profile.priorities) do
-		table.insert(sortedUsers, playerIndex, user)
-		playerIndex = playerIndex+1
+		table.insert(sortedUsers, user)
 	end
     	table.sort(sortedUsers) -- Sorts users alphabetically
 	
@@ -191,10 +189,10 @@ function Prio3:createPriorityFrame()
 		lbPlayerName:SetRelativeWidth(0.24)
 		s:AddChild(lbPlayerName)	
 		
-		prios = self.db.profile.priorities[user] -- access prios via user key		
-		if tonumber(prios[1]) > 0 then processPrio(1) else noPrio(1) end
-		if tonumber(prios[2]) > 0 then processPrio(2) else noPrio(2) end
-		if tonumber(prios[3]) > 0 then processPrio(3) else noPrio(3) end		
+		local prios = self.db.profile.priorities[user] -- access prios via user key
+		if tonumber(prios[1]) > 0 then processPrio(prios,1) else noPrio(1) end
+		if tonumber(prios[2]) > 0 then processPrio(prios,2) else noPrio(2) end
+		if tonumber(prios[3]) > 0 then processPrio(prios,3) else noPrio(3) end
 		cellSeperator(4)
 	end
 	
