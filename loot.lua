@@ -356,9 +356,3 @@ function Prio3:Announce(itemLink, prio, chars, hasPreviousPrio)
 	return ret
 
 end
-
-
-
-
-
-
