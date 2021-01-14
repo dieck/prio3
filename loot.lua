@@ -26,7 +26,7 @@ function Prio3:LOOT_OPENED()
 	end
 
 	-- process the event
-	loot = GetLootInfo()
+	local loot = GetLootInfo()
 	local numLootItems = GetNumLootItems();
 
 	-- look for maximum quality (for No prio announces)
