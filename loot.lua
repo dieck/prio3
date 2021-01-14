@@ -221,7 +221,7 @@ function Prio3:HandleLoot(itemLink, qualityFound)
 	-- bad argument, might be gold? (or copper, here)
 
 	if Prio3.onetimenotifications["finalboss"] == nil then
-		i = tonumber(itemId)
+		local i = tonumber(itemId)
 		
 		if 	   i == 19802 -- Heart of Hakkar
 			or i == 21220 -- Head of Ossirian the Unscarred
