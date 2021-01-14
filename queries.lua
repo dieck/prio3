@@ -15,7 +15,7 @@ function Prio3:QueryUser(username, whisperto)
 			local itemName, itemLink = GetItemInfo(prio)
 			table.insert(linktab, itemLink)
 		end
-		whisperlinks = table.concat(linktab, ", ")
+		local whisperlinks = table.concat(linktab, ", ")
 		SendChatMessage(L["Priorities of username: list"](username, whisperlinks), "WHISPER", nil, whisperto)
 	end
 end

@@ -1,9 +1,9 @@
 local L = {}
 
 -- priorities.lua & queries.lua
-L["Priorities of username: list"] = function(username,itemlinks) 
+L["Priorities of username: list"] = function(username,itemlinks)
 	-- all translations MUST HAVE "username:" in output
-	return "Priorities of " .. username .. ": " .. itemlinks 
+	return "Priorities of " .. username .. ": " .. itemlinks
 end
 
 -- queries.lua & loot.lua
