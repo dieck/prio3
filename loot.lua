@@ -259,6 +259,7 @@ function Prio3:HandleLoot(itemLink, qualityFound)
 
 		-- build local prio list
 		local itemprios = {
+			p0 = {},
 			p1 = {},
 			p2 = {},
 			p3 = {}
@@ -280,6 +281,15 @@ function Prio3:HandleLoot(itemLink, qualityFound)
 				table.insert(itemprios.p3, user)
 			end
 
+			-- Extra entry for prio 0
+			if Prio3.db.profile.prio0 then
+				if  tonumber(prios[1]) == tonumber(itemId) and
+					tonumber(prios[2]) == tonumber(itemId) and
+					tonumber(prios[3]) == tonumber(itemId) then
+						table.insert(itemprios.p0, user)
+				end
+			end
+
 		end
 
 		if table.getn(itemprios.p1) == 0 and table.getn(itemprios.p2) == 0 and table.getn(itemprios.p3) == 0 then
@@ -291,14 +301,18 @@ function Prio3:HandleLoot(itemLink, qualityFound)
 				end
 			end
 		end
+
+		if table.getn(itemprios.p0) > 0 then
+			outputSent = Prio3:Announce(itemLink, 0, itemprios.p0) or outputSent
+		end
 		if table.getn(itemprios.p1) > 0 then
-			outputSent = Prio3:Announce(itemLink, 1, itemprios.p1) or outputSent
+			outputSent = Prio3:Announce(itemLink, 1, itemprios.p1, (table.getn(itemprios.p0) > 0)) or outputSent
 		end
 		if table.getn(itemprios.p2) > 0 then
-			outputSent = Prio3:Announce(itemLink, 2, itemprios.p2, (table.getn(itemprios.p1) > 0)) or outputSent
+			outputSent = Prio3:Announce(itemLink, 2, itemprios.p2, (table.getn(itemprios.p0)+table.getn(itemprios.p1) > 0)) or outputSent
 		end
 		if table.getn(itemprios.p3) > 0 then
-			outputSent = Prio3:Announce(itemLink, 3, itemprios.p3, (table.getn(itemprios.p1)+table.getn(itemprios.p2) > 0))	or outputSent
+			outputSent = Prio3:Announce(itemLink, 3, itemprios.p3, (table.getn(itemprios.p0)+table.getn(itemprios.p1)+table.getn(itemprios.p2) > 0)) or outputSent
 		end
 
 	else

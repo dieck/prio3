@@ -228,6 +228,15 @@ Prio3.prioOptionsTable = {
 			  set = function(info,val) Prio3.db.profile.noprioannounce_quality = val end,
 			  get = function(info) return Prio3.db.profile.noprioannounce_quality end,
 			},
+			prio0 = { name="", type="description", order=21 },
+			noprio = { -- Todo locale
+			  name = "Prio0 System",
+			  desc = "Activates output for Prio 0",
+			  type = "toggle",
+			  order = 32,
+			  set = function(info,val) Prio3.db.profile.prio0 = val end,
+			  get = function(info) return Prio3.db.profile.prio0 end,
+			},
 			newline2 = { name="", type="description", order=32 },
 			whisper = {
 				name = L["Whisper to Char"],
