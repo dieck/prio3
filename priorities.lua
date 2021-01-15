@@ -164,30 +164,40 @@ function Prio3:HandleNewPriorities(user, prio1, prio2, prio3, origin)
 	local p3 = 0
 
 	if user == nil then
-		Prio3:Debug("DEBUG: No user found in " .. origin)
+		Prio3:Debug("No user found in " .. origin)
 	else
 		user = strtrim(user)
 
 		if prio1 == nil then
-			Prio3:Debug("DEBUG: No prio1 found in " .. origin)
+			Prio3:Debug("No prio1 found in " .. origin)
 		else
 			p1 = Prio3:toPriorityId(prio1)
-			Prio3:Debug("DEBUG: Found PRIORITY 1 ITEM " .. p1 .. " for user " .. user .. " in " .. origin)
+			Prio3:Debug("Found PRIORITY 1 ITEM " .. p1 .. " for user " .. user .. " in " .. origin)
 		end
 		if prio2 == nil then
-			Prio3:Debug("DEBUG: No prio2 found in " .. origin)
+			Prio3:Debug("No prio2 found in " .. origin)
 		else
 			p2 = Prio3:toPriorityId(prio2)
-			Prio3:Debug("DEBUG: Found PRIORITY 2 ITEM " .. p2 .. " for user " .. user .. " in " .. origin)
+			Prio3:Debug("Found PRIORITY 2 ITEM " .. p2 .. " for user " .. user .. " in " .. origin)
 		end
 		if prio3 == nil then
-			Prio3:Debug("DEBUG: No prio3 found in " .. origin)
+			Prio3:Debug("No prio3 found in " .. origin)
 		else
 			p3 = Prio3:toPriorityId(prio3)
-			Prio3:Debug("DEBUG: Found PRIORITY 3 ITEM " .. p3 .. " for user " .. user .. " in " .. origin)
+			Prio3:Debug("Found PRIORITY 3 ITEM " .. p3 .. " for user " .. user .. " in " .. origin)
 		end
 
-		Prio3.db.profile.priorities[user] = {p1, p2, p3}
+		if Prio3.db.profile.priorities[user] == nil then 	-- user does not exist
+			Prio3.db.profile.priorities[user] = {p1, p2, p3}
+		else 												-- user exists
+			Prio3:Debug("User already exists " .. origin)
+			if p1 == 0 and p2 == 0 and p3 == 0 then 		-- check for triple 0 prios
+				Prio3:Debug("No valid prios found in " .. origin)
+			else
+				Prio3:Debug("Overwrite existing prio " .. origin)
+				Prio3.db.profile.priorities[user] = {p1, p2, p3}
+			end
+		end
 
 		-- whisper if player is in RAID, oder in debug mode to player char
 		if Prio3.db.profile.whisperimport and ((Prio3.db.profile.debug and user == UnitName("player")) or UnitInRaid(user)) then
