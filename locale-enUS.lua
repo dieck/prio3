@@ -38,6 +38,8 @@ L["Mute (sec)"] = "Mute (sec)"
 L["Ignores loot encountered a second time for this amount of seconds. 0 to turn off."] = "Ignores loot encountered a second time for this amount of seconds. 0 to turn off."
 L["Master Looter Hint"] = "Master Looter Hint"
 L["Shows hint window on Master Looter distribution"] = "Shows hint window on Master Looter distribution"
+L["Enable Prio 0"] = "Enable Prio 0"
+L["Activates output for Prio 0. If someone sets Prio 1, 2 and 3 to the same item, this gets precedence."] = "Activates output for Prio 0. If someone sets Prio 1, 2 and 3 to the same item, this gets precedence."
 L["Import String"] = "Import String"
 L["Resend prios"] = "Resend prios"
 L["Please note that current Prio settings WILL BE OVERWRITTEN"] = "Please note that current Prio settings WILL BE OVERWRITTEN"
@@ -172,6 +174,11 @@ L["Looking up if someone actually has marked down a priority can be a tedious ta
 L["The Prio3 addon will notify you on looting if there are any Priorities set up."] = "The Prio3 addon will notify you on looting if there are any Priorities set up."
 L["This way you don't have to switch to your lookup table, e.g. on a website like sahne-team.de or a google doc, or even a handwritten note. It will announce this to the raid (by default), or only to the char using the addon and looting (should normally be the PM)."] = "This way you don't have to switch to your lookup table, e.g. on a website like sahne-team.de or a google doc, or even a handwritten note. It will announce this to the raid (by default), or only to the char using the addon and looting (should normally be the PM)."
 
+L["What is Prio 0?"] = "What is Prio 0?"
+L["Some groups extended the Prio 3 system by another priorization that takes precedence before Prio 1."] = "Some groups extended the Prio 3 system by another priorization that takes precedence before Prio 1."
+L["If you enable the output setting and choose the same item for Prio 1, 2 and 3, it will be used as Prio 0."] = "If you enable the output setting and choose the same item for Prio 1, 2 and 3, it will be used as Prio 0."
+
+
 -- help texts manual
 
 L["IMPORT, or How does the addon know about the priorities?"] = "IMPORT, or How does the addon know about the priorities?"
@@ -195,6 +202,7 @@ L["Prio3 will react to loot events (if you open a loot window)"] = "Prio3 will r
 L["You can configure it to also react to rolls (if e.g. there is no PM and the roll window starts) and to raid warnings (if e.g. someone else does Master Looter). You can also configure to ignore Onyxia Cloaks posted as raid warnings. Special service for BWL Prio3 runs :)"] = "You can configure it to also react to rolls (if e.g. there is no PM and the roll window starts) and to raid warnings (if e.g. someone else does Master Looter). You can also configure to ignore Onyxia Cloaks posted as raid warnings. Special service for BWL Prio3 runs :)"
 L["In order to avoid multiple posts, e.g. if you loot a corpse twice, there is a mute setting pausing outputs for a defined time."] = "In order to avoid multiple posts, e.g. if you loot a corpse twice, there is a mute setting pausing outputs for a defined time."
 L["For Master Looter, a hint window can be added to the distribution window, showing all priorities for an item"] = "For Master Looter, a hint window can be added to the distribution window, showing all priorities for an item"
+L["Prio 0 enables a 4th priority that is ranked highest, if all 3 priorizations are set to the same item."] = "Prio 0 enables a 4th priority that is ranked highest, if all 3 priorizations are set to the same item."
 
 L["QUERIES, or How to look up and validate priorities"] = "QUERIES, or How to look up and validate priorities"
 

@@ -1,7 +1,7 @@
 local L = LibStub("AceLocale-3.0"):GetLocale("Prio3", true)
 
 local Prio3commPrefix = "Prio3-1.0-"
-local Prio3versionString = "v20210102"
+local Prio3versionString = "v20210117"
 
 local defaults = {
   profile = {
@@ -28,6 +28,7 @@ local defaults = {
 	comm_enable_item = true,
 	handle_enable_prio = false,
 	handle_enable_p3 = false,
+	prio0 = false,
 	outputlanguage = GetLocale(),
   }
 }
@@ -42,6 +43,7 @@ function Prio3:OnInitialize()
 
   self.addon_id = random(1, 999999) -- should be enough
   if #self.versionString > 9 then self.addon_id = 1000000 end
+  if isUserMasterLooter() then self.addon_id = 1000001 end
 
   LibStub("AceConfig-3.0"):RegisterOptionsTable("Prio3", self.prioOptionsTable)
   self.optionsFrame = LibStub("AceConfigDialog-3.0"):AddToBlizOptions("Prio3", "Prio3")
@@ -104,7 +106,7 @@ function Prio3:OnInitialize()
   -- entering an instance
   self.previousGroupState = UnitInParty("player")
   self:RegisterEvent("GROUP_ROSTER_UPDATE")
-
+  self:RegisterEvent("PARTY_LOOT_METHOD_CHANGED")
 
   self:RegisterEvent("OPEN_MASTER_LOOT_LIST")
 
@@ -148,23 +150,42 @@ function tprint (tbl, indent)
 	end
 	toprint = toprint .. string.rep(" ", indent-2) .. "}"
 	return toprint
-  end
+end
 
-  local function tablesize(t)
+function tRemoveValue(t, value) 
+	local idx = nil
+	for i,v in pairs(t) do
+		-- do not remove while iterating table
+		if value == v then idx = i end
+	end
+	table.remove(t, idx)
+end
+
+local function tablesize(t)
 	  local count = 0
 	  for _, __ in pairs(t) do
 		  count = count + 1
 	  end
 	  return count
-  end
+end
 
-  function tempty(t)
+function tempty(t)
 	  if t == nil then return true end
 	  if tablesize(t) > 0 then return false end
 	  return true
+end
 
-  end
 
+function isUserMasterLooter() 
+	local _, _, masterlooterRaidID = GetLootMethod()
+	if masterlooterRaidID then
+		local name, rank, subgroup, level, class, fileName, zone, online, isDead, role, isML = GetRaidRosterInfo(masterlooterRaidID);
+		if isML and name == UnitName("player") then
+			return true
+		end
+	end
+	return false
+end
 
 -- config items
 
@@ -227,15 +248,6 @@ Prio3.prioOptionsTable = {
 			  values = {a = L["Poor (Grey)"], b = L["Common (White)"], c = L["Uncommon (Green)"], d = L["Rare (Blue)"], e = L["Epic (Purple)"], f = L["Legendary (Orange)"]},
 			  set = function(info,val) Prio3.db.profile.noprioannounce_quality = val end,
 			  get = function(info) return Prio3.db.profile.noprioannounce_quality end,
-			},
-			prio0 = { name="", type="description", order=21 },
-			noprio = { -- Todo locale
-			  name = "Prio0 System",
-			  desc = "Activates output for Prio 0",
-			  type = "toggle",
-			  order = 32,
-			  set = function(info,val) Prio3.db.profile.prio0 = val end,
-			  get = function(info) return Prio3.db.profile.prio0 end,
 			},
 			newline2 = { name="", type="description", order=32 },
 			whisper = {
@@ -303,6 +315,18 @@ Prio3.prioOptionsTable = {
 				set = function(info,val) Prio3.db.profile.showmasterlooterhint = val end,
 				get = function(info) return Prio3.db.profile.showmasterlooterhint end
 			},
+			
+			newline60 = { name="", type="description", order=60 },
+			priozero = { 
+			  name = L["Enable Prio 0"],
+			  desc = L["Activates output for Prio 0. If someone sets Prio 1, 2 and 3 to the same item, this gets precedence."],
+			  type = "toggle",
+			  order = 61,
+			  set = function(info,val) Prio3.db.profile.prio0 = val end,
+			  get = function(info) return Prio3.db.profile.prio0 end,
+			},
+
+			
 		}
 	},
 	grpquery = {

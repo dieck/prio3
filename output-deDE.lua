@@ -15,7 +15,9 @@ L["itemLink on Prio at userpriolist"] = function(itemlink, userpriolist) return 
 
 -- loot.lua
 L["itemLink is at priority for users"] = function(itemlink,prio,userlist)
-	if (prio == 1) then
+	if (prio == 0) then
+		return "PRIO 0! " .. itemlink .. " ist gesetzt als Priorität 1+2+3 für " .. table.concat(userlist, ', ' )
+	elseif (prio == 1) then
 		return itemlink .. " ist gesetzt als PRIORITÄT " .. prio .. " für " .. table.concat(userlist, ', ' )
 	else
 		return itemlink .. " ist gesetzt als Priorität " .. prio .. " für " .. table.concat(userlist, ', ' )

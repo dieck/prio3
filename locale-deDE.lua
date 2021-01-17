@@ -38,6 +38,8 @@ L["Mute (sec)"] = "Stummschaltung (Sek)"
 L["Ignores loot encountered a second time for this amount of seconds. 0 to turn off."] = "Ignoriert Loot der zum zweiten Mal gefunden wird für diese Anzahl Sekunden. 0 um nie zu ignorieren."
 L["Master Looter Hint"] = "PM-Hinweis"
 L["Shows hint window on Master Looter distribution"] = "Zeigt Hinweis beim Verteilfenster für Plündermeister an"
+L["Enable Prio 0"] = "Nutze Prio 0"
+L["Activates output for Prio 0. If someone sets Prio 1, 2 and 3 to the same item, this gets precedence."] = "Aktiviert Ausgaben für Prio 0. Wenn jemand für Prio 1, 2 UND 3 dasselbe Item wählt, bekommt dies Vorrang."
 L["Import String"] = "Import String"
 L["Resend prios"] = "Neu senden"
 L["Please note that current Prio settings WILL BE OVERWRITTEN"] = "Bitte beachten: Aktuelle Liste wird ÜBERSCHRIEBEN"
@@ -93,7 +95,7 @@ L["No priorities defined."] = "Keine Prioritäten eingestellt." -- also in loot.
 
 -- communications handling
 L["sender handled notification for item"] = function(sender, item) return sender .. " hat Benachrichtungen für " .. item .. " bearbeitet" end
-L["sender received priorities and answered"] = function(sender, answered) return sender .. " hat neue Prioritäten erhalten und " .. L[answered] end
+L["sender received priorities and answered"] = function(sender, answered) return sender .. " hat neue Prioritäten erhalten und " .. answered end
 L["accepted"] = "hat akzeptiert"
 L["rejected as Master Looter"] = "abgelehnt vom Master Looter"
 L["discarded"] = "hat nicht angenommen"
@@ -173,6 +175,10 @@ L["Looking up if someone actually has marked down a priority can be a tedious ta
 L["The Prio3 addon will notify you on looting if there are any Priorities set up."] = "Das Prio3 Addon gibt in den Raid aus, wenn jemand einen Gegenstand auf Priorität hat. Andere Prio3 Benutzer können die volle Liste einsehen, Benutzer ohne das Addon die Abfrage-Funktionen in-game nutzen um zu sehen wer 'ihren' Gegenstand sonst noch will."
 L["This way you don't have to switch to your lookup table, e.g. on a website like sahne-team.de or a google doc, or even a handwritten note. It will announce this to the raid (by default), or only to the char using the addon and looting (should normally be the PM)."] = "Man muss also nicht irgendwo extern, zB. auf sahne-team.de, in einem Google Doc oder sogar in handschriftlichen Notizen nachschlagen."
 
+L["What is Prio 0?"] = "What is Prio 0?"
+L["Some groups extended the Prio 3 system by another priorization that takes precedence before Prio 1."] = "Manche Gruppen erweitern das Prio 3 System um eine weitere Priorität, die Vorrang hat noch vor Prio 1."
+L["If you enable the output setting and choose the same item for Prio 1, 2 and 3, it will be used as Prio 0."] = "Wenn die Ausgabe hierzu aktiviert wird und jemand alle 3 Prioritäten auf dasselbe Item legt, wird dieses als Prio 0 angegeben."
+
 -- help texts manual
 
 L["IMPORT, or How does the addon know about the priorities?"] = "IMPORT, oder Woher kennt das Addon die Prioritäten?"
@@ -196,6 +202,7 @@ L["Prio3 will react to loot events (if you open a loot window)"] = "Prio3 reagie
 L["You can configure it to also react to rolls (if e.g. there is no PM and the roll window starts) and to raid warnings (if e.g. someone else does Master Looter). You can also configure to ignore Onyxia Cloaks posted as raid warnings. Special service for BWL Prio3 runs :)"] = "Man kann einstellen, dass auch auf Würfel-Aufforderungen reagiert wird (z.B. wenn es keinen Plündermeister gibt), sowie auf Raidwarnungen (wenn jemand anders Plündermeister macht und den Gegenstand ankündigt). Man kann auch einstellen, dass der Onyxia-Umhang ignoriert wird, da er häufig in BWL als Raidwarnung angesagt wird :)"
 L["In order to avoid multiple posts, e.g. if you loot a corpse twice, there is a mute setting pausing outputs for a defined time."] = "Um mehrfache Benachrichtigungen zu vermeiden, z.B. wenn man einen Gegner zweimal anklickt, kann man eine Stummschaltung einstellen, während der nicht erneut geschrieben wird."
 L["For Master Looter, a hint window can be added to the distribution window, showing all priorities for an item"] = "Für Plündermeister gibt es die Option, ein Fenster einzublenden wenn man Gegner plündert, mit allen Prioritäten."
+L["Prio 0 enables a 4th priority that is ranked highest, if all 3 priorizations are set to the same item."] = "Prio 0 erlaubt eine 4. Priorität, die höher ist als Prio 1. Wenn dasselbe Item für alle 3 Prioritäten gewählt wird, gilt dies als Prio 0."
 
 L["QUERIES, or How to look up and validate priorities"] = "ABFRAGEN, oder Wie kann ich die Liste einsehen?"
 

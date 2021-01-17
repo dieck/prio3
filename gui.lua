@@ -396,6 +396,10 @@ function Prio3:HelpFrameTab_prio3(container)
 	label(s, L["The Prio3 addon will notify you on looting if there are any Priorities set up."])
 	label(s, L["This way you don't have to switch to your lookup table, e.g. on a website like sahne-team.de or a google doc, or even a handwritten note. It will announce this to the raid (by default), or only to the char using the addon and looting (should normally be the PM)."])
 
+	heading(s, L["What is Prio 0?"])
+	label(s, L["Some groups extended the Prio 3 system by another priorization that takes precedence before Prio 1."])
+	label(s, L["If you enable the output setting and choose the same item for Prio 1, 2 and 3, it will be used as Prio 0."])
+
 end
 
 
@@ -476,6 +480,9 @@ function Prio3:HelpFrameTab_manual(container)
 	label(s, L["In order to avoid multiple posts, e.g. if you loot a corpse twice, there is a mute setting pausing outputs for a defined time."])
 
 	label(s, L["For Master Looter, a hint window can be added to the distribution window, showing all priorities for an item"])
+
+	label(s, L["Prio 0 enables a 4th priority that is ranked highest, if all 3 priorizations are set to the same item."])
+
 
 	heading(s, L["QUERIES, or How to look up and validate priorities"])
 
