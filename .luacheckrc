@@ -34,6 +34,8 @@ globals = {
   "Prio3",
   "tempty",
   "tprint",
+  "tRemoveValue",
+  "isUserMasterLooter",  
 
   -- other WoW APIs
   "GameFontGreenSmall",
