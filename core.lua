@@ -28,6 +28,7 @@ local defaults = {
 	comm_enable_item = true,
 	handle_enable_prio = false,
 	handle_enable_p3 = false,
+	prio0 = false,
 	outputlanguage = GetLocale(),
   }
 }
@@ -228,15 +229,6 @@ Prio3.prioOptionsTable = {
 			  set = function(info,val) Prio3.db.profile.noprioannounce_quality = val end,
 			  get = function(info) return Prio3.db.profile.noprioannounce_quality end,
 			},
-			prio0 = { name="", type="description", order=21 },
-			noprio = { -- Todo locale
-			  name = "Prio0 System",
-			  desc = "Activates output for Prio 0",
-			  type = "toggle",
-			  order = 32,
-			  set = function(info,val) Prio3.db.profile.prio0 = val end,
-			  get = function(info) return Prio3.db.profile.prio0 end,
-			},
 			newline2 = { name="", type="description", order=32 },
 			whisper = {
 				name = L["Whisper to Char"],
@@ -303,6 +295,18 @@ Prio3.prioOptionsTable = {
 				set = function(info,val) Prio3.db.profile.showmasterlooterhint = val end,
 				get = function(info) return Prio3.db.profile.showmasterlooterhint end
 			},
+			
+			newline60 = { name="", type="description", order=60 },
+			priozero = { 
+			  name = L["Enable Prio 0"],
+			  desc = L["Activates output for Prio 0. If someone sets Prio 1, 2 and 3 to the same item, this gets precedence."],
+			  type = "toggle",
+			  order = 61,
+			  set = function(info,val) Prio3.db.profile.prio0 = val end,
+			  get = function(info) return Prio3.db.profile.prio0 end,
+			},
+
+			
 		}
 	},
 	grpquery = {
