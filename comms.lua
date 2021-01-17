@@ -47,7 +47,7 @@ function Prio3:GROUP_ROSTER_UPDATE()
 	end
 
 	Prio3.previousGroupState = UnitInParty("player")
-	
+
 	-- look into Loot Method
 	Prio3:PARTY_LOOT_METHOD_CHANGED()
 end
