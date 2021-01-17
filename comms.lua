@@ -17,6 +17,15 @@ function Prio3:sendPong()
 	Prio3:SendCommMessage(Prio3.commPrefix, Prio3:Serialize(commmsg), "RAID", nil, "NORMAL")
 end
 
+function Prio3:PARTY_LOOT_METHOD_CHANGED()
+	if isUserMasterLooter() then
+		self.addon_id = 1000001
+	else
+		self.addon_id = random(1, 999999)
+		if #self.versionString > 9 then self.addon_id = 1000000 end
+	end
+end
+
 function Prio3:GROUP_ROSTER_UPDATE()
 	-- request priorities if entering a new raid
 
@@ -38,8 +47,9 @@ function Prio3:GROUP_ROSTER_UPDATE()
 	end
 
 	Prio3.previousGroupState = UnitInParty("player")
-
-
+	
+	-- look into Loot Method
+	Prio3:PARTY_LOOT_METHOD_CHANGED()
 end
 
 function Prio3:reactToRequestPriorities(requested)
@@ -128,17 +138,7 @@ function Prio3:OnCommReceived(prefix, message, distribution, sender)
 		-- SEND_PRIORITIES
 		if (deserialized["command"] == "SEND_PRIORITIES") and (Prio3.db.profile.comm_enable_prio) then
 
-			local playerIsMasterLooter = false
-
-			local _, _, masterlooterRaidID = GetLootMethod()
-			if masterlooterRaidID then
-				local name, rank, subgroup, level, class, fileName, zone, online, isDead, role, isML = GetRaidRosterInfo(masterlooterRaidID);
-				if isML and name == UnitName("player") then
-					playerIsMasterLooter = true
-				end
-			end
-
-			if playerIsMasterLooter then
+			if isUserMasterLooter() then
 				local newPriorities = deserialized["prios"]
 				local newReceived = time()
 				Prio3:Print(L["Received new priorities sent from sender, but I am Master Looter"](sender))

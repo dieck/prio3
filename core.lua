@@ -43,6 +43,7 @@ function Prio3:OnInitialize()
 
   self.addon_id = random(1, 999999) -- should be enough
   if #self.versionString > 9 then self.addon_id = 1000000 end
+  if isUserMasterLooter() then self.addon_id = 1000001 end
 
   LibStub("AceConfig-3.0"):RegisterOptionsTable("Prio3", self.prioOptionsTable)
   self.optionsFrame = LibStub("AceConfigDialog-3.0"):AddToBlizOptions("Prio3", "Prio3")
@@ -105,7 +106,7 @@ function Prio3:OnInitialize()
   -- entering an instance
   self.previousGroupState = UnitInParty("player")
   self:RegisterEvent("GROUP_ROSTER_UPDATE")
-
+  self:RegisterEvent("PARTY_LOOT_METHOD_CHANGED")
 
   self:RegisterEvent("OPEN_MASTER_LOOT_LIST")
 
@@ -174,6 +175,17 @@ function tempty(t)
 	  return true
 end
 
+
+function isUserMasterLooter() 
+	local _, _, masterlooterRaidID = GetLootMethod()
+	if masterlooterRaidID then
+		local name, rank, subgroup, level, class, fileName, zone, online, isDead, role, isML = GetRaidRosterInfo(masterlooterRaidID);
+		if isML and name == UnitName("player") then
+			return true
+		end
+	end
+	return false
+end
 
 -- config items
 
