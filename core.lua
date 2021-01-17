@@ -149,22 +149,30 @@ function tprint (tbl, indent)
 	end
 	toprint = toprint .. string.rep(" ", indent-2) .. "}"
 	return toprint
-  end
+end
 
-  local function tablesize(t)
+function tRemoveValue(t, value) 
+	local idx = nil
+	for i,v in pairs(t) do
+		-- do not remove while iterating table
+		if value == v then idx = i end
+	end
+	table.remove(t, idx)
+end
+
+local function tablesize(t)
 	  local count = 0
 	  for _, __ in pairs(t) do
 		  count = count + 1
 	  end
 	  return count
-  end
+end
 
-  function tempty(t)
+function tempty(t)
 	  if t == nil then return true end
 	  if tablesize(t) > 0 then return false end
 	  return true
-
-  end
+end
 
 
 -- config items
