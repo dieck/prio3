@@ -60,7 +60,11 @@ function Prio3:reactToRequestPriorities(requested)
 end
 
 function Prio3:reactToVersionMatch(usr)
-	DoEmote("CHEER", usr)
+	if math.random(5) == 1 then 
+		DoEmote("CHEER", usr) 
+		Prio3.onetimenotifications["masterversion"] = 1
+	end
+	
 end
 
 function Prio3:OnCommReceived(prefix, message, distribution, sender)
@@ -100,7 +104,6 @@ function Prio3:OnCommReceived(prefix, message, distribution, sender)
 			end
 			if (#remoteversion > 9) and (strsub(remoteversion, 10, 22) == "-VNzGurNhgube") and (Prio3.onetimenotifications["masterversion"] == nil) then
 				Prio3:ScheduleTimer("reactToVersionMatch", 3, sender)
-				Prio3.onetimenotifications["masterversion"] = 1
 			end
 		end
 
