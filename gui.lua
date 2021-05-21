@@ -515,7 +515,7 @@ end
 
 
 function Prio3:CreateMasterLootInfoFrame(itemId)
-	local frame = CreateFrame("Frame", "Prio3MasterLooterHint", UIParent)
+	local frame = CreateFrame("Frame", "Prio3MasterLooterHint", UIParent, BackdropTemplateMixin and "BackdropTemplate")
 	frame:SetBackdrop({
 		bgFile = [[Interface\DialogFrame\UI-DialogBox-Background]],
 		edgeFile = [[Interface\Tooltips\UI-Tooltip-Border]],

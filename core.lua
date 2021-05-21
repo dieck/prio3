@@ -1,7 +1,7 @@
 local L = LibStub("AceLocale-3.0"):GetLocale("Prio3", true)
 
 local Prio3commPrefix = "Prio3-1.0-"
-local Prio3versionString = "v20210421"
+local Prio3versionString = "v20210521"
 
 local defaults = {
   profile = {
