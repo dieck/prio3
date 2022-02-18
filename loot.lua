@@ -287,11 +287,11 @@ function Prio3:HandleLoot(itemLink, qualityFound)
 					tonumber(prios[2]) == tonumber(itemId) and
 					tonumber(prios[3]) == tonumber(itemId) then
 						table.insert(itemprios.p0, user)
-						
+
 						-- if a user has Prio0, remove him from Prio 1,2,3 outputs
-						tRemoveValue(itemprios.p1, user) 
-						tRemoveValue(itemprios.p2, user) 
-						tRemoveValue(itemprios.p3, user) 
+						tRemoveValue(itemprios.p1, user)
+						tRemoveValue(itemprios.p2, user)
+						tRemoveValue(itemprios.p3, user)
 				end
 			end
 
