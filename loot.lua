@@ -43,12 +43,21 @@ function Prio3:LOOT_OPENED()
 		end
 	end
 
-    -- search for epics	(to determine if we print output)
+    -- search for item level (e.g. epics) to determine if we print output
 	for dummy,itemLink in pairs(reportLinks) do
 		if itemLink then
 			-- if no itemLink, it's most likely money
 
 			local d, itemId, enchantId, jewelId1, jewelId2, jewelId3, jewelId4, suffixId, uniqueId, linkLevel, specializationID, reforgeId, unknown1, unknown2 = strsplit(":", itemLink)
+
+            -- check for disenchant mats
+			if Prio3.db.profile.ignoredisenchants then
+				local i = tonumber(itemId)
+				if i == 22449 or i == 22450 or i == 20725 or i == 14344 then
+					Prio3:Debug("Leaving LOOT_OPENED because of found disenchant materials")
+					return
+				end
+			end
 
 			-- identifying quality by color...
 			-- Only other option would be GetItemInfo, but that might not be fully loaded, so I would have to create call to wait and look into it later, and... well, PITA
@@ -125,7 +134,7 @@ function Prio3:CHAT_MSG_RAID_WARNING(event, text, sender)
 	local id = text:match("|Hitem:(%d+):")
 
 	if id then
-		Prio3:Debug("Recdeived Raid Warning for item " .. id)
+		Prio3:Debug("Received Raid Warning for item " .. id)
 
 		-- ignore Onyxia Scale Cloak if configured
 		if Prio3.db.profile.ignorescalecloak and tonumber(id) == 15138 then
@@ -195,7 +204,9 @@ function Prio3:reactToRaidWarning(id, sender)
 end
 
 function Prio3:postLastBossMessage()
-	Prio3:Print(L["Congratulations on finishing the Raid! Thank you for using Prio3. If you like it, Alleister on EU-Transcendence (Alliance) is gladly taking donations."])
+	Prio3:Print(L["Congratulations on finishing the Raid! Thank you for using Prio3."])
+	Prio3:Print(L["Please note: author is now on new realm:"])
+	Prio3:Print(L["If you like it, Allaister on EU-Everlook (Alliance) is gladly taking donations!"])
 end
 
 -- handling
@@ -220,6 +231,11 @@ function Prio3:HandleLoot(itemLink, qualityFound)
 	local _, itemId, enchantId, jewelId1, jewelId2, jewelId3, jewelId4, suffixId, uniqueId, linkLevel, specializationID, reforgeId, unknown1, unknown2 = strsplit(":", itemLink)
 	-- bad argument, might be gold? (or copper, here)
 
+    if tonumber(itemId) == 29434 then
+	  -- badge of justice, ignore
+	  return
+	end
+
 	if Prio3.onetimenotifications["finalboss"] == nil then
 		local i = tonumber(itemId)
 
@@ -230,6 +246,15 @@ function Prio3:HandleLoot(itemLink, qualityFound)
 			or i == 21221 -- Eye of C'thun
 			or i == 22520 -- Phylactery of Kel'Thuzad
 			or i == 16946 or i == 16901 or i == 16915 or i == 16930 or i == 16922 or i == 16909 or i == 16962 or i == 16938 or i == 16954 -- Ragnaros has no head... So, T2 legs. All of them.
+			or i == 29759 or i == 29761 or i == 29760 -- Prince Malchezaar T4-Heads
+			or i == 29767 or i == 29765 or i == 29766 -- Gruul T4-Leggings
+			or i == 32385 or i == 32386 -- Magtheridon's Head
+			or i == 30244 or i == 30243 or i == 30242 -- Vashj T5-Heads
+			or i == 32405 -- Kaelthas Verdant Sphere
+			or i == 31097 or i == 31095 or i == 31096 -- Archimond T6-Heads
+			or i == 31091 or i == 31089 or i == 31090 -- Illidan T6-Chests
+			or i == 33102 -- Blood of Zul'jin
+			-- sunwell: puh, that'll be all items from Kil'Jaeden? Let's leave it out for now
 		then
 			Prio3:ScheduleTimer("postLastBossMessage", 12)
 			Prio3.onetimenotifications["finalboss"] = i

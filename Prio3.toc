@@ -1,8 +1,8 @@
-## Interface: 20501
+## Interface: 20504
 ## Title: Prio3
 ## Notes: Loot notification for Priority Loot system. Can use export from Sahne-Team.de website
 ## Author: dieck
-## Version: 20210521
+## Version: 20220805
 ## SavedVariables: Prio3DB
 
 embeds.xml

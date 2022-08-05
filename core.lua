@@ -1,7 +1,7 @@
 local L = LibStub("AceLocale-3.0"):GetLocale("Prio3", true)
 
 local Prio3commPrefix = "Prio3-1.0-"
-local Prio3versionString = "v20210521"
+local Prio3versionString = "v20220805"
 
 local defaults = {
   profile = {
@@ -9,6 +9,7 @@ local defaults = {
     debug = false,
 	lootrolls = true,
 	raidwarnings = true,
+	ignoredisenchants = true,
 	ignorescalecloak = true,
 	ignoredrakefire = true,
 	raidannounce = true,
@@ -220,8 +221,7 @@ Prio3.prioOptionsTable = {
 				end,
 				get = function(info) return Prio3.db.profile.outputlanguage end,
 			},
-			newline0016 = { name="", type="description", order=16 },
-
+			newline16 = { name="", type="description", order=16 },
 			raid = {
 				name = L["Announce to Raid"],
 				desc = L["Announces Loot Priority list to raid chat"],
@@ -230,7 +230,7 @@ Prio3.prioOptionsTable = {
 				set = function(info,val) Prio3.db.profile.raidannounce = val end,
 				get = function(info) return Prio3.db.profile.raidannounce end
 			},
-			newline1 = { name="", type="description", order=21 },
+			newline21 = { name="", type="description", order=21 },
 			noprio = {
 			  name = L["Announce No Priority"],
 			  desc = L["Announces if there is no priority on an item"],
@@ -249,7 +249,7 @@ Prio3.prioOptionsTable = {
 			  set = function(info,val) Prio3.db.profile.noprioannounce_quality = val end,
 			  get = function(info) return Prio3.db.profile.noprioannounce_quality end,
 			},
-			newline2 = { name="", type="description", order=32 },
+			newline32 = { name="", type="description", order=32 },
 			whisper = {
 				name = L["Whisper to Char"],
 				desc = L["Announces Loot Priority list to char by whisper"],
@@ -258,7 +258,7 @@ Prio3.prioOptionsTable = {
 				set = function(info,val) Prio3.db.profile.charannounce = val end,
 				get = function(info) return Prio3.db.profile.charannounce end
 			},
-			newline4 = { name="", type="description", order=34 },
+			newline34 = { name="", type="description", order=34 },
 			lootroll = {
 			  name = L["React to rolls"],
 			  desc = L["Reacts when someone trigger a loot roll for an item. Will only work on Epics and BoP."],
@@ -267,7 +267,7 @@ Prio3.prioOptionsTable = {
 			  set = function(info,val) Prio3.db.profile.lootrolls = val end,
 			  get = function(info) return Prio3.db.profile.lootrolls end,
 			},
-			newline3 = { name="", type="description", order=36 },
+			newline36 = { name="", type="description", order=36 },
 			raidwarning = {
 			  name = L["React to raid warnings"],
 			  desc = L["Reacts when someone sends a raid warning with an item link."],
@@ -277,11 +277,20 @@ Prio3.prioOptionsTable = {
 			  get = function(info) return Prio3.db.profile.raidwarnings end,
 			},
 			newline38 = { name="", type="description", order=38 },
+			ignoredisenchants = {
+			  name = L["Ignore Disenchants"],
+			  desc = L["Ignore if you open a loot window containing crystals or large shards."],
+			  type = "toggle",
+			  order = 39,
+			  set = function(info,val) Prio3.db.profile.ignoredisenchants = val end,
+			  get = function(info) return Prio3.db.profile.ignoredisenchants end,
+			},
+			newline40 = { name="", type="description", order=40 },
 			ignorescalecloak = {
 			  name = L["Ignore Ony Cloak"],
 			  desc = L["Ignore if someone raid warns about the Onyxia Scale Cloak"],
 			  type = "toggle",
-			  order = 39,
+			  order = 41,
 			  set = function(info,val) Prio3.db.profile.ignorescalecloak = val end,
 			  get = function(info) return Prio3.db.profile.ignorescalecloak end,
 			},
@@ -289,11 +298,11 @@ Prio3.prioOptionsTable = {
 			  name = L["Ignore Drakefire"],
 			  desc = L["Ignore if someone raid warns about the Drakefire Amulet"],
 			  type = "toggle",
-			  order = 40,
+			  order = 42,
 			  set = function(info,val) Prio3.db.profile.ignoredrakefire = val end,
 			  get = function(info) return Prio3.db.profile.ignoredrakefire end,
 			},
-			newline5 = { name="", type="description", order=41 },
+			newline43 = { name="", type="description", order=43 },
 			reopen = {
 				name = L["Mute (sec)"],
 				desc = L["Ignores loot encountered a second time for this amount of seconds. 0 to turn off."],
@@ -302,7 +311,7 @@ Prio3.prioOptionsTable = {
 				max = 600,
 				step = 1,
 				bigStep = 15,
-				order = 42,
+				order = 44,
 				set = function(info,val) Prio3.db.profile.ignorereopen = val end,
 				get = function(info) return Prio3.db.profile.ignorereopen end
 			},
@@ -315,7 +324,6 @@ Prio3.prioOptionsTable = {
 				set = function(info,val) Prio3.db.profile.showmasterlooterhint = val end,
 				get = function(info) return Prio3.db.profile.showmasterlooterhint end
 			},
-			
 			newline60 = { name="", type="description", order=60 },
 			priozero = { 
 			  name = L["Enable Prio 0"],
@@ -341,7 +349,7 @@ Prio3.prioOptionsTable = {
 				set = function(info,val) Prio3.db.profile.queryself = val end,
 				get = function(info) return Prio3.db.profile.queryself end,
 			},
-			newline1 = { name="", type="description", order=61 },
+			newline61 = { name="", type="description", order=61 },
 			queryraid = {
 				name = L["Query raid priorities"],
 				desc = L["Allows to query priorities of all raid members. Whisper prio CHARNAME."],
@@ -351,7 +359,7 @@ Prio3.prioOptionsTable = {
 				set = function(info,val) Prio3.db.profile.queryraid = val end,
 				get = function(info) return Prio3.db.profile.queryraid end,
 			},
-			newline2 = { name="", type="description", order=64 },
+			newline64 = { name="", type="description", order=64 },
 			queryitems = {
 				name = L["Query item priorities"],
 				desc = L["Allows to query own priority. Whisper prio ITEMLINK."],
@@ -361,7 +369,7 @@ Prio3.prioOptionsTable = {
 				set = function(info,val) Prio3.db.profile.queryitems = val end,
 				get = function(info) return Prio3.db.profile.queryitems end,
 			},
-			newline3 = { name="", type="description", order=66 },
+			newline66 = { name="", type="description", order=66 },
 			showtable = {
 				name = L["Show prio table"],
 				type = "execute",
@@ -397,7 +405,7 @@ Prio3.prioOptionsTable = {
 				usage = L["Enter new exported string here to configure Prio3 loot list"],
 				cmdHidden = true,
 			},
-			newline0 = { name="", type="description", order=51 },
+			newline51 = { name="", type="description", order=51 },
 			resendprio = {
 				name = L["Resend prios"],
 				type = "execute",
@@ -405,7 +413,7 @@ Prio3.prioOptionsTable = {
 				order = 52,
 				func = function(info,val) Prio3:sendPriorities() end,
 			},
-			newline1 = { name="", type="description", order=53 },
+			newline53 = { name="", type="description", order=53 },
 			newwhispers = {
 				name = L["Whisper imports"],
 				desc = L["Whisper imported items to player"],
@@ -414,7 +422,7 @@ Prio3.prioOptionsTable = {
 				set = function(info,val) Prio3.db.profile.whisperimport = val end,
 				get = function(info) return Prio3.db.profile.whisperimport end,
 			},
-			newline2 = { name="", type="description", order=56 },
+			newline56 = { name="", type="description", order=56 },
 			opentable = {
 				name = L["Open prio table after import"],
 				type = "toggle",
@@ -422,7 +430,7 @@ Prio3.prioOptionsTable = {
 				set = function(info,val) Prio3.db.profile.opentable = val end,
 				get = function(info) return Prio3.db.profile.opentable end,
 			},
-			newline3 = { name="", type="description", order=76 },
+			newline76 = { name="", type="description", order=76 },
 			showtable = {
 				name = L["Show prio table"],
 				type = "execute",

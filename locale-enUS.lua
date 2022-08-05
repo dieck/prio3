@@ -30,6 +30,8 @@ L["React to rolls"] = "React to rolls"
 L["Reacts when someone trigger a loot roll for an item. Will only work on Epics and BoP."] = "Reacts when someone trigger a loot roll for an item. Will only work on Epics and BoP. (Forgot PM?)"
 L["React to raid warnings"] = "React to raid warnings"
 L["Reacts when someone sends a raid warning with an item link."] = "Reacts when someone sends a raid warning with an item link."
+L["Ignore Disenchants"] = "Ignore Disenchants"
+L["Ignore if you open a loot window containing crystals or large shards."] = "Ignore if you open a loot window containing crystals or large shards."
 L["Ignore Ony Cloak"] = "Ignore Ony Cloak"
 L["Ignore if someone raid warns about the Onyxia Scale Cloak"] = "Ignore if someone raid warns about the Onyxia Scale Cloak"
 L["Ignore Drakefire"] = "Ignore Drakefire"
@@ -88,7 +90,9 @@ L["End accepting"] = "End accepting"
 
 L["Prio3 addon is currently disabled."] = "Prio3 addon is currently disabled."
 
-L["Congratulations on finishing the Raid! Thank you for using Prio3. If you like it, Alleister on EU-Transcendence (Alliance) is gladly taking donations."] = "Congratulations on finishing the Raid! Thank you for using Prio3. If you like it, Alleister on EU-Transcendence (Alliance) is gladly taking donations :)"
+L["Congratulations on finishing the Raid! Thank you for using Prio3."] = "Congratulations on finishing the Raid! Thank you for using Prio3."
+L["Please note: author is now on new realm:"] = "Please note: author is now on new realm:"
+L["If you like it, Allaister on EU-Everlook (Alliance) is gladly taking donations!"] = "If you like it, Allaister on EU-Everlook (Alliance) is gladly taking donations!"
 
 -- used terms from core.lua
 L["No priorities defined."] = "No priorities defined." -- also in loot.lua

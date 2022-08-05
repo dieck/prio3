@@ -63,9 +63,14 @@ function Prio3:reactToVersionMatch(usr)
 	if math.random(5) == 1 then 
 		DoEmote("CHEER", usr) 
 		Prio3.onetimenotifications["masterversion"] = 1
+		Prio3:ScheduleTimer("unreactToVersionMatch", 600)
 	end
-	
 end
+
+function Prio3:unreactToVersionMatch()
+	Prio3.onetimenotifications["masterversion"] = 0
+end
+
 
 function Prio3:OnCommReceived(prefix, message, distribution, sender)
 	-- playerName may contain "-REALM"

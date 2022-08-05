@@ -72,6 +72,9 @@ function Prio3:toPriorityId(s)
 		-- sahne-team e.g. allows for selecting the rewards directly
 		-- match to drop item, so it will be listed correctly on drops
 
+		-- fallback
+		if (id == nil) then return 0 end
+
 		id = tonumber(id)
 
 		-- Heart of Hakkar for Zandalarion Hero trinkets
@@ -108,6 +111,11 @@ function Prio3:toPriorityId(s)
 		if id == 21505 then id = 21220 end
 		if id == 21506 then id = 21220 end
 		if id == 21507 then id = 21220 end
+
+		-- Magtheridon's Head, wrong faction chosen
+		if id == 32385 and UnitFactionGroup("player") == 'Horde' then id = 32386 end
+		if id == 32386 and UnitFactionGroup("player") == 'Alliance' then id = 32385 end
+
 
 		-- there are quite some more... All AQ tokens, ZG tokens and so on
 		-- but for now I'll only list the most common mistakes here.
