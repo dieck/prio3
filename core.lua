@@ -1,7 +1,7 @@
 local L = LibStub("AceLocale-3.0"):GetLocale("Prio3", true)
 
 local Prio3commPrefix = "Prio3-1.0-"
-local Prio3versionString = "v20220805"
+local Prio3versionString = "v20220806"
 
 local defaults = {
   profile = {
@@ -44,7 +44,7 @@ function Prio3:OnInitialize()
 
   self.addon_id = random(1, 999999) -- should be enough
   if #self.versionString > 9 then self.addon_id = 1000000 end
-  if isUserMasterLooter() then self.addon_id = 1000001 end
+  if Prio3:isUserMasterLooter() then self.addon_id = 1000001 end
 
   LibStub("AceConfig-3.0"):RegisterOptionsTable("Prio3", self.prioOptionsTable)
   self.optionsFrame = LibStub("AceConfigDialog-3.0"):AddToBlizOptions("Prio3", "Prio3")
@@ -153,7 +153,7 @@ function tprint (tbl, indent)
 	return toprint
 end
 
-function tRemoveValue(t, value) 
+function Prio3:tRemoveValue(t, value)
 	local idx = nil
 	for i,v in pairs(t) do
 		-- do not remove while iterating table
@@ -177,7 +177,7 @@ function tempty(t)
 end
 
 
-function isUserMasterLooter() 
+function Prio3:isUserMasterLooter()
 	local _, _, masterlooterRaidID = GetLootMethod()
 	if masterlooterRaidID then
 		local name, rank, subgroup, level, class, fileName, zone, online, isDead, role, isML = GetRaidRosterInfo(masterlooterRaidID);
@@ -325,7 +325,7 @@ Prio3.prioOptionsTable = {
 				get = function(info) return Prio3.db.profile.showmasterlooterhint end
 			},
 			newline60 = { name="", type="description", order=60 },
-			priozero = { 
+			priozero = {
 			  name = L["Enable Prio 0"],
 			  desc = L["Activates output for Prio 0. If someone sets Prio 1, 2 and 3 to the same item, this gets precedence."],
 			  type = "toggle",
@@ -334,7 +334,6 @@ Prio3.prioOptionsTable = {
 			  get = function(info) return Prio3.db.profile.prio0 end,
 			},
 
-			
 		}
 	},
 	grpquery = {

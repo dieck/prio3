@@ -312,17 +312,17 @@ function Prio3:HandleLoot(itemLink, qualityFound)
 					tonumber(prios[2]) == tonumber(itemId) and
 					tonumber(prios[3]) == tonumber(itemId) then
 						table.insert(itemprios.p0, user)
-						
+
 						-- if a user has Prio0, remove him from Prio 1,2,3 outputs
-						tRemoveValue(itemprios.p1, user) 
-						tRemoveValue(itemprios.p2, user) 
-						tRemoveValue(itemprios.p3, user) 
+						Prio3:tRemoveValue(itemprios.p1, user)
+						Prio3:tRemoveValue(itemprios.p2, user)
+						Prio3:tRemoveValue(itemprios.p3, user)
 				end
 			end
 
 		end
 
-		if table.getn(itemprios.p1) == 0 and table.getn(itemprios.p2) == 0 and table.getn(itemprios.p3) == 0 then
+		if table.getn(itemprios.p0) == 0 and table.getn(itemprios.p1) == 0 and table.getn(itemprios.p2) == 0 and table.getn(itemprios.p3) == 0 then
 			if Prio3.db.profile.noprioannounce then
 				if (qualityFound >= Prio3.db.profile.noprioannounce_quality) or Prio3.db.profile.noprioannounce_noepic then
 					if itemLink then

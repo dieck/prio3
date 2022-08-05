@@ -5,7 +5,7 @@ Prio3.lootframe = nil
 function Prio3:handleChatCommand(cmd)
 
 	if cmd == "config" then
-		if not Prio3.lootframe == nil then
+		if Prio3.lootframe ~= nil then
 			Prio3.lootframe:Hide()
 		end
 		LibStub("AceConfigDialog-3.0"):Open("Prio3")
@@ -515,7 +515,7 @@ end
 
 
 function Prio3:CreateMasterLootInfoFrame(itemId)
-	local frame = CreateFrame("Frame", "Prio3MasterLooterHint", UIParent, BackdropTemplateMixin and "BackdropTemplate")
+	local frame = CreateFrame("Frame", "Prio3MasterLooterHint", UIParent, _G.BackdropTemplateMixin and "BackdropTemplate")
 	frame:SetBackdrop({
 		bgFile = [[Interface\DialogFrame\UI-DialogBox-Background]],
 		edgeFile = [[Interface\Tooltips\UI-Tooltip-Border]],

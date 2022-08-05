@@ -18,7 +18,7 @@ function Prio3:sendPong()
 end
 
 function Prio3:PARTY_LOOT_METHOD_CHANGED()
-	if isUserMasterLooter() then
+	if Prio3:isUserMasterLooter() then
 		self.addon_id = 1000001
 	else
 		self.addon_id = random(1, 999999)
@@ -47,7 +47,7 @@ function Prio3:GROUP_ROSTER_UPDATE()
 	end
 
 	Prio3.previousGroupState = UnitInParty("player")
-	
+
 	-- look into Loot Method
 	Prio3:PARTY_LOOT_METHOD_CHANGED()
 end
@@ -60,8 +60,8 @@ function Prio3:reactToRequestPriorities(requested)
 end
 
 function Prio3:reactToVersionMatch(usr)
-	if math.random(5) == 1 then 
-		DoEmote("CHEER", usr) 
+	if math.random(5) == 1 then
+		DoEmote("CHEER", usr)
 		Prio3.onetimenotifications["masterversion"] = 1
 		Prio3:ScheduleTimer("unreactToVersionMatch", 600)
 	end
@@ -146,7 +146,7 @@ function Prio3:OnCommReceived(prefix, message, distribution, sender)
 		-- SEND_PRIORITIES
 		if (deserialized["command"] == "SEND_PRIORITIES") and (Prio3.db.profile.comm_enable_prio) then
 
-			if isUserMasterLooter() then
+			if Prio3:isUserMasterLooter() then
 				local newPriorities = deserialized["prios"]
 				local newReceived = time()
 				Prio3:Print(L["Received new priorities sent from sender, but I am Master Looter"](sender))
