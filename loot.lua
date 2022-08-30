@@ -10,6 +10,11 @@ function Prio3:LOOT_OPENED()
 	  return
 	end
 
+	-- only if announcement from loot window is ok
+    if not Prio3.db.profile.lootwindow then
+	  return
+	end
+
 	-- only works in raid, unless debugging
 	if not UnitInRaid("player") and not Prio3.db.profile.debug then
 	  return
@@ -53,7 +58,10 @@ function Prio3:LOOT_OPENED()
             -- check for disenchant mats
 			if Prio3.db.profile.ignoredisenchants then
 				local i = tonumber(itemId)
-				if i == 22449 or i == 22450 or i == 20725 or i == 14344 then
+				if i == 20725 or i == 14344 -- Nexus Crystal / Large Briliant Shard
+				or i == 22450 or i == 22449 -- Void Crystal / Large Prismatic Shard
+				or i == 34057 or i == 34052 -- Abyss Crystal / Dream Shard
+				then
 					Prio3:Debug("Leaving LOOT_OPENED because of found disenchant materials")
 					return
 				end
@@ -204,10 +212,25 @@ function Prio3:reactToRaidWarning(id, sender)
 end
 
 function Prio3:postLastBossMessage()
-	Prio3:Print(L["Congratulations on finishing the Raid! Thank you for using Prio3."])
-	Prio3:Print(L["Please note: author is now on new realm:"])
+	Prio3:Print(L["Congratulations on finishing the Raid!"])
+	Prio3:Print(L["Thank you for using Prio3."])
 	Prio3:Print(L["If you like it, Allaister on EU-Everlook (Alliance) is gladly taking donations!"])
+
+	Prio3:ScheduleTimer("postLastBossMessageUIOne", 1)
+	Prio3:ScheduleTimer("postLastBossMessageUITwo", 4)
+	Prio3:ScheduleTimer("postLastBossMessageUIThree", 7)
 end
+
+function Prio3:postLastBossMessageUIOne()
+	UIErrorsFrame:AddMessage(L["Congratulations on finishing the Raid!"])
+end
+function Prio3:postLastBossMessageUITwo()
+	UIErrorsFrame:AddMessage(L["Thank you for using Prio3."])
+end
+function Prio3:postLastBossMessageUIThree()
+	UIErrorsFrame:AddMessage(L["If you like it, Allaister on EU-Everlook (Alliance) is gladly taking donations!"])
+end
+
 
 -- handling
 
@@ -255,6 +278,9 @@ function Prio3:HandleLoot(itemLink, qualityFound)
 			or i == 31091 or i == 31089 or i == 31090 -- Illidan T6-Chests
 			or i == 33102 -- Blood of Zul'jin
 			-- sunwell: puh, that'll be all items from Kil'Jaeden? Let's leave it out for now
+			-- WOTLK: Need to find best possible option. new Onyxia, Anub'arak, Lich King, Kel'Thuzad, Malygos.
+			-- all have a bunch of items, but no specific "trigger" item. I don't want to insert full loot tables, for N10, H10, N25, H25...
+			-- maybe I have to work with kills, not loots, to find a trigger for last boss message...
 		then
 			Prio3:ScheduleTimer("postLastBossMessage", 12)
 			Prio3.onetimenotifications["finalboss"] = i

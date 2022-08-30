@@ -10,6 +10,8 @@ L["Sync & Handler"] = "Sync & Handler"
 
 L["Enabled"] = "Enabled"
 L["Enables / disables the addon"] = "Enables / disables the addon"
+L["When to output"] = "When to output"
+L["What to output"] = "What to output"
 L["Language"] = "Language"
 L["Language for outputs"] = "Language for outputs"
 L["Announce No Priority"] = "Announce No Priority"
@@ -26,6 +28,8 @@ L["Announces Loot Priority list to raid chat"] = "Announces Loot Priority list t
 L["Whisper to Char"] = "Whisper to Char"
 L["Announces Loot Priority list to char by whisper"] = "Announces Loot Priority list to char by whisper"
 L["Announces if there is no priority on an item"] = "Announces if there is no priority on an item"
+L["React to loot window"] = "React to loot window"
+L["Reacts when you open a loot window."] = "Reacts when you open a loot window."
 L["React to rolls"] = "React to rolls"
 L["Reacts when someone trigger a loot roll for an item. Will only work on Epics and BoP."] = "Reacts when someone trigger a loot roll for an item. Will only work on Epics and BoP. (Forgot PM?)"
 L["React to raid warnings"] = "React to raid warnings"
@@ -90,8 +94,8 @@ L["End accepting"] = "End accepting"
 
 L["Prio3 addon is currently disabled."] = "Prio3 addon is currently disabled."
 
-L["Congratulations on finishing the Raid! Thank you for using Prio3."] = "Congratulations on finishing the Raid! Thank you for using Prio3."
-L["Please note: author is now on new realm:"] = "Please note: author is now on new realm:"
+L["Congratulations on finishing the Raid!"] = "Congratulations on finishing the Raid!"
+L["Thank you for using Prio3."] = "Thank you for using the Prio3 addon."
 L["If you like it, Allaister on EU-Everlook (Alliance) is gladly taking donations!"] = "If you like it, Allaister on EU-Everlook (Alliance) is gladly taking donations!"
 
 -- used terms from core.lua
