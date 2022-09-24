@@ -7,6 +7,8 @@ end)
 GameTooltip:HookScript("OnTooltipSetItem", function(self)
     if self:IsForbidden() then return end
 
+    if not Prio3.db.profile.enabled then return end
+
     local _, item = self:GetItem()
 
     if not item then return end
