@@ -1,4 +1,5 @@
 # prio3
+
 Prio3 - World of Warcraft Classic addon
 
 ## tl;dr
@@ -9,7 +10,6 @@ You could opt to enable sending in priorities by whispers in the same menu, good
 
 Loot corpses and have chosen loot announced in raid chat.
 
-
 ## What is Priority 3 Looting?
 
 This loot distribution scheme is based on participants choosing up to three items they want to gain priority on when they actually drop.
@@ -18,7 +18,7 @@ It is especially nice for pug raids or raids with a high amount of random filler
 But of course it can also be of value on regular raid groups that do not want the hassle of full DKP tracking or avoid long loot council discussions.
 
 Side note: Prio 3 does not distinguish between main/need and offspec/greed priorities. It can thus be a good choice if you want to collect offspec gear for your char.
-(*Hint*: In order to avoid grief on main spec characters who are interested in the same items, it could be better to announce this intention beforehand.)
+(_Hint_: In order to avoid grief on main spec characters who are interested in the same items, it could be better to announce this intention beforehand.)
 
 ## So, how does this work now?
 
@@ -26,8 +26,8 @@ Before the raid, you will choose 3 items you want to have priority on.
 
 Mostly, the raid lead or designated PM is collecting these requests, noting them down. Sometimes a Google Doc is used to post as read only link to users later on.
 
-> **_sahne-team.de usage:_** 
-> If you are a German user, please try this website! It eases up coordinating Prio loot a lot. You setup a run on the `Priorun` function to the upper left, and give the Run PIN to your participants. Please remember to note down your admin pin from the upper right corner! 
+> **_sahne-team.de usage:_**
+> If you are a German user, please try this website! It eases up coordinating Prio loot a lot. You setup a run on the `Priorun` function to the upper left, and give the Run PIN to your participants. Please remember to note down your admin pin from the upper right corner!
 > Every user can choose their items, in secret. Even the admin cannot see those. Afterwards the admin can set the run to be visible for all.
 > For use with the Prio3 addon, you can then use the Exports. Prio3 native would be `CSV Short`, but the addon can actually read sahne-team.de full CSV and TXT export as well. (see below)
 
@@ -36,7 +36,7 @@ If there is only one user: Congrats, you have a new item.
 If there are more users with the same priority, those are asked to roll for the item, highest roll wins. Every user will get only one item per priority. If an items drops a second time, it is handled among the others with the highest remaining priority.
 
 If no one selected that particular item for Prio 1, then Prio 2 will be handled, and afterwards Prio 3.
-For all items where no one set a Priority, those are usually handled by FFA.  Some raids tend to apply main>offspec here.
+For all items where no one set a Priority, those are usually handled by FFA. Some raids tend to apply main>offspec here.
 
 Of course choosing which items to put where, that is part of the fun, and risk.
 Do I put this item on Prio 1, because others may want it too? Or it is unlikely, and I can savely bet it on Prio 3?
@@ -80,7 +80,6 @@ Since v20201031, you could opt for accepting priorities by whisper.
 Go to Menu Interfaces, Tab Addon, Prio3; or type /prio3 config, and import.
 Good option also for late joiners / replacements.
 
-
 > **Plans (long-term)**:
 > Simplified loot distribution (maybe even automated, with roll evaluation)
 
@@ -88,6 +87,7 @@ Good option also for late joiners / replacements.
 
 /prio3 will open an overview on loot
 
+Priorities are also displayed in the tooltip.
 
 ### Querying
 
@@ -101,16 +101,15 @@ Whisper `prio ITEMLINK` to look up priorities on an item.
 
 (If you don't get an answer at all, ask your Prio3 master if they turned on the options)
 
-
 ## Syncing
 
 The addon can now sync between multiple users in the raid.
 
 There are two configurable options, both enabled by default:
-- It will send and receive priorities when someone imports them.
-- It will sync if someone else already send raid notifications on loot, so it will be posted only once.
+
+-   It will send and receive priorities when someone imports them.
+-   It will sync if someone else already send raid notifications on loot, so it will be posted only once.
 
 > **Plans (mid-term)**:
-> - Note if someone got an item and remove user from list
-
-
+>
+> -   Note if someone got an item and remove user from list
