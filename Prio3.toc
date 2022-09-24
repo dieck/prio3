@@ -26,3 +26,4 @@ queries.lua
 
 core.lua
 
+tooltip/tooltip.lua
