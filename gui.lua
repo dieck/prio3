@@ -3,6 +3,8 @@ local L = LibStub("AceLocale-3.0"):GetLocale("Prio3", true)
 Prio3.lootframe = nil
 
 function Prio3:handleChatCommand(cmd)
+	if Prio3.db.profile.debug then Prio3:Print("DEBUG: Prio3 " .. cmd) end
+
 
 	if cmd == "config" then
 		if Prio3.lootframe ~= nil then
@@ -12,6 +14,9 @@ function Prio3:handleChatCommand(cmd)
 
 	elseif (cmd == "help") or (tempty(self.db.profile.priorities)) then
 		Prio3:guiHelpFrame()
+
+	elseif (cmd ~= nil and cmd ~= "" and tonumber(strmatch(cmd, "item:(%d+)")) > 0) then
+		Prio3:startRoll(cmd)
 
 	else
 		Prio3:guiPriorityFrame()
