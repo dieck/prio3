@@ -4,6 +4,22 @@ function Prio3:startRoll(item)
         return
     end
 
+    local isInRaid = IsInRaid()
+    local isInGroup = IsInGroup()
+    local messageTarget = "say"
+
+    -- Determin the Target where to Announce: RW, Raid or Group in this order
+    if (isInRaid) then
+        local isAssistent = UnitIsGroupAssistant("player")
+        if (isAssistent) then
+            messageTarget = "RAID_WARNING"
+        else
+            messageTarget = "RAID"
+        end
+    elseif (isInGroup) then
+        messageTarget = "PARTY"
+    end
+
     item = tonumber(strmatch(item, "item:(%d+)"))
 
     local itemname, itemlink = GetItemInfo(item)
@@ -29,18 +45,14 @@ function Prio3:startRoll(item)
         for index, names in ipairs(cancatenedUserPrios) do
             if (string.len(cancatenedUserPrios[index]) > 0) then
                 SendChatMessage("Please roll for " ..
-                    itemlink .. ": " .. cancatenedUserPrios[index] .. " (Prio " .. index .. ")", "PARTY",
-                    "CHANNEL");
+                    itemlink .. ": " .. cancatenedUserPrios[index] .. " (Prio " .. index .. ")", messageTarget, "CHANNEL");
                 freeRoll = false
                 break
             end
         end
 
         if (freeRoll) then
-            SendChatMessage("Please roll for " .. itemlink .. ": MS > OS", "PARTY",
-                "CHANNEL");
+            SendChatMessage("Please roll for " .. itemlink .. ": MS > OS", messageTarget, "CHANNEL");
         end
-
     end
-
 end
