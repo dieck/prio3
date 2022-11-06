@@ -40,7 +40,7 @@ externals:
   libs/AceSerializer-3.0:
     url: https://repos.wowace.com/wow/ace3/trunk/AceSerializer-3.0
     tag: latest
-  libs/LibDeformat-3.0
+  libs/LibDeformat-3.0:
     url: https://repos.wowace.com/wow/libdeformat-3-0
 
 ignore:
