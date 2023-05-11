@@ -18,6 +18,7 @@ local defaults = {
 	noprioannounce_quality = "e",
 	ignorereopen = 90,
 	showmasterlooterhint = true,
+	showitemtooltip = true,
 	charannounce = false,
 	acceptwhisperprios = false,
 	acceptwhisperprios_new = true,
@@ -271,12 +272,23 @@ Prio3.prioOptionsTable = {
 				set = function(info,val) Prio3.db.profile.showmasterlooterhint = val end,
 				get = function(info) return Prio3.db.profile.showmasterlooterhint end
 			},
+
 			newline36 = { name="", type="description", order=36 },
+			showtooltip = {
+				name = L["On Tooltip"],
+				desc = L["Shows Prio entries on Item Tooltips"],
+				type = "toggle",
+				order = 37,
+				set = function(info,val) Prio3.db.profile.showitemtooltip = val end,
+				get = function(info) return Prio3.db.profile.showitemtooltip end
+			},
+
+			newline38 = { name="", type="description", order=38 },
 			priozero = {
 			  name = L["Enable Prio 0"],
 			  desc = L["Activates output for Prio 0. If someone sets Prio 1, 2 and 3 to the same item, this gets precedence."],
 			  type = "toggle",
-			  order = 37,
+			  order = 39,
 			  set = function(info,val) Prio3.db.profile.prio0 = val end,
 			  get = function(info) return Prio3.db.profile.prio0 end,
 			},
