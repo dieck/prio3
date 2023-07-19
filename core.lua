@@ -1,7 +1,7 @@
 local L = LibStub("AceLocale-3.0"):GetLocale("Prio3", true)
 
 local Prio3commPrefix = "Prio3-1.0-"
-local Prio3versionString = "v20230511"
+local Prio3versionString = "v20230719"
 
 local defaults = {
   profile = {
@@ -23,6 +23,7 @@ local defaults = {
 	acceptwhisperprios = false,
 	acceptwhisperprios_new = true,
 	whisperimport = false,
+	translateTOTC = false,
 	queryself = true,
 	queryraid = false,
 	queryitems = true,
@@ -119,6 +120,12 @@ function Prio3:OnInitialize()
   if self.outputLocales[self.db.profile.outputlanguage] ~= nil then
 	for k,v in pairs(self.outputLocales[self.db.profile.outputlanguage]) do L[k] = v end
   end
+
+  if (Prio3.db.profile.translateTOTC) then
+	-- preload data
+	Prio3:importAtlasLootTOTC()
+  end
+
 end
 
 function Prio3:OnEnable()
@@ -429,7 +436,7 @@ Prio3.prioOptionsTable = {
 				desc = L["Please note that current Prio settings WILL BE OVERWRITTEN"],
 				type = "input",
 				disabled = function() return Prio3.db.profile.acceptwhisperprios end,
-				order = 50,
+				order = 48,
 				confirm = true,
 				width = 3.0,
 				multiline = true,
@@ -437,6 +444,21 @@ Prio3.prioOptionsTable = {
 				usage = L["Enter new exported string here to configure Prio3 loot list"],
 				cmdHidden = true,
 			},
+
+			newline49 = { name="", type="description", order=76 },
+			translateTOTC = {
+				name = L["TotC Dual Loot hc+nhc"],
+				desc = L["Shows both heroic and normal version of loot on outputs, the respective other one as Playername2"],
+				type = "toggle",
+				order = 50,
+				set = function(info,val)
+					Prio3.db.profile.translateTOTC = val
+					if (Prio3.db.profile.translateTOTC) then Prio3:importAtlasLootTOTC() end
+				end,
+				get = function(info) return Prio3.db.profile.translateTOTC end,
+			},
+
+
 			newline51 = { name="", type="description", order=51 },
 			resendprio = {
 				name = L["Resend prios"],

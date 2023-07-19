@@ -54,6 +54,18 @@ function Prio3:SetPriorities(info, value)
 
 	end
 
+	-- handle TOTC
+	if Prio3.db.profile.translateTOTC then
+		for user, prios in pairs(Prio3.db.profile.priorities) do
+			if (not(strfind(user, "2"))) then
+				local newuser,newprios = Prio3:translateTOTC(user, prios[1], prios[2], prios[3])
+				if (newuser) then
+					Prio3.db.profile.priorities[newuser] = newprios
+				end
+			end
+		end
+	end
+
 	self.db.profile.prioimporttime = time()
 	Prio3:sendPriorities()
 
